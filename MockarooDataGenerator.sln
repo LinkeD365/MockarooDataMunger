@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MockarooDataGenerator", "MockarooDataGenerator\MockarooDataGenerator.csproj", "{65D122E3-2388-4C1C-B5A3-2B8846CA4EAF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65D122E3-2388-4C1C-B5A3-2B8846CA4EAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65D122E3-2388-4C1C-B5A3-2B8846CA4EAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65D122E3-2388-4C1C-B5A3-2B8846CA4EAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65D122E3-2388-4C1C-B5A3-2B8846CA4EAF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3BEFB6D0-068D-4DA6-801A-8E6B7D483D64}
+	EndGlobalSection
+EndGlobal
