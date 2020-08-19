@@ -43,7 +43,7 @@ namespace LinkeD365.MockDataGen
 
         private void MockDataGen_Load(object sender, EventArgs e)
         {
-            LoadEntities();
+            // LoadEntities();
             // Loads or creates the settings for the plugin
             if (!SettingsManager.Instance.TryLoad(GetType(), out mySettings))
             {
@@ -85,6 +85,8 @@ namespace LinkeD365.MockDataGen
                 mySettings.LastUsedOrganizationWebappUrl = detail.WebApplicationUrl;
                 LogInfo("Connection has changed to: {0}", detail.WebApplicationUrl);
             }
+            LoadEntities();
+            cboEntities.SelectedItem = null;
         }
 
         #endregion Public Constructor stuff
@@ -330,8 +332,13 @@ namespace LinkeD365.MockDataGen
 
         private void cboEntities_SelectedValueChanged(object sender, EventArgs e)
         {
-            if (cboEntities.SelectedItem == null) return;
             selectedMaps = new List<MapRow>();
+            if (cboEntities.SelectedItem == null)
+            {
+                gridMap.DataSource = null;
+                return;
+            }
+
             BuildGrid(((EntityDisplay)cboEntities.SelectedItem).LogicalName);
             cboSelectSaved.SelectedItem = null;
         }
