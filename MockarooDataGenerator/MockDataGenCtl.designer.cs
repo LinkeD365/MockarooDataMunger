@@ -43,6 +43,7 @@
             this.gridMap = new System.Windows.Forms.DataGridView();
             this.splitConfig = new System.Windows.Forms.SplitContainer();
             this.grpEntity = new System.Windows.Forms.GroupBox();
+            this.lblPrimary = new System.Windows.Forms.Label();
             this.cboEntities = new System.Windows.Forms.ComboBox();
             this.lblRecordCount = new System.Windows.Forms.Label();
             this.numRecordCount = new System.Windows.Forms.NumericUpDown();
@@ -55,7 +56,6 @@
             this.btnCreateData = new System.Windows.Forms.Button();
             this.gridSample = new xrmtb.XrmToolBox.Controls.CRMGridView();
             this.tabGrpHidden = new System.Windows.Forms.TabControl();
-            this.lblPrimary = new System.Windows.Forms.Label();
             this.toolStripMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridMap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitConfig)).BeginInit();
@@ -92,9 +92,9 @@
             // 
             // tsbClose
             // 
-            this.tsbClose.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tsbClose.Image = ((System.Drawing.Image)(resources.GetObject("tsbClose.Image")));
             this.tsbClose.Name = "tsbClose";
-            this.tsbClose.Size = new System.Drawing.Size(86, 28);
+            this.tsbClose.Size = new System.Drawing.Size(110, 28);
             this.tsbClose.Text = "Close this tool";
             this.tsbClose.Click += new System.EventHandler(this.tsbClose_Click);
             // 
@@ -119,11 +119,10 @@
             // 
             // btnSave
             // 
-            this.btnSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnSave.Image = ((System.Drawing.Image)(resources.GetObject("btnSave.Image")));
             this.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(28, 28);
+            this.btnSave.Size = new System.Drawing.Size(129, 28);
             this.btnSave.Text = "Save Current Map";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -203,6 +202,15 @@
             this.grpEntity.TabIndex = 6;
             this.grpEntity.TabStop = false;
             this.grpEntity.Text = "Select Entity";
+            // 
+            // lblPrimary
+            // 
+            this.lblPrimary.AutoSize = true;
+            this.lblPrimary.Location = new System.Drawing.Point(6, 47);
+            this.lblPrimary.Name = "lblPrimary";
+            this.lblPrimary.Size = new System.Drawing.Size(100, 13);
+            this.lblPrimary.TabIndex = 10;
+            this.lblPrimary.Text = "Primary Name Field:";
             // 
             // cboEntities
             // 
@@ -365,15 +373,6 @@
             this.tabGrpHidden.SelectedIndex = 0;
             this.tabGrpHidden.Size = new System.Drawing.Size(200, 100);
             this.tabGrpHidden.TabIndex = 7;
-            // 
-            // lblPrimary
-            // 
-            this.lblPrimary.AutoSize = true;
-            this.lblPrimary.Location = new System.Drawing.Point(6, 47);
-            this.lblPrimary.Name = "lblPrimary";
-            this.lblPrimary.Size = new System.Drawing.Size(100, 13);
-            this.lblPrimary.TabIndex = 10;
-            this.lblPrimary.Text = "Primary Name Field:";
             // 
             // MockDataGenCtl
             // 
