@@ -5,5 +5,5 @@ This tool uses the popular [Mockaroo](https://www.mockaroo.com) API and allows a
 
 Please use  [XrmToolBox](https://www.xrmtoolbox.com/)  to get the latest version.
 
-** Please note this tool generates data, no liability is accepted for erroneous data creation **
+**Please note this tool generates data, no liability is accepted for erroneous data creation**
 
