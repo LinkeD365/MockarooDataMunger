@@ -112,7 +112,7 @@ namespace LinkeD365.MockDataGen
         {
             if (!selectedMaps.Any(mr => mr.SelectedMock != null)) return;
 
-            if (string.IsNullOrEmpty(txtMockKey.Text) || txtMockKey.Text == "Mockaroo API Key") //d2a8ce90
+            if (string.IsNullOrEmpty(txtMockKey.Text) || txtMockKey.Text == "Mockaroo API Key")
             {
                 MessageBox.Show("Please get an API key from www.mockaroo.com and enter it within the toolbar", "Need Mockaroo Key",
                     MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, 0, "https://www.mockaroo.com");
