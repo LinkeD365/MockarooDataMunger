@@ -20,6 +20,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="OrgSettings\bin\Release\LinkeD365.MockarooDataMunger.dll" target="lib\net472\Plugins" />
+    <file src="MockarooDataGenerator\bin\Release\Plugins\LinkeD365.MockarooDataMunger.dll" target="lib\net472\Plugins" />
   </files>
 </package>
