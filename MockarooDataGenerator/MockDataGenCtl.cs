@@ -11,6 +11,7 @@ using System.Data;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -22,7 +23,7 @@ namespace LinkeD365.MockDataGen
     {
         #region Private Fields
 
-        private const string percBlank = "%age Blank";
+        private const string percBlank = "Percentage Blank";
         private AllSettings mySettings;
         private List<MapRow> selectedMaps = new List<MapRow>();
         private EntityCollection collection;
@@ -32,6 +33,11 @@ namespace LinkeD365.MockDataGen
             , AttributeTypeCode.EntityName , AttributeTypeCode.CalendarRules,
             AttributeTypeCode.State,AttributeTypeCode.ManagedProperty};
 
+        private AppInsights ai;
+        private const string aiEndpoint = "https://dc.services.visualstudio.com/v2/track";
+
+        private const string aiKey = "cc383234-dfdb-429a-a970-d17847361df3";
+
         #endregion Private Fields
 
         #region Public Constructor stuff
@@ -39,6 +45,9 @@ namespace LinkeD365.MockDataGen
         public MockDataGenCtl()
         {
             InitializeComponent();
+
+            ai = new AppInsights(aiEndpoint, aiKey, Assembly.GetExecutingAssembly());
+            ai.WriteEvent("Control Loaded");
         }
 
         private void MockDataGen_Load(object sender, EventArgs e)
@@ -277,6 +286,7 @@ namespace LinkeD365.MockDataGen
                     var responseWithResults =
                                (ExecuteMultipleResponse)Service.Execute(requestWithResults);
                     string errors = string.Empty;
+                    ai.WriteEvent("Data Mocked Count", collection.Entities.Count);
                     foreach (var responseItem in responseWithResults.Responses)
                     {
                         // DisplayResponse(requestWithResults.Requests[responseItem.RequestIndex], responseItem.Response);

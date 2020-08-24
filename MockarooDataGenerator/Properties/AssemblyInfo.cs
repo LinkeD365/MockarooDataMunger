@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MockarooDataGenerator")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Mockaroo Data Munger")]
+[assembly: AssemblyDescription("Use the Mockaroo API to create data for CDS environments")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MockarooDataGenerator")]
+[assembly: AssemblyCompany("LinkeD365")]
+[assembly: AssemblyProduct("Mockaroo Data Munger")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
