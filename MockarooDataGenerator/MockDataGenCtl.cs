@@ -293,7 +293,7 @@ namespace LinkeD365.MockDataGen
 
                         // An error has occurred.
                         if (responseItem.Fault != null) errors += "\r\n" + responseItem.RequestIndex + " | " + responseItem.Fault.ToString();
-                        else collection.Entities.RemoveAt(responseItem.RequestIndex);
+                        else collection.Entities[responseItem.RequestIndex].Id = ((CreateResponse)responseItem.Response).id;
                         //DisplayFault(requestWithResults.Requests[responseItem.RequestIndex],
                         //    responseItem.RequestIndex, responseItem.Fault);
                     }
