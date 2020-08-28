@@ -279,7 +279,7 @@ namespace LinkeD365.MockDataGen.Mock
         public override void PopulateFromKVP(List<KVP> kvps)
         {
             BasePopulateFromKVP(kvps);
-            Countries = ((string)kvps.First(kvp => kvp.Key == "counties").Value).Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
+            Countries = ((string)kvps.First(kvp => kvp.Key == "countries").Value).Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 
