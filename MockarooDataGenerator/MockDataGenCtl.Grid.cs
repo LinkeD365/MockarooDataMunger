@@ -63,30 +63,31 @@ namespace LinkeD365.MockDataGen
                         {
                             if (attributes.Any(mr => mr.AttributeName == map.AttributeName))
                             {
-                                var mapRow = attributes.First(mr => mr.AttributeName == map.AttributeName);
-                                selectedMaps.Add(mapRow);
-                                mapRow.PropertyChanged -= MapRow_PropertyChanged;
-                                LogInfo(DateTime.UtcNow + " |  Pre Select Change");
-                                mapRow.Selected = true;
-                                LogInfo(DateTime.UtcNow + " |  Pre mocktype change");
-                                mapRow.MockType = map.SelectedMock.First(kvp => kvp.Key == "MockName").Value.ToString();
-                                AddOptions(mapRow);
-                                mapRow.SelectedMock = mapRow.MockOptions.Mocks.FirstOrDefault(m => m.Name == mapRow.MockType).Clone();
-                                LogInfo(DateTime.UtcNow + " |  Pre KVPPopulate");
-                                PopulateLookup(mapRow.Attribute, mapRow.SelectedMock);
-                                PopulatePickList(mapRow.Attribute, mapRow.SelectedMock); ;
-                                mapRow.SelectedMock.PopulateFromKVP(map.SelectedMock);
-                                LogInfo(DateTime.UtcNow + " | post KVPPopulate");
+                                // #5 If no mocks in the save, don't bother doing anything
+                                if (map.SelectedMock.Count > 0)
+                                {
+                                    var mapRow = attributes.First(mr => mr.AttributeName == map.AttributeName);
+                                    selectedMaps.Add(mapRow);
+                                    mapRow.PropertyChanged -= MapRow_PropertyChanged;
+                                    LogInfo(DateTime.UtcNow + " |  Pre Select Change");
+                                    mapRow.Selected = true;
+                                    LogInfo(DateTime.UtcNow + " |  Pre mocktype change");
 
-                                gridMap.Rows.Cast<DataGridViewRow>().Where(mr => mr.DataBoundItem == mapRow).First().Cells["Config"].ReadOnly = mapRow.AdditionalProperties == string.Empty;
-                                gridMap.Rows.Cast<DataGridViewRow>().Where(mr => mr.DataBoundItem == mapRow).First().Cells[percBlank].ReadOnly = mapRow.SelectedMock.Fixed;
+                                    mapRow.MockType = map.SelectedMock.First(kvp => kvp.Key == "MockName").Value.ToString();
+                                    AddOptions(mapRow);
+                                    mapRow.SelectedMock = mapRow.MockOptions.Mocks.FirstOrDefault(m => m.Name == mapRow.MockType).Clone();
+                                    LogInfo(DateTime.UtcNow + " |  Pre KVPPopulate");
+                                    PopulateLookup(mapRow.Attribute, mapRow.SelectedMock);
+                                    PopulatePickList(mapRow.Attribute, mapRow.SelectedMock); ;
+                                    mapRow.SelectedMock.PopulateFromKVP(map.SelectedMock);
+                                    LogInfo(DateTime.UtcNow + " | post KVPPopulate");
 
-                                //  gridMap.Rows[row.Index].Cells["Config"].ReadOnly = mapRow.AdditionalProperties == string.Empty;
-                                //gridMap.Rows[row.Index].Cells[percBlank].ReadOnly = mapRow.SelectedMock.Fixed;
+                                    gridMap.Rows.Cast<DataGridViewRow>().Where(mr => mr.DataBoundItem == mapRow).First().Cells["Config"].ReadOnly = mapRow.AdditionalProperties == string.Empty;
+                                    gridMap.Rows.Cast<DataGridViewRow>().Where(mr => mr.DataBoundItem == mapRow).First().Cells[percBlank].ReadOnly = mapRow.SelectedMock.Fixed;
 
-                                SetUpNumberDefaults(mapRow.Attribute, mapRow.SelectedMock);
-                                mapRow.PropertyChanged += MapRow_PropertyChanged;
-                                // mapRow.SelectedMock = mapRow.MockOptions.Mocks.First(m => m.Name == map.SelectedMock.First(kvp => kvp.Key == "Name").Value.ToString());
+                                    SetUpNumberDefaults(mapRow.Attribute, mapRow.SelectedMock);
+                                    mapRow.PropertyChanged += MapRow_PropertyChanged;
+                                }
                             }
                             else mapsNotFound.Add(map.AttributeName);
                         }
@@ -227,11 +228,14 @@ namespace LinkeD365.MockDataGen
                 var mapRow = dgvr.DataBoundItem as MapRow;
                 var cboBox = dgvr.Cells["MockType"] as DataGridViewComboBoxCell;
                 cboBox.DataSource = null;
-                cboBox.DataSource = mapRow.MockOptions.Mocks.Select(m => m.Name).ToList();
-                cboBox.ReadOnly = false;
+                if (mapRow.MockOptions != null) // #5 If coming from save, dont fill if no mocks
+                {
+                    cboBox.DataSource = mapRow.MockOptions.Mocks.Select(m => m.Name).ToList();
+                    cboBox.ReadOnly = false;
 
-                dgvr.Cells["Config"].ReadOnly = mapRow.AdditionalProperties == string.Empty;
-                dgvr.Cells[percBlank].ReadOnly = mapRow.SelectedMock.Fixed;
+                    dgvr.Cells["Config"].ReadOnly = mapRow.AdditionalProperties == string.Empty;
+                    dgvr.Cells[percBlank].ReadOnly = mapRow.SelectedMock == null || mapRow.SelectedMock.Fixed;
+                }
             }
         }
 
