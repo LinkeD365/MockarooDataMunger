@@ -13,6 +13,7 @@
     <releaseNotes>
       #5 Fixed load of saved data to ignore selected without data
       #7 fixed sorting / loading
+      #8 Fixed State (abbrev)
     </releaseNotes>
     <copyright>Copyright 2020</copyright>
     <tags>XrmToolBox Plugins Mockaroo Munger</tags>

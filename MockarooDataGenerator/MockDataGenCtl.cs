@@ -186,16 +186,16 @@ namespace LinkeD365.MockDataGen
                                     break;
 
                                 case RandomPickList randomPickList:
-                                    newRecord[map.Attribute.LogicalName] = new OptionSetValue(randomPickList.AllValues.First(pl => pl.Name == propertyValues[map.Attribute.LogicalName].ToString()).choiceNo);
+                                    newRecord[map.Attribute.LogicalName] = !propertyValues.ContainsKey(map.Attribute.LogicalName) ? null : new OptionSetValue(randomPickList.AllValues.First(pl => pl.Name == propertyValues[map.Attribute.LogicalName].ToString()).choiceNo);
                                     break;
 
                                 case RandomLookup randomLookup:
-                                    newRecord[map.Attribute.LogicalName] = new EntityReference(map.ParentTable, randomLookup.AllValues.First(lup => lup.Name == propertyValues[map.Attribute.LogicalName].ToString()).guid);
+                                    newRecord[map.Attribute.LogicalName] = !propertyValues.ContainsKey(map.Attribute.LogicalName) ? null : new EntityReference(map.ParentTable, randomLookup.AllValues.First(lup => lup.Name == propertyValues[map.Attribute.LogicalName].ToString()).guid);
                                     break;
 
                                 case StringMock stringMock:
 
-                                    newRecord[map.Attribute.LogicalName] = ((string)propertyValues[map.Attribute.LogicalName]).Truncate(map.AttributeLength.GetValueOrDefault());
+                                    newRecord[map.Attribute.LogicalName] = !propertyValues.ContainsKey(map.Attribute.LogicalName) ? null : ((string)propertyValues[map.Attribute.LogicalName]).Truncate(map.AttributeLength.GetValueOrDefault());
                                     break;
 
                                 default:
@@ -204,14 +204,14 @@ namespace LinkeD365.MockDataGen
                                     {
                                         case (DataTypes.Boolean):
                                         case (DataTypes.BinomialDistribution):
-                                            newRecord[map.Attribute.LogicalName] = (bool)propertyValues[map.Attribute.LogicalName];
+                                            newRecord[map.Attribute.LogicalName] = !propertyValues.ContainsKey(map.Attribute.LogicalName) ? false : (bool)propertyValues[map.Attribute.LogicalName];
                                             break;
 
                                         default:
                                             if (map.SelectedMock.Fixed) newRecord[map.Attribute.LogicalName] = map.SelectedMock.FixedValue;
                                             else
                                             {
-                                                newRecord[map.Attribute.LogicalName] = propertyValues[map.Attribute.LogicalName];
+                                                newRecord[map.Attribute.LogicalName] = !propertyValues.ContainsKey(map.Attribute.LogicalName) ? null : propertyValues[map.Attribute.LogicalName];
                                             }
                                             break;
                                     }

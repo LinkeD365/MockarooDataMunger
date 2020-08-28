@@ -10,7 +10,7 @@ namespace LinkeD365.MockDataGen
     {
         internal List<MockOption> MockOptions { get; } = new List<MockOption>{
                     new MockOption(AttributeTypeCode.String, //STRING
-                    new List<BaseMock>{ new FirstName(), new StringMock(DataTypes.AppBundleID),
+                    new List<BaseMock>{  new StringMock(DataTypes.AppBundleID),
                         new StringMock(DataTypes.CompanyName), new CharSequence(), new Country(), new CustomList(),
                     new StringMock(DataTypes.AppName),new StringMock(DataTypes.AppVersion),new StringMock(DataTypes.Base64ImageUrl),
                     new StringMock(DataTypes.City),new StringMock(DataTypes.Color),new StringMock(DataTypes.Country),new StringMock(DataTypes.CountryCode),
@@ -30,14 +30,14 @@ namespace LinkeD365.MockDataGen
                         new StringMock(DataTypes.MongoDbObjectId),new StringMock(DataTypes.NaughtyString),new StringMock(DataTypes.Password),new StringMock(DataTypes.Phone),
                         new StringMock(DataTypes.PostalCode),new StringMock(DataTypes.Race),new StringMock(DataTypes.Scenario),new StringMock(DataTypes.Sequence),
                         new StringMock(DataTypes.SHA1),new StringMock(DataTypes.SHA256),new StringMock(DataTypes.ShirtSize),new StringMock(DataTypes.ShortHexColor),
-                        new StringMock(DataTypes.SSN),new StringMock(DataTypes.State),new StringMock(DataTypes.StateAbbreviated),new StringMock(DataTypes.StateAbbreviated),
+                        new StringMock(DataTypes.SSN),new StringMock(DataTypes.State),new StringMock(DataTypes.StateAbbreviated),//new StringMock(DataTypes.StateAbbreviated),
                         new StringMock(DataTypes.StreetAddress),new StringMock(DataTypes.StreetName),new StringMock(DataTypes.StreetNumber),new StringMock(DataTypes.StreetSuffix),
                         new StringMock(DataTypes.Suffix),new StringMock(DataTypes.Template),new StringMock(DataTypes.Title),new StringMock(DataTypes.TopLevelDomain),
                         new StringMock(DataTypes.University),new StringMock(DataTypes.Url),new StringMock(DataTypes.UserAgent),new StringMock(DataTypes.Username),
                         new StringMock(DataTypes.Words)
                     }.OrderBy(bm=>bm.Name).ToList()),
                     new MockOption(AttributeTypeCode.Memo, //MEMO
-                    new List<BaseMock>{ new FirstName(), new StringMock(DataTypes.AppBundleID),
+                    new List<BaseMock>{ new StringMock(DataTypes.AppBundleID),
                         new StringMock(DataTypes.CompanyName), new CharSequence(), new Country(), new CustomList(),
                     new StringMock(DataTypes.AppName),new StringMock(DataTypes.AppVersion),new StringMock(DataTypes.Base64ImageUrl),
                     new StringMock(DataTypes.City),new StringMock(DataTypes.Color),new StringMock(DataTypes.Country),new StringMock(DataTypes.CountryCode),
@@ -57,7 +57,7 @@ namespace LinkeD365.MockDataGen
                         new StringMock(DataTypes.MongoDbObjectId),new StringMock(DataTypes.NaughtyString),new StringMock(DataTypes.Password),new StringMock(DataTypes.Phone),
                         new StringMock(DataTypes.PostalCode),new StringMock(DataTypes.Race),new StringMock(DataTypes.Scenario),new StringMock(DataTypes.Sequence),
                         new StringMock(DataTypes.SHA1),new StringMock(DataTypes.SHA256),new StringMock(DataTypes.ShirtSize),new StringMock(DataTypes.ShortHexColor),
-                        new StringMock(DataTypes.SSN),new StringMock(DataTypes.State),new StringMock(DataTypes.StateAbbreviated),new StringMock(DataTypes.StateAbbreviated),
+                        new StringMock(DataTypes.SSN),new StringMock(DataTypes.State),new StringMock(DataTypes.StateAbbreviated),
                         new StringMock(DataTypes.StreetAddress),new StringMock(DataTypes.StreetName),new StringMock(DataTypes.StreetNumber),new StringMock(DataTypes.StreetSuffix),
                         new StringMock(DataTypes.Suffix),new StringMock(DataTypes.Template),new StringMock(DataTypes.Title),new StringMock(DataTypes.TopLevelDomain),
                         new StringMock(DataTypes.University),new StringMock(DataTypes.Url),new StringMock(DataTypes.UserAgent),new StringMock(DataTypes.Username),
