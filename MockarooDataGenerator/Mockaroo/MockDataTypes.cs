@@ -18,7 +18,7 @@ namespace LinkeD365.MockDataGen
             public const string FixedLookup = "Fixed Lookup";
             public const string RandomPicklist = "Random Picklist";
             public const string FixedPicklist = "Fixed Picklist";
-            public const string DateTime = "DateTime";
+            public const string DateTime = "Datetime";
             public const string Date = "Date";
 
             public const string FixedNumber = "Fixed Number";

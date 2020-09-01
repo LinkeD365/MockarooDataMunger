@@ -11,9 +11,7 @@
     <iconUrl>https://linked365.blog/wp-content/uploads/2020/03/smallIcon.png</iconUrl>
     <description>A XrmToolBox tool to create data in your CDS environment using Mockaroo API</description>
     <releaseNotes>
-      #5 Fixed load of saved data to ignore selected without data
-      #7 fixed sorting / loading
-      #8 Fixed State (abbrev)
+      #10 Resolved issues with dates
     </releaseNotes>
     <copyright>Copyright 2020</copyright>
     <tags>XrmToolBox Plugins Mockaroo Munger</tags>

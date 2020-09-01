@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Dynamic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -71,6 +72,12 @@ namespace LinkeD365.MockDataGen.Mock
         {
             MockType = mockType;
             Name = mockType;
+        }
+
+        public BaseMock(string mockType, string mockName)
+        {
+            MockType = mockType;
+            Name = mockName;
         }
 
         public string Name { get; set; }
@@ -324,7 +331,7 @@ namespace LinkeD365.MockDataGen.Mock
         public DateTime Min { get; set; } = DateTime.Now.AddYears(-1).Date;
         public DateTime Max { get; set; } = DateTime.Now.AddYears(1).Date;
 
-        public Date() : base(DataTypes.Custom.Date)
+        public Date() : base(DataTypes.DateTime, DataTypes.Custom.Date)
         { }
 
         public override string Properties
@@ -339,14 +346,15 @@ namespace LinkeD365.MockDataGen.Mock
         {
             AddToBase("Min", Min.ToString("d"));
             AddToBase("Max", Max.ToString("d"));
+            AddToBase("format", "%Y-%m-%d");
             return baseField;
         }
 
         public override void PopulateFromKVP(List<KVP> kvps)
         {
             BasePopulateFromKVP(kvps);
-            Min = (DateTime)kvps.First(kvp => kvp.Key == "Min").Value;
-            Max = (DateTime)kvps.First(kvp => kvp.Key == "Max").Value;
+            Min = DateTime.ParseExact(kvps.First(kvp => kvp.Key == "Min").Value.ToString(), "d", null);
+            Max = DateTime.ParseExact(kvps.First(kvp => kvp.Key == "Max").Value.ToString(), "d", null);//(DateTime)kvps.First(kvp => kvp.Key == "Max").Value;
         }
     }
 
@@ -368,23 +376,25 @@ namespace LinkeD365.MockDataGen.Mock
 
         public override Dictionary<string, object> GetField()
         {
-            AddToBase("Min", Min.ToString());
-            AddToBase("Max", Max.ToString());
+            AddToBase("Min", DateTime.Today.Add(Min).ToString("hh:mm tt"));
+            AddToBase("Max", DateTime.Today.Add(Max).ToString("hh:mm tt"));
+            // AddToBase("format", "%H:%m-%d");
             return baseField;
         }
 
         public override void PopulateFromKVP(List<KVP> kvps)
         {
             BasePopulateFromKVP(kvps);
-            Min = (TimeSpan)kvps.First(kvp => kvp.Key == "Min").Value;
-            Max = (TimeSpan)kvps.First(kvp => kvp.Key == "Max").Value;
+
+            Min = DateTime.ParseExact(kvps.First(kvp => kvp.Key == "Min").Value.ToString(), "hh:mm tt", CultureInfo.CurrentCulture, DateTimeStyles.None).TimeOfDay;
+            Max = DateTime.ParseExact(kvps.First(kvp => kvp.Key == "Max").Value.ToString(), "hh:mm tt", CultureInfo.CurrentCulture, DateTimeStyles.None).TimeOfDay;
         }
     }
 
     public class DT : BaseMock
     {
         public DateTime Min { get; set; } = DateTime.Now.AddYears(-1);
-        public DateTime Max { get; set; } = DateTime.Now.AddYears(-1);
+        public DateTime Max { get; set; } = DateTime.Now;
 
         public DT() : base(DataTypes.Custom.DateTime)
         {
@@ -408,8 +418,8 @@ namespace LinkeD365.MockDataGen.Mock
         public override void PopulateFromKVP(List<KVP> kvps)
         {
             BasePopulateFromKVP(kvps);
-            Min = (DateTime)kvps.First(kvp => kvp.Key == "Min").Value;
-            Max = (DateTime)kvps.First(kvp => kvp.Key == "Max").Value;
+            Min = DateTime.Parse(kvps.First(kvp => kvp.Key == "Min").Value.ToString());
+            Max = DateTime.Parse(kvps.First(kvp => kvp.Key == "Max").Value.ToString());
         }
     }
 

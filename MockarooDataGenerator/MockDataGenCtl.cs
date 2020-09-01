@@ -198,6 +198,16 @@ namespace LinkeD365.MockDataGen
                                     newRecord[map.Attribute.LogicalName] = !propertyValues.ContainsKey(map.Attribute.LogicalName) ? null : ((string)propertyValues[map.Attribute.LogicalName]).Truncate(map.AttributeLength.GetValueOrDefault());
                                     break;
 
+                                case Date dateMock:
+
+                                    newRecord[map.Attribute.LogicalName] = !propertyValues.ContainsKey(map.Attribute.LogicalName) ? (DateTime?)null : DateTime.ParseExact(propertyValues[map.Attribute.LogicalName].ToString(), "yyyy-MM-dd", null);
+                                    break;
+
+                                case Time timeMock:
+                                    newRecord[map.Attribute.LogicalName] = !propertyValues.ContainsKey(map.Attribute.LogicalName) ? (DateTime?)null : DateTime.Today.Add(TimeSpan.Parse(propertyValues[map.Attribute.LogicalName].ToString()));
+
+                                    break;
+
                                 default:
 
                                     switch (map.SelectedMock.Name)
