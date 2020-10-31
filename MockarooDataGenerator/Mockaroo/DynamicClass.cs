@@ -1,24 +1,11 @@
 ﻿using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Messages;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
-using NMockaroo;
-using NMockaroo.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Dynamic;
 using System.Globalization;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace LinkeD365.MockDataGen.Mock
 {
@@ -55,6 +42,7 @@ namespace LinkeD365.MockDataGen.Mock
 
     public abstract class BaseMock
     {
+        public string EntityName { get; set; }
         protected Dictionary<string, object> _field { get; set; } = new Dictionary<string, object>();
         public string MockType { get; set; }
 
@@ -107,19 +95,53 @@ namespace LinkeD365.MockDataGen.Mock
         {
             get
             {
-                if (!_field.ContainsKey("Type")) _field.Add("Type", MockType);
-                else _field["Type"] = MockType;
-                if (!_field.ContainsKey("MockName")) _field.Add("MockName", MockType);
-                else _field["MockName"] = Name;
+                if (!_field.ContainsKey("Type"))
+                {
+                    _field.Add("Type", MockType);
+                }
+                else
+                {
+                    _field["Type"] = MockType;
+                }
 
-                if (!_field.ContainsKey("PercentBlank")) _field.Add("PercentBlank", PercentBlank);
-                else _field["PercentBlank"] = PercentBlank;
+                if (!_field.ContainsKey("MockName"))
+                {
+                    _field.Add("MockName", MockType);
+                }
+                else
+                {
+                    _field["MockName"] = Name;
+                }
 
-                if (!_field.ContainsKey("Formula")) if (!string.IsNullOrEmpty(Formula)) _field.Add("Formula", Formula);
-                    else if (!string.IsNullOrEmpty(Formula)) _field["Formula"] = Formula;
+                if (!_field.ContainsKey("PercentBlank"))
+                {
+                    _field.Add("PercentBlank", PercentBlank);
+                }
+                else
+                {
+                    _field["PercentBlank"] = PercentBlank;
+                }
 
-                if (!_field.ContainsKey("FixedValue")) _field.Add("FixedValue", FixedValue);
-                else _field["FixedValue"] = FixedValue;
+                if (!_field.ContainsKey("Formula"))
+                {
+                    if (!string.IsNullOrEmpty(Formula))
+                    {
+                        _field.Add("Formula", Formula);
+                    }
+                    else if (!string.IsNullOrEmpty(Formula))
+                    {
+                        _field["Formula"] = Formula;
+                    }
+                }
+
+                if (!_field.ContainsKey("FixedValue"))
+                {
+                    _field.Add("FixedValue", FixedValue);
+                }
+                else
+                {
+                    _field["FixedValue"] = FixedValue;
+                }
 
                 //if (!string.IsNullOrEmpty(Formula)) _field.Add("Formula", Formula);
                 return _field;
@@ -128,8 +150,14 @@ namespace LinkeD365.MockDataGen.Mock
 
         protected void AddToBase(string Key, object Value)
         {
-            if (baseField.ContainsKey(Key)) baseField[Key] = Value;
-            else baseField.Add(Key, Value);
+            if (baseField.ContainsKey(Key))
+            {
+                baseField[Key] = Value;
+            }
+            else
+            {
+                baseField.Add(Key, Value);
+            }
         }
 
         public abstract void PopulateFromKVP(List<KVP> kvps);
@@ -271,7 +299,11 @@ namespace LinkeD365.MockDataGen.Mock
         {
             get
             {
-                if (All) return "All Countries";
+                if (All)
+                {
+                    return "All Countries";
+                }
+
                 return "Countries: " + string.Join("\n", Countries);
             }
         }
@@ -306,7 +338,11 @@ namespace LinkeD365.MockDataGen.Mock
         {
             get
             {
-                if (Values == null || Values.Count() == 0) return "Selection Style: " + SelectionStyle;
+                if (Values == null || Values.Count() == 0)
+                {
+                    return "Selection Style: " + SelectionStyle;
+                }
+
                 return "Selection Style: " + SelectionStyle + "\nCountries: " + string.Join("\n", Values);
             }
         }
@@ -500,7 +536,11 @@ namespace LinkeD365.MockDataGen.Mock
         {
             get
             {
-                if (FixedValue.ToString() != string.Empty) return "Value: " + ((DateTime)FixedValue).ToString("d");
+                if (FixedValue.ToString() != string.Empty)
+                {
+                    return "Value: " + ((DateTime)FixedValue).ToString("d");
+                }
+
                 return "Value:";
             }
         }
@@ -558,8 +598,25 @@ namespace LinkeD365.MockDataGen.Mock
         }
     }
 
+    public class FixedContact : FixedLookup
+    {
+        public FixedContact() : base(DataTypes.Custom.FixedContact)
+        {
+            EntityName = "contact";
+        }
+    }
+
+    public class FixedAccount : FixedLookup
+    {
+        public FixedAccount() : base(DataTypes.Custom.FixedAccount)
+        {
+            EntityName = "account";
+        }
+    }
+
     public class FixedLookup : BaseMock
     {
+
         public FixedLookup() : base(DataTypes.Custom.FixedLookup)
         {
             Fixed = true;
@@ -572,14 +629,21 @@ namespace LinkeD365.MockDataGen.Mock
             Mockaroo = false;
         }
 
+
         public List<Lookup> AllValues { get; set; } = new List<Lookup>();
 
         public override string Properties
         {
             get
             {
-                if (FixedValue is Lookup) return "Value: " + ((Lookup)FixedValue).Name;
-                else return "Value: ";
+                if (FixedValue is Lookup)
+                {
+                    return "Value: " + ((Lookup)FixedValue).Name;
+                }
+                else
+                {
+                    return "Value: ";
+                }
             }
         }
 
@@ -636,8 +700,11 @@ namespace LinkeD365.MockDataGen.Mock
         }
     }
 
+
+
     public class RandomLookup : BaseMock
     {
+
         public List<Lookup> Values { get; set; } = new List<Lookup>();
 
         public List<Lookup> AllValues { get; set; } = new List<Lookup>();
@@ -661,15 +728,26 @@ namespace LinkeD365.MockDataGen.Mock
         {
             get
             {
-                if (Values.Count() == 0) return "Selection Style: " + SelectionStyle + "\n Values: All";
+                if (Values.Count() == 0)
+                {
+                    return "Selection Style: " + SelectionStyle + "\n Values: All";
+                }
+
                 return "Selection Style: " + SelectionStyle + "\n Values: \"" + string.Join("\",\"", Values.Select(lu => lu.Name)) + "\"";
             }
         }
 
         public override Dictionary<string, object> GetField()
         {
-            if (Values.Count == 0) AddToBase("values", AllValues.Select(lup => lup.ToString()).ToArray());
-            else AddToBase("values", Values.Select(lup => lup.ToString()).ToArray());
+            if (Values.Count == 0)
+            {
+                AddToBase("values", AllValues.Select(lup => lup.ToString()).ToArray());
+            }
+            else
+            {
+                AddToBase("values", Values.Select(lup => lup.ToString()).ToArray());
+            }
+
             AddToBase("selectionstyle", SelectionStyle);
             return baseField;
         }
@@ -684,6 +762,20 @@ namespace LinkeD365.MockDataGen.Mock
         }
     }
 
+    public class RandomAccount : RandomLookup
+    {
+        public RandomAccount() : base(DataTypes.Custom.RandomAccount)
+        {
+            EntityName = "account";
+        }
+    }
+    public class RandomContact : RandomLookup
+    {
+        public RandomContact() : base(DataTypes.Custom.RandomContact)
+        {
+            EntityName = "contact";
+        }
+    }
     public class RandomTeam : RandomLookup
     {
         public RandomTeam() : base(DataTypes.Custom.RandomTeam)
@@ -695,6 +787,14 @@ namespace LinkeD365.MockDataGen.Mock
     {
         public RandomUser() : base(DataTypes.Custom.RandomUser)
         {
+        }
+    }
+
+    public class FixedStatus : FixedPickList
+    {
+        public FixedStatus()
+        {
+            Name = DataTypes.Custom.FixedStatus;
         }
     }
 
@@ -713,8 +813,14 @@ namespace LinkeD365.MockDataGen.Mock
         {
             get
             {
-                if (FixedValue is PickList) return "Value: " + ((PickList)FixedValue).Name;
-                else return "Value: ";
+                if (FixedValue is PickList)
+                {
+                    return "Value: " + ((PickList)FixedValue).Name;
+                }
+                else
+                {
+                    return "Value: ";
+                }
             }
         }
 
@@ -733,6 +839,13 @@ namespace LinkeD365.MockDataGen.Mock
         }
     }
 
+    public class RandomStatus : RandomPickList
+    {
+        public RandomStatus()
+        {
+            Name = DataTypes.Custom.RandomStatus;
+        }
+    }
     public class RandomPickList : BaseMock
     {
         public List<PickList> Values { get; set; } = new List<PickList>();
@@ -751,15 +864,26 @@ namespace LinkeD365.MockDataGen.Mock
         {
             get
             {
-                if (Values.Count() == 0) return "Selection Style: " + SelectionStyle + "\n Values: All";
+                if (Values.Count() == 0)
+                {
+                    return "Selection Style: " + SelectionStyle + "\n Values: All";
+                }
+
                 return "Selection Style: " + SelectionStyle + "\n Values: \"" + string.Join("\",\"", Values.Select(lu => lu.Name)) + "\"";
             }
         }
 
         public override Dictionary<string, object> GetField()
         {
-            if (Values.Count == 0) AddToBase("values", AllValues.Select(lup => lup.ToString()).ToArray());
-            else AddToBase("values", Values.Select(lup => lup.ToString()).ToArray());
+            if (Values.Count == 0)
+            {
+                AddToBase("values", AllValues.Select(lup => lup.ToString()).ToArray());
+            }
+            else
+            {
+                AddToBase("values", Values.Select(lup => lup.ToString()).ToArray());
+            }
+
             AddToBase("selectionstyle", SelectionStyle);
             return baseField;
         }

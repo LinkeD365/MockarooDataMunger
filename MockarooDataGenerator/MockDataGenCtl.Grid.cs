@@ -1,13 +1,10 @@
-﻿using LinkeD365.MockDataGen.Mock;
-using Microsoft.Xrm.Sdk.Extensions;
+﻿using Microsoft.Xrm.Sdk.Extensions;
 using Microsoft.Xrm.Sdk.Metadata;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using XrmToolBox.Extensibility;
 
@@ -19,7 +16,11 @@ namespace LinkeD365.MockDataGen
         {
             gridMap.DataSource = null;
             gridMap.AutoGenerateColumns = false;
-            if (tabSample.Parent == tabGrpMain) tabGrpHidden.TabPages.Add(tabSample);
+            if (tabSample.Parent == tabGrpMain)
+            {
+                tabGrpHidden.TabPages.Add(tabSample);
+            }
+
             List<string> mapsNotFound = new List<string>();
             string primaryFieldLabel = "Primary Name Field: ";
             var saveMap = cboSelectSaved.SelectedItem == null ? null : mySettings.Settings.First(stng => stng.Name == cboSelectSaved.SelectedItem.ToString());
@@ -31,7 +32,11 @@ namespace LinkeD365.MockDataGen
                     var entityMeta = Service.GetEntityMetadata(logicalName);// entitiesDD.SelectedEntity.LogicalName);
                     var primaryField = entityMeta.Attributes.First(at => at.LogicalName == entityMeta.PrimaryNameAttribute) as StringAttributeMetadata;
                     primaryFieldLabel += primaryField.DisplayName.UserLocalizedLabel == null ? primaryField.LogicalName : primaryField.DisplayName.UserLocalizedLabel.Label + " ( " + primaryField.LogicalName + " ) ";
-                    if (!string.IsNullOrEmpty(primaryField.FormulaDefinition)) primaryFieldLabel += " Formula: " + primaryField.FormulaDefinition;
+                    if (!string.IsNullOrEmpty(primaryField.FormulaDefinition))
+                    {
+                        primaryFieldLabel += " Formula: " + primaryField.FormulaDefinition;
+                    }
+
                     SortableBindingList<MapRow> attributes = new SortableBindingList<MapRow>();
                     w.ReportProgress(50, "Got Attributes");
                     foreach (var field in entityMeta.Attributes.Where(fld => !notPermitted.Any(np => np == fld.AttributeType)).Where(fld => fld.IsValidForCreate == true))
@@ -67,29 +72,41 @@ namespace LinkeD365.MockDataGen
                                 if (map.SelectedMock.Count > 0)
                                 {
                                     var mapRow = attributes.First(mr => mr.AttributeName == map.AttributeName);
-                                    selectedMaps.Add(mapRow);
-                                    mapRow.PropertyChanged -= MapRow_PropertyChanged;
-                                    LogInfo(DateTime.UtcNow + " |  Pre Select Change");
-                                    mapRow.Selected = true;
-                                    LogInfo(DateTime.UtcNow + " |  Pre mocktype change");
-
-                                    mapRow.MockType = map.SelectedMock.First(kvp => kvp.Key == "MockName").Value.ToString();
                                     AddOptions(mapRow);
-                                    mapRow.SelectedMock = mapRow.MockOptions.Mocks.FirstOrDefault(m => m.Name == mapRow.MockType).Clone();
-                                    LogInfo(DateTime.UtcNow + " |  Pre KVPPopulate");
-                                    PopulateLookup(mapRow.Attribute, mapRow.SelectedMock);
-                                    PopulatePickList(mapRow.Attribute, mapRow.SelectedMock); ;
-                                    mapRow.SelectedMock.PopulateFromKVP(map.SelectedMock);
-                                    LogInfo(DateTime.UtcNow + " | post KVPPopulate");
+                                    var mockType = map.SelectedMock.First(kvp => kvp.Key == "MockName").Value.ToString();
+                                    var mockOption = mapRow.MockOptions.Mocks.FirstOrDefault(m => m.Name == mockType);
+                                    if (mockOption != null)
+                                    {
+                                        selectedMaps.Add(mapRow);
+                                        mapRow.PropertyChanged -= MapRow_PropertyChanged;
+                                        LogInfo(DateTime.UtcNow + " |  Pre Select Change");
+                                        mapRow.Selected = true;
+                                        LogInfo(DateTime.UtcNow + " |  Pre mocktype change");
 
-                                    gridMap.Rows.Cast<DataGridViewRow>().Where(mr => mr.DataBoundItem == mapRow).First().Cells["Config"].ReadOnly = mapRow.AdditionalProperties == string.Empty;
-                                    gridMap.Rows.Cast<DataGridViewRow>().Where(mr => mr.DataBoundItem == mapRow).First().Cells[percBlank].ReadOnly = mapRow.SelectedMock.Fixed;
+                                        mapRow.MockType = mockType;
 
-                                    SetUpNumberDefaults(mapRow.Attribute, mapRow.SelectedMock);
-                                    mapRow.PropertyChanged += MapRow_PropertyChanged;
+                                        mapRow.SelectedMock = mockOption.Clone();
+                                        LogInfo(DateTime.UtcNow + " |  Pre KVPPopulate");
+                                        PopulateLookup(mapRow.Attribute, mapRow.SelectedMock);
+                                        PopulatePickList(mapRow.Attribute, mapRow.SelectedMock);
+                                        ;
+                                        mapRow.SelectedMock.PopulateFromKVP(map.SelectedMock);
+                                        LogInfo(DateTime.UtcNow + " | post KVPPopulate");
+
+                                        gridMap.Rows.Cast<DataGridViewRow>().Where(mr => mr.DataBoundItem == mapRow).First().Cells["Config"].ReadOnly
+                                            = mapRow.AdditionalProperties == string.Empty;
+                                        gridMap.Rows.Cast<DataGridViewRow>().Where(mr => mr.DataBoundItem == mapRow).First().Cells[percBlank].ReadOnly
+                                            = mapRow.SelectedMock.Fixed;
+
+                                        SetUpNumberDefaults(mapRow.Attribute, mapRow.SelectedMock);
+                                        mapRow.PropertyChanged += MapRow_PropertyChanged;
+                                    }
                                 }
                             }
-                            else mapsNotFound.Add(map.AttributeName);
+                            else
+                            {
+                                mapsNotFound.Add(map.AttributeName);
+                            }
                         }
                     }
 
@@ -113,7 +130,10 @@ namespace LinkeD365.MockDataGen
 
         private void SetUpColumns()
         {
-            if (gridMap.Columns.Count > 0) return;
+            if (gridMap.Columns.Count > 0)
+            {
+                return;
+            }
 
             var selectedCol = new DataGridViewCheckBoxColumn()
             { DataPropertyName = "Selected", Name = " \n " };
@@ -148,6 +168,7 @@ namespace LinkeD365.MockDataGen
             gridMap.Columns.Add(intBlank);
         }
 
+
         private void gridMap_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
             bool validClick = (e.RowIndex != -1 && e.ColumnIndex != -1); //Make sure the clicked row/column is valid.
@@ -163,7 +184,11 @@ namespace LinkeD365.MockDataGen
 
         private void gridMap_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex == -1 || e.ColumnIndex == -1) return;
+            if (e.RowIndex == -1 || e.ColumnIndex == -1)
+            {
+                return;
+            }
+
             if (!gridMap.Rows[e.RowIndex].Cells[e.ColumnIndex].ReadOnly && gridMap.Columns[e.ColumnIndex] is DataGridViewButtonColumn)
             {
                 try
@@ -199,7 +224,7 @@ namespace LinkeD365.MockDataGen
                 TextBox tb = e.Control as TextBox;
                 if (tb != null)
                 {
-                    tb.KeyPress += new KeyPressEventHandler(intCol_KeyPress);
+                    tb.KeyPress += intCol_KeyPress;
                 }
             }
         }
@@ -214,7 +239,10 @@ namespace LinkeD365.MockDataGen
 
         private void gridMap_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
-            if (gridMap.CurrentCell.ColumnIndex != gridMap.Columns[percBlank].Index) gridMap.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            if (gridMap.CurrentCell.ColumnIndex != gridMap.Columns[percBlank].Index)
+            {
+                gridMap.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
         }
 
         private void gridMap_Sorted(object sender, EventArgs e)
@@ -266,12 +294,17 @@ namespace LinkeD365.MockDataGen
 
                 case "MockType":
                     if (!string.IsNullOrEmpty(mapRow.MockType))
+                    {
                         mapRow.SelectedMock = mapRow.MockOptions.Mocks.FirstOrDefault(m => m.Name == mapRow.MockType).Clone();
+                    }
 
                     break;
 
                 case "SelectedMock":
-                    if (mapRow.SelectedMock == null) return;
+                    if (mapRow.SelectedMock == null)
+                    {
+                        return;
+                    }
 
                     gridMap.Rows.Cast<DataGridViewRow>().Where(mr => mr.DataBoundItem == mapRow).First().Cells["Config"].ReadOnly = mapRow.AdditionalProperties == string.Empty;
                     gridMap.Rows.Cast<DataGridViewRow>().Where(mr => mr.DataBoundItem == mapRow).First().Cells[percBlank].ReadOnly = mapRow.SelectedMock.Fixed;
@@ -302,4 +335,6 @@ namespace LinkeD365.MockDataGen
             cboBox.ReadOnly = false;
         }
     }
+
+
 }

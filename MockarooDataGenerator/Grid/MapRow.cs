@@ -1,8 +1,7 @@
-﻿using System;
-using System.ComponentModel;
+﻿using LinkeD365.MockDataGen.Mock;
 using Microsoft.Xrm.Sdk.Metadata;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using LinkeD365.MockDataGen.Mock;
 using System.Xml.Serialization;
 
 namespace LinkeD365.MockDataGen
@@ -56,9 +55,24 @@ namespace LinkeD365.MockDataGen
         {
             get
             {
-                if (Attribute is LookupAttributeMetadata) return ((LookupAttributeMetadata)Attribute).Targets[0];
-                else if (selectedMock is RandomTeam || selectedMock is FixedTeam) return "team";
-                else if (selectedMock is RandomUser || selectedMock is FixedUser) return "systemuser";
+                if (selectedMock.EntityName != string.Empty)
+                {
+                    return selectedMock.EntityName;
+                }
+
+                if (Attribute is LookupAttributeMetadata)
+                {
+                    return ((LookupAttributeMetadata)Attribute).Targets[0];
+                }
+                else if (selectedMock is RandomTeam || selectedMock is FixedTeam)
+                {
+                    return "team";
+                }
+                else if (selectedMock is RandomUser || selectedMock is FixedUser)
+                {
+                    return "systemuser";
+                }
+
                 return string.Empty;
             }
         }
@@ -97,14 +111,18 @@ namespace LinkeD365.MockDataGen
         {
             get
             {
-                if (selectedMock == null) return string.Empty;
+                if (selectedMock == null)
+                {
+                    return string.Empty;
+                }
+
                 return selectedMock.Properties;
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -113,15 +131,31 @@ namespace LinkeD365.MockDataGen
         {
             get
             {
-                if (selectedMock == null) return string.Empty;
+                if (selectedMock == null)
+                {
+                    return string.Empty;
+                }
+
                 return selectedMock.PercentBlank.ToString();
             }
             set
             {
-                if (selectedMock == null) return;
+                if (selectedMock == null)
+                {
+                    return;
+                }
+
                 var intValue = 0;
-                if (!Int32.TryParse(value, out intValue)) selectedMock.PercentBlank = 0;
-                if (intValue > 100) intValue = 100;
+                if (!int.TryParse(value, out intValue))
+                {
+                    selectedMock.PercentBlank = 0;
+                }
+
+                if (intValue > 100)
+                {
+                    intValue = 100;
+                }
+
                 selectedMock.PercentBlank = intValue;
                 NotifyPropertyChanged();
             }

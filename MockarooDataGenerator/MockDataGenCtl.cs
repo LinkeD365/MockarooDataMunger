@@ -1,25 +1,24 @@
 ﻿using LinkeD365.MockDataGen.Mock;
+using LinkeD365.MockDataGen.Properties;
 using McTools.Xrm.Connection;
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Extensions;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
-using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Dynamic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
-using System.Xml.Serialization;
+using xrmtb.XrmToolBox.Controls;
 using XrmToolBox.Extensibility;
+using XrmToolBox.Extensibility.Interfaces;
 
 namespace LinkeD365.MockDataGen
 {
-    public partial class MockDataGenCtl : PluginControlBase
+    public partial class MockDataGenCtl : PluginControlBase, IGitHubPlugin
     {
         #region Private Fields
 
@@ -38,6 +37,11 @@ namespace LinkeD365.MockDataGen
 
         private const string aiKey = "cc383234-dfdb-429a-a970-d17847361df3";
 
+        public string RepositoryName => "MockarooDataMunger";
+
+        public string UserName => "LinkeD365";
+
+        private Image Cog => (Image)Resources.ResourceManager.GetObject("Settings_WF16");
         #endregion Private Fields
 
         #region Public Constructor stuff
@@ -76,8 +80,16 @@ namespace LinkeD365.MockDataGen
         private void MockDataGen_OnCloseTool(object sender, EventArgs e)
         {
             // Before leaving, save the settings
-            if (selectedMaps.Count == 0) return;
-            if (MessageBox.Show("Do you want to save current configuration?", "Save Config?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No) return;
+            if (selectedMaps.Count == 0)
+            {
+                return;
+            }
+
+            if (MessageBox.Show("Do you want to save current configuration?", "Save Config?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+            {
+                return;
+            }
+
             ShowSaveMap();
             //SettingsManager.Instance.Save(GetType(), mySettings);
         }
@@ -121,7 +133,10 @@ namespace LinkeD365.MockDataGen
 
         private void btnMockData_Click(object sender, EventArgs args)
         {
-            if (!selectedMaps.Any(mr => mr.SelectedMock != null)) return;
+            if (!selectedMaps.Any(mr => mr.SelectedMock != null))
+            {
+                return;
+            }
 
             if (string.IsNullOrEmpty(txtMockKey.Text) || txtMockKey.Text == "Mockaroo API Key")
             {
@@ -129,13 +144,20 @@ namespace LinkeD365.MockDataGen
                     MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, 0, "https://www.mockaroo.com");
                 return;
             }
+            var maps = selectedMaps.Where(mr => mr.SelectedMock != null && mr.SelectedMock.Mockaroo);
+            if (maps.Count() == 0)
+            {
+                MessageBox.Show("Only fixed actions have been selected, please select more than one random or Mockaroo sourced field",
+                    "Need non-fixed fields", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
             string entityName = ((EntityDisplay)cboEntities.SelectedItem).LogicalName;
             WorkAsync(new WorkAsyncInfo
             {
+
                 Message = "Getting Mockaroo Data...",
                 Work = (w, e) =>
                 {
-                    var maps = selectedMaps.Where(mr => mr.SelectedMock != null && mr.SelectedMock.Mockaroo);
                     dynamic mockClass = new ExpandoObject();
 
                     foreach (var map in maps)
@@ -157,8 +179,6 @@ namespace LinkeD365.MockDataGen
 
                         foreach (var map in selectedMaps)
                         {
-                            var mock = map.SelectedMock;
-                            // if (!propertyValues.ContainsKey(map.Attribute.LogicalName)) continue;
                             switch (map.SelectedMock)
                             {
                                 case FixedDateTime fixedDateTime:
@@ -176,15 +196,39 @@ namespace LinkeD365.MockDataGen
                                 case FixedNumber fixedNumber:
                                     newRecord[map.Attribute.LogicalName] = fixedNumber.FixedValue;
                                     break;
-
+                                case FixedStatus fixedStatus:
+                                    var choiceNo = ((PickList)fixedStatus.FixedValue).choiceNo;
+                                    newRecord[map.Attribute.LogicalName] = new OptionSetValue(choiceNo);
+                                    var statusReasonMeta = Service.GetAttribute(entityName, map.Attribute.LogicalName) as StatusAttributeMetadata;
+                                    var stateValue =
+                                        new OptionSetValue(((StatusOptionMetadata)statusReasonMeta.OptionSet.Options.First(o => o.Value == choiceNo)).State.Value);
+                                    newRecord["statecode"] = stateValue;
+                                    break;
                                 case FixedPickList fixedPickList:
                                     newRecord[map.Attribute.LogicalName] = new OptionSetValue(((PickList)fixedPickList.FixedValue).choiceNo);
+
                                     break;
 
                                 case FixedTime fixedTime:
                                     newRecord[map.Attribute.LogicalName] = fixedTime.FixedValue;
                                     break;
+                                case RandomStatus randomStatus:
+                                    //  newRecord[map.Attribute.LogicalName] = !propertyValues.ContainsKey(map.Attribute.LogicalName) ? null : new OptionSetValue(randomPickList.AllValues.First(pl => pl.Name == propertyValues[map.Attribute.LogicalName].ToString()).choiceNo);
 
+                                    var choiceStatusNo = !propertyValues.ContainsKey(map.Attribute.LogicalName) ? null : new OptionSetValue(randomStatus.AllValues.First(pl => pl.Name == propertyValues[map.Attribute.LogicalName].ToString()).choiceNo);
+                                    newRecord[map.Attribute.LogicalName] = choiceStatusNo;
+                                    if (choiceStatusNo != null)
+                                    {
+                                        var statusReasonRdmMeta =
+                                            Service.GetAttribute(entityName, map.Attribute.LogicalName) as StatusAttributeMetadata;
+                                        var stateRdmValue =
+                                            new OptionSetValue(
+                                                ((StatusOptionMetadata)statusReasonRdmMeta.OptionSet.Options.First(
+                                                    o => o.Value == choiceStatusNo.Value)).State.Value);
+                                        newRecord["statecode"] = stateRdmValue;
+                                    }
+
+                                    break;
                                 case RandomPickList randomPickList:
                                     newRecord[map.Attribute.LogicalName] = !propertyValues.ContainsKey(map.Attribute.LogicalName) ? null : new OptionSetValue(randomPickList.AllValues.First(pl => pl.Name == propertyValues[map.Attribute.LogicalName].ToString()).choiceNo);
                                     break;
@@ -208,6 +252,7 @@ namespace LinkeD365.MockDataGen
 
                                     break;
 
+
                                 default:
 
                                     switch (map.SelectedMock.Name)
@@ -218,7 +263,10 @@ namespace LinkeD365.MockDataGen
                                             break;
 
                                         default:
-                                            if (map.SelectedMock.Fixed) newRecord[map.Attribute.LogicalName] = map.SelectedMock.FixedValue;
+                                            if (map.SelectedMock.Fixed)
+                                            {
+                                                newRecord[map.Attribute.LogicalName] = map.SelectedMock.FixedValue;
+                                            }
                                             else
                                             {
                                                 newRecord[map.Attribute.LogicalName] = !propertyValues.ContainsKey(map.Attribute.LogicalName) ? null : propertyValues[map.Attribute.LogicalName];
@@ -240,10 +288,23 @@ namespace LinkeD365.MockDataGen
                 },
                 PostWorkCallBack = e =>
                 {
-                    gridSample.DataSource = e.Result;
-                    if (tabSample.Parent != tabGrpMain) tabGrpMain.TabPages.Add(tabSample);
-                    tabGrpMain.SelectedTab = tabSample;
-                    tabSample.Enabled = true;
+                    if (e.Error == null)
+                    {
+                        gridSample.DataSource = e.Result;
+                        if (tabSample.Parent != tabGrpMain)
+                        {
+                            tabGrpMain.TabPages.Add(tabSample);
+                        }
+
+                        tabGrpMain.SelectedTab = tabSample;
+                        tabSample.Enabled = true;
+                        updateEntities.Clear();
+                    }
+                    else
+                    {
+                        LogError(e.Error.ToString());
+                        ShowErrorNotification(e.Error.ToString(), new Uri("https://www.linked365.blog/"));
+                    }
                 }
             });
 
@@ -254,10 +315,7 @@ namespace LinkeD365.MockDataGen
             // List<MapRow> selectedRows = gridMap.Rows.Cast<DataGridViewRow>().Where(row => (MapRow) row.DataBoundItem  Select(dgvr => ((MapRow)dgvr.DataBoundItem);
         }
 
-        private void entitiesDD_SelectedItemChanged(object sender, EventArgs e)
-        {
-            //BuildGrid();
-        }
+
 
         /// <summary>
         /// save current map
@@ -289,23 +347,44 @@ namespace LinkeD365.MockDataGen
                     };
                     foreach (var entity in collection.Entities)
                     {
-                        var createRequest = new CreateRequest { Target = entity };
-                        requestWithResults.Requests.Add(createRequest);
+
+                        if (entity.Attributes.Contains("statecode") && ((OptionSetValue)entity["statecode"]).Value >= 1) // inactive
+                        {
+                            CreateInactiveRequest(entity);
+                        }
+                        else
+                        {
+                            var createRequest = new CreateRequest { Target = entity };
+                            requestWithResults.Requests.Add(createRequest);
+                        }
+                    }
+                    string errors = string.Empty;
+                    if (requestWithResults.Requests.Count > 0)
+                    {
+                        var responseWithResults =
+                            (ExecuteMultipleResponse)Service.Execute(requestWithResults);
+
+                        ai.WriteEvent("Data Mocked Count", requestWithResults.Requests.Count);
+                        foreach (var responseItem in responseWithResults.Responses)
+                        {
+                            // DisplayResponse(requestWithResults.Requests[responseItem.RequestIndex], responseItem.Response);
+
+                            // An error has occurred.
+                            if (responseItem.Fault != null)
+                            {
+                                errors += "\r\n" + responseItem.RequestIndex + " | " + responseItem.Fault;
+                            }
+                            // else collection.Entities[responseItem.RequestIndex].Id = ((CreateResponse) responseItem.Response).id;
+                            //DisplayFault(requestWithResults.Requests[responseItem.RequestIndex],
+                            //    responseItem.RequestIndex, responseItem.Fault);
+                        }
+
+
                     }
 
-                    var responseWithResults =
-                               (ExecuteMultipleResponse)Service.Execute(requestWithResults);
-                    string errors = string.Empty;
-                    ai.WriteEvent("Data Mocked Count", collection.Entities.Count);
-                    foreach (var responseItem in responseWithResults.Responses)
+                    foreach (var updateEntity in updateEntities)
                     {
-                        // DisplayResponse(requestWithResults.Requests[responseItem.RequestIndex], responseItem.Response);
-
-                        // An error has occurred.
-                        if (responseItem.Fault != null) errors += "\r\n" + responseItem.RequestIndex + " | " + responseItem.Fault.ToString();
-                        else collection.Entities[responseItem.RequestIndex].Id = ((CreateResponse)responseItem.Response).id;
-                        //DisplayFault(requestWithResults.Requests[responseItem.RequestIndex],
-                        //    responseItem.RequestIndex, responseItem.Fault);
+                        errors += SendInactiveRequest(updateEntity, w);
                     }
                     e.Result = errors;
                 },
@@ -320,7 +399,11 @@ namespace LinkeD365.MockDataGen
                     {
                         MessageBox.Show("All data was created successfully. Check your environment to ensure data quality", "No Errors", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         gridSample.DataSource = null;
-                        if (tabSample.Parent != tabGrpHidden) tabGrpHidden.TabPages.Add(tabSample);
+                        if (tabSample.Parent != tabGrpHidden)
+                        {
+                            tabGrpHidden.TabPages.Add(tabSample);
+                        }
+
                         tabGrpMain.SelectedTab = tabConfig;
                     }
                     else
@@ -335,9 +418,16 @@ namespace LinkeD365.MockDataGen
 
         private void cboSelectSaved_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboSelectSaved.SelectedItem == null) return;
+            if (cboSelectSaved.SelectedItem == null)
+            {
+                return;
+            }
+
             var selectedMap = mySettings.Settings.First(stng => stng.Name == cboSelectSaved.SelectedItem.ToString());
-            if (selectedMap is null) return;
+            if (selectedMap is null)
+            {
+                return;
+            }
             // var entDisplay = new EntityDisplay { LogicalName = selectedMap.EntityName };
             if (cboEntities.Items.Contains(selectedMap.EntityDisplay))
             {
@@ -364,5 +454,19 @@ namespace LinkeD365.MockDataGen
         }
 
         #endregion FormEvents
+
+        private void gridMap_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.ColumnIndex == 6 && e.RowIndex > -1)
+            {
+
+                e.PaintContent(e.CellBounds);
+
+                e.Graphics.DrawImage(Cog,
+                    new Rectangle(e.CellBounds.Left + (e.CellBounds.Width - Cog.Width) / 2, e.CellBounds.Top + (e.CellBounds.Height - Cog.Height) / 2,
+                        Cog.Width, Cog.Height));
+                e.Handled = true;
+            }
+        }
     }
 }

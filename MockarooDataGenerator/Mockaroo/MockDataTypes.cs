@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-/// <summary>
+﻿/// <summary>
 /// Thanks to NMockaroo https://github.com/amogram/NMockaroo
 /// </summary>
 
@@ -18,6 +12,7 @@ namespace LinkeD365.MockDataGen
             public const string FixedLookup = "Fixed Lookup";
             public const string RandomPicklist = "Random Picklist";
             public const string FixedPicklist = "Fixed Picklist";
+            public const string FixedStatus = "Fixed Status";
             public const string DateTime = "Datetime";
             public const string Date = "Date";
 
@@ -33,6 +28,14 @@ namespace LinkeD365.MockDataGen
 
             public const string FixedUser = "Fixed User";
             public const string RandomUser = "Random User";
+
+            public const string RandomStatus = "Random Status";
+
+            public const string FixedContact = "Fixed Contact";
+            public const string RandomContact = "Random Contact";
+            public const string FixedAccount = "Fixed Account";
+            public const string RandomAccount = "Random Account";
+
         }
 
         public const string AppBundleID = "App Bundle ID";

@@ -85,10 +85,12 @@ namespace LinkeD365.MockDataGen
                        new MockOption(AttributeTypeCode.Picklist, //Picklist
                         new List<BaseMock>{new FixedPickList(), new RandomPickList()}),
                       new MockOption(AttributeTypeCode.Status, //Status
-                        new List<BaseMock>{new FixedPickList(), new RandomPickList()}),
+                        new List<BaseMock>{new FixedStatus(), new RandomStatus()}),
                       new MockOption(AttributeTypeCode.Owner, // Owner
                           new List<BaseMock>{new FixedTeam(), new FixedUser(),
-                              new RandomTeam(), new RandomUser()}.OrderBy(bm=>bm.Name).ToList())
+                              new RandomTeam(), new RandomUser()}.OrderBy(bm=>bm.Name).ToList()),
+                      new MockOption(AttributeTypeCode.Customer,
+                          new List<BaseMock>{new FixedContact(), new FixedAccount(), new RandomAccount(), new RandomContact()})
         };
     }
 

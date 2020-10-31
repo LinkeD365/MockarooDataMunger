@@ -163,6 +163,7 @@
             this.gridMap.TabIndex = 5;
             this.gridMap.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridMap_CellClick);
             this.gridMap.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridMap_CellEnter);
+            this.gridMap.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.gridMap_CellPainting);
             this.gridMap.CurrentCellDirtyStateChanged += new System.EventHandler(this.gridMap_CurrentCellDirtyStateChanged);
             this.gridMap.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.gridMap_DataError);
             this.gridMap.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.gridMap_EditingControlShowing);

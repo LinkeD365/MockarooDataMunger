@@ -10,8 +10,6 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LinkeD365.MockDataGen
 {
@@ -27,14 +25,21 @@ namespace LinkeD365.MockDataGen
 
         public List<ExpandoObject> GetData(ExpandoObject exo, int count)
         {
-            if (count == 0) return new List<ExpandoObject>();
+            if (count == 0)
+            {
+                return new List<ExpandoObject>();
+            }
+
             List<Dictionary<string, object>> fields = new List<Dictionary<string, object>>();
 
-            foreach (var property in (IDictionary<string, object>)exo)
+            foreach (var property in exo)
             {
                 Mock.BaseMock mock = (Mock.BaseMock)property.Value;
                 var field = mock.GetField();
-                if (!field.ContainsKey("Name")) field.Add("Name", property.Key);
+                if (!field.ContainsKey("Name"))
+                {
+                    field.Add("Name", property.Key);
+                }
 
                 fields.Add(field);
             }
