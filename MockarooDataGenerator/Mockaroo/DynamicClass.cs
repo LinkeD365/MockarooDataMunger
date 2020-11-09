@@ -216,6 +216,14 @@ namespace LinkeD365.MockDataGen.Mock
         { }
     }
 
+    public class FakeEmailMock : StringMock
+    {
+        public FakeEmailMock() : base(DataTypes.EmailAddress)
+        {
+            Name = "Fake Email";
+        }
+    }
+
     public class Paragraph : BaseMock
     {
         public Paragraph() : base(DataTypes.Paragraphs)
@@ -661,13 +669,18 @@ namespace LinkeD365.MockDataGen.Mock
     public class FixedTeam : FixedLookup
     {
         public FixedTeam() : base(DataTypes.Custom.FixedTeam)
-        { }
+        {
+            EntityName = "team";
+        }
     }
 
     public class FixedUser : FixedLookup
     {
         public FixedUser() : base(DataTypes.Custom.FixedUser)
-        { }
+        {
+            EntityName = "systemuser";
+
+        }
     }
 
     public class Lookup
@@ -780,6 +793,7 @@ namespace LinkeD365.MockDataGen.Mock
     {
         public RandomTeam() : base(DataTypes.Custom.RandomTeam)
         {
+            EntityName = "team";
         }
     }
 
@@ -787,6 +801,7 @@ namespace LinkeD365.MockDataGen.Mock
     {
         public RandomUser() : base(DataTypes.Custom.RandomUser)
         {
+            EntityName = "systemuser";
         }
     }
 

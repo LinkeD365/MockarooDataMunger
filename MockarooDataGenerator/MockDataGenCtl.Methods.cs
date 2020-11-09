@@ -200,43 +200,9 @@ namespace LinkeD365.MockDataGen
 
         private void PopulateLookup(AttributeMetadata attribute, BaseMock selectedMock)
         {
-            //    if (!(selectedMock is RandomLookup || selectedMock is FixedLookup))
-            //    {
-            //        return;
-            //    }
-            //var parentName = string.Empty;
-            switch (selectedMock)
-            {
-                case FixedContact fc:
-                    fc.EntityName = "contact";
-                    //   parentName = "contact";
-                    break;
-                case FixedTeam ft:
-                    ft.EntityName = "team";
-                    break;
-                case RandomTeam rt:
-                    // parentName = "team";
-                    rt.EntityName = "team";
-                    break;
+            if (!(selectedMock is RandomLookup || selectedMock is FixedLookup)) return;
+            if (string.IsNullOrEmpty( selectedMock.EntityName)) selectedMock.EntityName = ((LookupAttributeMetadata)attribute).Targets[0];
 
-                case FixedUser fu:
-                    fu.EntityName = "systemuser";
-                    break;
-                case RandomUser ru:
-                    ru.EntityName = "systemuser";
-                    //parentName = "systemuser";
-                    break;
-
-                case RandomLookup rl:
-                    rl.EntityName = ((LookupAttributeMetadata)attribute).Targets[0];
-                    break;
-                case FixedLookup fl:
-                    fl.EntityName = ((LookupAttributeMetadata)attribute).Targets[0];
-                    break;
-
-                default:
-                    return;
-            }
             //var lookupAttr = attribute as LookupAttributeMetadata;
             WorkAsync(new WorkAsyncInfo
             {

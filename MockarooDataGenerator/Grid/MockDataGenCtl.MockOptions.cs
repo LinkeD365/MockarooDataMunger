@@ -34,7 +34,7 @@ namespace LinkeD365.MockDataGen
                         new StringMock(DataTypes.StreetAddress),new StringMock(DataTypes.StreetName),new StringMock(DataTypes.StreetNumber),new StringMock(DataTypes.StreetSuffix),
                         new StringMock(DataTypes.Suffix),new StringMock(DataTypes.Template),new StringMock(DataTypes.Title),new StringMock(DataTypes.TopLevelDomain),
                         new StringMock(DataTypes.University),new StringMock(DataTypes.Url),new StringMock(DataTypes.UserAgent),new StringMock(DataTypes.Username),
-                        new StringMock(DataTypes.Words)
+                        new StringMock(DataTypes.Words), new FakeEmailMock()
                     }.OrderBy(bm=>bm.Name).ToList()),
                     new MockOption(AttributeTypeCode.Memo, //MEMO
                     new List<BaseMock>{ new StringMock(DataTypes.AppBundleID),

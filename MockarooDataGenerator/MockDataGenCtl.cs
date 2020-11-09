@@ -181,6 +181,10 @@ namespace LinkeD365.MockDataGen
                         {
                             switch (map.SelectedMock)
                             {
+                                case FakeEmailMock fakeEmail:
+                                    newRecord[map.Attribute.LogicalName] = !propertyValues.ContainsKey(map.Attribute.LogicalName) ? null : propertyValues[map.Attribute.LogicalName].ToString() + ".FAKE";
+
+                                    break;
                                 case FixedDateTime fixedDateTime:
                                     newRecord[map.Attribute.LogicalName] = fixedDateTime.FixedValue;
                                     break;
