@@ -53,6 +53,7 @@
             this.tabConfig = new System.Windows.Forms.TabPage();
             this.tabSample = new System.Windows.Forms.TabPage();
             this.splitResults = new System.Windows.Forms.SplitContainer();
+            this.btnCreateBatch = new System.Windows.Forms.Button();
             this.btnCreateData = new System.Windows.Forms.Button();
             this.gridSample = new xrmtb.XrmToolBox.Controls.CRMGridView();
             this.tabGrpHidden = new System.Windows.Forms.TabControl();
@@ -237,7 +238,7 @@
             this.numRecordCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.numRecordCount.Location = new System.Drawing.Point(581, 20);
             this.numRecordCount.Maximum = new decimal(new int[] {
-            1000,
+            200000,
             0,
             0,
             0});
@@ -315,6 +316,7 @@
             // 
             // splitResults.Panel1
             // 
+            this.splitResults.Panel1.Controls.Add(this.btnCreateBatch);
             this.splitResults.Panel1.Controls.Add(this.btnCreateData);
             // 
             // splitResults.Panel2
@@ -324,8 +326,20 @@
             this.splitResults.SplitterDistance = 48;
             this.splitResults.TabIndex = 5;
             // 
+            // btnCreateBatch
+            // 
+            this.btnCreateBatch.AutoSize = true;
+            this.btnCreateBatch.Location = new System.Drawing.Point(144, 12);
+            this.btnCreateBatch.Name = "btnCreateBatch";
+            this.btnCreateBatch.Size = new System.Drawing.Size(145, 23);
+            this.btnCreateBatch.TabIndex = 1;
+            this.btnCreateBatch.Text = "Create All Remaining Rows";
+            this.btnCreateBatch.UseVisualStyleBackColor = true;
+            this.btnCreateBatch.Click += new System.EventHandler(this.BtnCreateBatch_Click);
+            // 
             // btnCreateData
             // 
+            this.btnCreateData.AutoSize = true;
             this.btnCreateData.Location = new System.Drawing.Point(30, 12);
             this.btnCreateData.Name = "btnCreateData";
             this.btnCreateData.Size = new System.Drawing.Size(75, 23);
@@ -401,6 +415,7 @@
             this.tabConfig.ResumeLayout(false);
             this.tabSample.ResumeLayout(false);
             this.splitResults.Panel1.ResumeLayout(false);
+            this.splitResults.Panel1.PerformLayout();
             this.splitResults.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitResults)).EndInit();
             this.splitResults.ResumeLayout(false);
@@ -433,5 +448,6 @@
         private System.Windows.Forms.ToolStripButton btnSave;
         private System.Windows.Forms.ComboBox cboEntities;
         private System.Windows.Forms.Label lblPrimary;
+        private System.Windows.Forms.Button btnCreateBatch;
     }
 }

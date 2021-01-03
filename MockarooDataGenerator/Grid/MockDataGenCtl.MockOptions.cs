@@ -11,9 +11,11 @@ namespace LinkeD365.MockDataGen
         internal List<MockOption> MockOptions { get; } = new List<MockOption>{
                     new MockOption(AttributeTypeCode.String, //STRING
                     new List<BaseMock>{  new StringMock(DataTypes.AppBundleID),
-                        new StringMock(DataTypes.CompanyName), new CharSequence(), new Country(), new CustomList(),
+                        new StringMock(DataTypes.CompanyName), new CharSequence(), //new Country(), 
+                        new CustomList(),
                     new StringMock(DataTypes.AppName),new StringMock(DataTypes.AppVersion),new StringMock(DataTypes.Base64ImageUrl),
-                    new StringMock(DataTypes.City),new StringMock(DataTypes.Color),new StringMock(DataTypes.Country),new StringMock(DataTypes.CountryCode),
+                    new StringMock(DataTypes.City),new StringMock(DataTypes.Color), new StringMock(DataTypes.Country)
+                        ,new StringMock(DataTypes.CountryCode),
                     new StringMock(DataTypes.CreditCardNumber),new StringMock(DataTypes.CreditCardType),new StringMock(DataTypes.DepartmentCorporate),
                     new StringMock(DataTypes.DepartmentRetail),new StringMock(DataTypes.DomainName),new StringMock(DataTypes.DrugCompany),new StringMock(DataTypes.DrugNameBrand),
                     new StringMock(DataTypes.DrugNameGeneric),new StringMock(DataTypes.DummyImageUrl),new StringMock(DataTypes.EmailAddress),new StringMock(DataTypes.FamilyNameChinese),
@@ -38,9 +40,11 @@ namespace LinkeD365.MockDataGen
                     }.OrderBy(bm=>bm.Name).ToList()),
                     new MockOption(AttributeTypeCode.Memo, //MEMO
                     new List<BaseMock>{ new StringMock(DataTypes.AppBundleID),
-                        new StringMock(DataTypes.CompanyName), new CharSequence(), new Country(), new CustomList(),
+                        new StringMock(DataTypes.CompanyName), new CharSequence(), //new Country(), 
+                        new CustomList(),
                     new StringMock(DataTypes.AppName),new StringMock(DataTypes.AppVersion),new StringMock(DataTypes.Base64ImageUrl),
-                    new StringMock(DataTypes.City),new StringMock(DataTypes.Color),new StringMock(DataTypes.Country),new StringMock(DataTypes.CountryCode),
+                    new StringMock(DataTypes.City),new StringMock(DataTypes.Color),new StringMock(DataTypes.Country),
+                        new StringMock(DataTypes.CountryCode),
                     new StringMock(DataTypes.CreditCardNumber),new StringMock(DataTypes.CreditCardType),new StringMock(DataTypes.DepartmentCorporate),
                     new StringMock(DataTypes.DepartmentRetail),new StringMock(DataTypes.DomainName),new StringMock(DataTypes.DrugCompany),new StringMock(DataTypes.DrugNameBrand),
                     new StringMock(DataTypes.DrugNameGeneric),new StringMock(DataTypes.DummyImageUrl),new StringMock(DataTypes.EmailAddress),new StringMock(DataTypes.FamilyNameChinese),

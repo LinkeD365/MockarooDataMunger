@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using LinkeD365.MockDataGen.Mock;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
@@ -26,20 +28,16 @@ namespace LinkeD365.MockDataGen
         public List<ExpandoObject> GetData(ExpandoObject exo, int count)
         {
             if (count == 0)
-            {
                 return new List<ExpandoObject>();
-            }
 
             List<Dictionary<string, object>> fields = new List<Dictionary<string, object>>();
 
             foreach (var property in exo)
             {
-                Mock.BaseMock mock = (Mock.BaseMock)property.Value;
+                BaseMock mock = (BaseMock)property.Value;
                 var field = mock.GetField();
                 if (!field.ContainsKey("Name"))
-                {
                     field.Add("Name", property.Key);
-                }
 
                 fields.Add(field);
             }
@@ -71,8 +69,11 @@ namespace LinkeD365.MockDataGen
 
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    throw new Exception(responseContent);
+                    var errObj = JsonConvert.DeserializeObject<JObject>(
+                        response.Content.ReadAsStringAsync().Result);
+                    throw new Exception(errObj.GetValue("error").ToString());
                 }
+
 
                 // data = count == 1
                 //   ? new[] { JsonConvert.DeserializeObject<T>(responseContent) }.AsEnumerable()
@@ -87,12 +88,10 @@ namespace LinkeD365.MockDataGen
         private static object GetValueOrArray(CustomAttributeTypedArgument argument)
         {
             if (argument.Value.GetType() == typeof(ReadOnlyCollection<CustomAttributeTypedArgument>))
-            {
                 return (
                     from cataElement in (ReadOnlyCollection<CustomAttributeTypedArgument>)argument.Value
                     select cataElement.Value.ToString()
                     ).ToArray();
-            }
 
             return argument.Value;
         }
