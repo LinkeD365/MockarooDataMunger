@@ -30,18 +30,18 @@ namespace LinkeD365.MockDataGen
             {
                 case DataTypes.Paragraphs:
                     Text = "Enter range of paragraphs";
-                    table.Controls.Add(new Label() { Text = "Min" }, 0, 0);
-                    var minPara = new NumericUpDown() { Minimum = 1, Maximum = 10 };
+                    table.Controls.Add(new Label { Text = "Min" }, 0, 0);
+                    var minPara = new NumericUpDown { Minimum = 1, Maximum = 10 };
                     minPara.Value = ((Paragraph)mapRow.SelectedMock).Min;
                     minPara.ValueChanged += Number_ValueChanged;
                     minPara.Tag = "ParaMin";
                     table.Controls.Add(minPara, 1, 0);
-                    var maxPara = new NumericUpDown() { Minimum = 1, Maximum = 10 };
+                    var maxPara = new NumericUpDown { Minimum = 1, Maximum = 10 };
                     maxPara.Value = ((Paragraph)mapRow.SelectedMock).Max;
                     maxPara.ValueChanged += Number_ValueChanged;
                     maxPara.Tag = "ParaMax";
                     table.Controls.Add(maxPara, 1, 1);
-                    table.Controls.Add(new Label() { Text = "Max" }, 0, 1);
+                    table.Controls.Add(new Label { Text = "Max" }, 0, 1);
 
                     break;
 
@@ -59,13 +59,11 @@ namespace LinkeD365.MockDataGen
                     var selectedMock = mapRow.SelectedMock; //as FixedLookup;
                     LookupAttributeMetadata lookup = (LookupAttributeMetadata)mapRow.Attribute;
                     if (selectedMock.EntityName == string.Empty)
-                    {
                         selectedMock.EntityName = lookup.Targets[0];
-                    }
 
                     var entityMeta = Service.GetEntityMetadata(selectedMock.EntityName);
 
-                    var selection = new ListView() { Tag = "RandomSelection" };
+                    var selection = new ListView { Tag = "RandomSelection" };
 
                     selection.MultiSelect = mapRow.SelectedMock is RandomLookup;
                     this.Text = selection.MultiSelect ? "Choose one or more values to select from" : "Choose the constant value";
@@ -87,7 +85,7 @@ namespace LinkeD365.MockDataGen
                 case DataTypes.Custom.RandomStatus:
 
                     //var pickListOptions = mapRow.Attribute is PicklistAttributeMetadata ? ((PicklistAttributeMetadata)mapRow.Attribute).OptionSet.Options : ((StatusAttributeMetadata)mapRow.Attribute).OptionSet.Options;
-                    var selectionPick = new ListView() { Tag = "RandomSelection" };
+                    var selectionPick = new ListView { Tag = "RandomSelection" };
 
                     selectionPick.MultiSelect = mapRow.SelectedMock is RandomPickList;
                     this.Text = selectionPick.MultiSelect ? "Choose one or more values to select from" : "Choose the constant value";
@@ -115,8 +113,8 @@ namespace LinkeD365.MockDataGen
                     break;
 
                 case DataTypes.BinomialDistribution:
-                    table.Controls.Add(new Label() { Text = "Success Probability" }, 0, 0);
-                    var probability = new NumericUpDown() { Minimum = 0, Maximum = 1, DecimalPlaces = 3, Tag = "biProbability" };
+                    table.Controls.Add(new Label { Text = "Success Probability" }, 0, 0);
+                    var probability = new NumericUpDown { Minimum = 0, Maximum = 1, DecimalPlaces = 3, Tag = "biProbability" };
                     var biMock = (BinomialDistribution)mapRow.SelectedMock;
                     probability.Value = (decimal)biMock.Probability;
                     probability.ValueChanged += Number_ValueChanged;
@@ -133,9 +131,9 @@ namespace LinkeD365.MockDataGen
                 case DataTypes.Custom.Date:
                 case DataTypes.Time:
                     this.Text = "Enter date range";
-                    var minDateTime = new DateTimePicker() { Tag = "minDateTime" };
+                    var minDateTime = new DateTimePicker { Tag = "minDateTime" };
 
-                    var maxDateTime = new DateTimePicker() { Tag = "maxDateTime" };
+                    var maxDateTime = new DateTimePicker { Tag = "maxDateTime" };
 
                     switch (mapRow.SelectedMock)
                     {
@@ -168,12 +166,12 @@ namespace LinkeD365.MockDataGen
                     maxDateTime.ValueChanged += DateTime_ValueChanged;
 
                     table.Controls.Add(
-                        new Label() { Text = "Min", Anchor = AnchorStyles.Left | AnchorStyles.Right, TextAlign = ContentAlignment.MiddleLeft }, 0, 0);
+                        new Label { Text = "Min", Anchor = AnchorStyles.Left | AnchorStyles.Right, TextAlign = ContentAlignment.MiddleLeft }, 0, 0);
 
                     table.Controls.Add(minDateTime, 1, 0);
 
                     table.Controls.Add(
-                        new Label() { Text = "Max", Anchor = AnchorStyles.Left | AnchorStyles.Right, TextAlign = ContentAlignment.MiddleLeft }, 0, 1);
+                        new Label { Text = "Max", Anchor = AnchorStyles.Left | AnchorStyles.Right, TextAlign = ContentAlignment.MiddleLeft }, 0, 1);
 
                     table.Controls.Add(maxDateTime, 1, 1);
                     table.RowCount++;
@@ -192,7 +190,7 @@ namespace LinkeD365.MockDataGen
 
                 case DataTypes.CustomList:
                     this.Text = "Enter list, one per line";
-                    var textBox = new TextBox() { Tag = "textBox", Anchor = AnchorStyles.Left | AnchorStyles.Right };
+                    var textBox = new TextBox { Tag = "textBox", Anchor = AnchorStyles.Left | AnchorStyles.Right };
                     textBox.Text = string.Join("\n", ((CustomList)mapRow.SelectedMock).Values);
                     textBox.Multiline = true;
                     textBox.Height = 200;
@@ -207,7 +205,7 @@ namespace LinkeD365.MockDataGen
                     break;
             }
 
-            var btn = new Button() { Text = "Ok" };
+            var btn = new Button { Text = "Ok" };
             btn.DialogResult = DialogResult.OK;
             btn.Click += btnOk_Click;
             btn.Anchor = AnchorStyles.Bottom;
@@ -219,16 +217,14 @@ namespace LinkeD365.MockDataGen
         private void SetupFixedDT()
         {
             this.Text = "Enter value";
-            var fixedDate = new DateTimePicker() { Tag = "fixedDate" };
+            var fixedDate = new DateTimePicker { Tag = "fixedDate" };
             var dateAttr = mapRow.Attribute as DateTimeAttributeMetadata;
             switch (mapRow.SelectedMock)
             {
                 case FixedTime timeMock:
                     TimeSpan timeVal = new TimeSpan(12, 0, 0);
                     if (TimeSpan.TryParse(timeMock.FixedValue.ToString(), out timeVal))
-                    {
                         fixedDate.Value = DateTime.Now.Date + timeVal;
-                    }
 
                     fixedDate.Format = DateTimePickerFormat.Time;
                     break;
@@ -236,9 +232,7 @@ namespace LinkeD365.MockDataGen
                 case FixedDateTime dateTimeMock:
                     DateTime dateTimeVal = DateTime.Now;
                     if (DateTime.TryParse(dateTimeMock.FixedValue.ToString(), out dateTimeVal))
-                    {
                         fixedDate.Value = dateTimeVal;
-                    }
 
                     fixedDate.Format = DateTimePickerFormat.Custom;
 
@@ -248,9 +242,7 @@ namespace LinkeD365.MockDataGen
                 case FixedDate dateMock:
                     DateTime dateVal = DateTime.Now;
                     if (DateTime.TryParse(dateMock.FixedValue.ToString(), out dateVal))
-                    {
                         fixedDate.Value = dateVal;
-                    }
 
                     fixedDate.Format = DateTimePickerFormat.Long;
 
@@ -259,7 +251,7 @@ namespace LinkeD365.MockDataGen
 
             fixedDate.ValueChanged += DateTime_ValueChanged;
 
-            table.Controls.Add(new Label() { Text = "Value", Anchor = AnchorStyles.Left | AnchorStyles.Right, TextAlign = ContentAlignment.MiddleLeft },
+            table.Controls.Add(new Label { Text = "Value", Anchor = AnchorStyles.Left | AnchorStyles.Right, TextAlign = ContentAlignment.MiddleLeft },
                 0, 0);
 
             table.Controls.Add(fixedDate, 1, 0);
@@ -270,7 +262,7 @@ namespace LinkeD365.MockDataGen
         private void SetupFixedNumber()
         {
             this.Text = "Enter numeric value";
-            var fixedNumber = new NumericUpDown() { Tag = "fixedNumber" };
+            var fixedNumber = new NumericUpDown { Tag = "fixedNumber" };
             switch (mapRow.Attribute)
             {
                 case MoneyAttributeMetadata moneyAttr:
@@ -311,17 +303,13 @@ namespace LinkeD365.MockDataGen
 
             decimal decValue = 0;
             if (decimal.TryParse(((FixedNumber)mapRow.SelectedMock).FixedValue.ToString(), out decValue))
-            {
                 fixedNumber.Value = decValue;
-            }
             else
-            {
                 fixedNumber.Value = 0;
-            }
 
             fixedNumber.ValueChanged += Number_ValueChanged;
 
-            table.Controls.Add(new Label() { Text = "Value", Anchor = AnchorStyles.Left | AnchorStyles.Right, TextAlign = ContentAlignment.MiddleLeft },
+            table.Controls.Add(new Label { Text = "Value", Anchor = AnchorStyles.Left | AnchorStyles.Right, TextAlign = ContentAlignment.MiddleLeft },
                 0, 0);
 
             table.Controls.Add(fixedNumber, 1, 0);
@@ -330,9 +318,9 @@ namespace LinkeD365.MockDataGen
 
         private void SetupNormalDist()
         {
-            var meanNumber = new NumericUpDown() { Tag = "meanNumber" };
-            var standardNumber = new NumericUpDown() { Tag = "standardNumber" };
-            var dpNormal = new NumericUpDown() { Tag = "dpNormal", DecimalPlaces = 0 };
+            var meanNumber = new NumericUpDown { Tag = "meanNumber" };
+            var standardNumber = new NumericUpDown { Tag = "standardNumber" };
+            var dpNormal = new NumericUpDown { Tag = "dpNormal", DecimalPlaces = 0 };
             var mockNormal = (NormalDistribution)mapRow.SelectedMock;
             switch (mapRow.Attribute)
             {
@@ -408,19 +396,19 @@ namespace LinkeD365.MockDataGen
             standardNumber.ValueChanged += Number_ValueChanged;
             dpNormal.ValueChanged += Number_ValueChanged;
 
-            table.Controls.Add(new Label() { Text = "Mean", Anchor = AnchorStyles.Left | AnchorStyles.Right, TextAlign = ContentAlignment.MiddleLeft },
+            table.Controls.Add(new Label { Text = "Mean", Anchor = AnchorStyles.Left | AnchorStyles.Right, TextAlign = ContentAlignment.MiddleLeft },
                 0, 0);
 
             table.Controls.Add(meanNumber, 1, 0);
             table.RowCount++;
 
             table.Controls.Add(
-                new Label() { Text = "Standard Deviation", Anchor = AnchorStyles.Left | AnchorStyles.Bottom, TextAlign = ContentAlignment.MiddleLeft },
+                new Label { Text = "Standard Deviation", Anchor = AnchorStyles.Left | AnchorStyles.Bottom, TextAlign = ContentAlignment.MiddleLeft },
                 0, 1);
 
             table.Controls.Add(standardNumber, 1, 1);
             table.RowCount++;
-            table.Controls.Add(new Label() { Text = "Dec. Places", Anchor = AnchorStyles.Left, TextAlign = ContentAlignment.MiddleLeft }, 0, 2);
+            table.Controls.Add(new Label { Text = "Dec. Places", Anchor = AnchorStyles.Left, TextAlign = ContentAlignment.MiddleLeft }, 0, 2);
 
             table.Controls.Add(dpNormal, 1, 2);
         }
@@ -428,11 +416,11 @@ namespace LinkeD365.MockDataGen
         private void SetUpNumber()
         {
             var mockNumber = (Number)mapRow.SelectedMock;
-            var minNumber = new NumericUpDown() { Tag = "minNumber" };
+            var minNumber = new NumericUpDown { Tag = "minNumber" };
 
-            var maxNumber = new NumericUpDown() { Tag = "maxNumber" };
+            var maxNumber = new NumericUpDown { Tag = "maxNumber" };
 
-            var dp = new NumericUpDown() { Tag = "dp", Value = mockNumber.Decimals };
+            var dp = new NumericUpDown { Tag = "dp", Value = mockNumber.Decimals };
 
             switch (mapRow.Attribute)
             {
@@ -508,18 +496,18 @@ namespace LinkeD365.MockDataGen
             minNumber.ValueChanged += Number_ValueChanged;
             dp.ValueChanged += Number_ValueChanged;
 
-            table.Controls.Add(new Label() { Text = "Min", Anchor = AnchorStyles.Left | AnchorStyles.Right, TextAlign = ContentAlignment.MiddleLeft },
+            table.Controls.Add(new Label { Text = "Min", Anchor = AnchorStyles.Left | AnchorStyles.Right, TextAlign = ContentAlignment.MiddleLeft },
                 0, 0);
 
             table.Controls.Add(minNumber, 1, 0);
             table.RowCount++;
 
-            table.Controls.Add(new Label() { Text = "Max", Anchor = AnchorStyles.Left | AnchorStyles.Bottom, TextAlign = ContentAlignment.MiddleLeft },
+            table.Controls.Add(new Label { Text = "Max", Anchor = AnchorStyles.Left | AnchorStyles.Bottom, TextAlign = ContentAlignment.MiddleLeft },
                 0, 1);
 
             table.Controls.Add(maxNumber, 1, 1);
             table.RowCount++;
-            table.Controls.Add(new Label() { Text = "Dec. Places", Anchor = AnchorStyles.Left, TextAlign = ContentAlignment.MiddleLeft }, 0, 2);
+            table.Controls.Add(new Label { Text = "Dec. Places", Anchor = AnchorStyles.Left, TextAlign = ContentAlignment.MiddleLeft }, 0, 2);
 
             table.Controls.Add(dp, 1, 2);
         }
@@ -540,38 +528,26 @@ namespace LinkeD365.MockDataGen
             {
                 case Time timeMock:
                     if (dateTime.Tag.ToString() == "minDateTime")
-                    {
                         timeMock.Min = dateTime.Value.TimeOfDay;
-                    }
                     else
-                    {
                         timeMock.Max = dateTime.Value.TimeOfDay;
-                    }
 
                     break;
 
                 case DT dateTimeMock:
 
                     if (dateTime.Tag.ToString() == "minDateTime")
-                    {
                         dateTimeMock.Min = dateTime.Value;
-                    }
                     else
-                    {
                         dateTimeMock.Max = dateTime.Value;
-                    }
 
                     break;
 
                 case Date dateMock:
                     if (dateTime.Tag.ToString() == "minDateTime")
-                    {
                         dateMock.Min = dateTime.Value;
-                    }
                     else
-                    {
                         dateMock.Max = dateTime.Value;
-                    }
 
                     break;
 
@@ -665,15 +641,11 @@ namespace LinkeD365.MockDataGen
                     var selectLookup = (ListView)table.Controls.Cast<Control>()
                         .FirstOrDefault(control => String.Equals(control.Tag, "RandomSelection"));
                     if (mapRow.SelectedMock is RandomLookup)
-                    {
                         ((RandomLookup)mapRow.SelectedMock).Values = (selectLookup.SelectedItems.Cast<ListViewItem>()
-                            .Select(listViewItem => new Lookup() { guid = (Guid)listViewItem.Tag, Name = listViewItem.Text })).ToList();
-                    }
+                            .Select(listViewItem => new Lookup { guid = (Guid)listViewItem.Tag, Name = listViewItem.Text })).ToList();
                     else
-                    {
                         ((FixedLookup)mapRow.SelectedMock).FixedValue = selectLookup.SelectedItems.Cast<ListViewItem>()
-                            .Select(lvi => new Lookup() { guid = (Guid)lvi.Tag, Name = lvi.Text }).First();
-                    }
+                            .Select(lvi => new Lookup { guid = (Guid)lvi.Tag, Name = lvi.Text }).First();
 
                     break;
 
@@ -684,15 +656,11 @@ namespace LinkeD365.MockDataGen
                     var selectPickList = (ListView)table.Controls.Cast<Control>()
                         .FirstOrDefault(control => String.Equals(control.Tag, "RandomSelection"));
                     if (mapRow.SelectedMock is RandomPickList)
-                    {
                         ((RandomPickList)mapRow.SelectedMock).Values = (selectPickList.SelectedItems.Cast<ListViewItem>()
-                            .Select(listViewItem => new PickList() { choiceNo = (int)listViewItem.Tag, Name = listViewItem.Text })).ToList();
-                    }
+                            .Select(listViewItem => new PickList { choiceNo = (int)listViewItem.Tag, Name = listViewItem.Text })).ToList();
                     else
-                    {
                         ((FixedPickList)mapRow.SelectedMock).FixedValue = selectPickList.SelectedItems.Cast<ListViewItem>()
-                            .Select(lvi => new PickList() { choiceNo = (int)lvi.Tag, Name = lvi.Text }).First();
-                    }
+                            .Select(lvi => new PickList { choiceNo = (int)lvi.Tag, Name = lvi.Text }).First();
 
                     break;
 
@@ -700,10 +668,8 @@ namespace LinkeD365.MockDataGen
                     var customList = (TextBox)table.Controls.Cast<Control>().FirstOrDefault();
 
                     if (customList.TextLength > 0)
-                    {
                         ((CustomList)mapRow.SelectedMock).Values =
                             customList.Text.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                    }
 
                     break;
 

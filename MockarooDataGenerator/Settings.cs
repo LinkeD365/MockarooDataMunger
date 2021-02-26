@@ -1,9 +1,11 @@
 ﻿using LinkeD365.MockDataGen.Mock;
+using Microsoft.Xrm.Sdk.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace LinkeD365.MockDataGen
 {
@@ -19,13 +21,15 @@ namespace LinkeD365.MockDataGen
         public string LastUsedOrganizationWebappUrl { get; set; }
 
         public string MockKey { get; set; }
+
+        public List<Set> Sets { get; set; }
     }
 
     public class Setting
     {
         public string Name { get; set; }
 
-        public string EntityName { get { return EntityDisplay.LogicalName; } }
+        public string EntityName => EntityDisplay.LogicalName;
 
         public EntityDisplay EntityDisplay { get; set; }
 
@@ -55,11 +59,56 @@ namespace LinkeD365.MockDataGen
         public List<KVP> SelectedMock { get; set; }
 
         public string BlackPercentage { get; set; }
+        public AttributeTypeCode? AttributeTypeCode { get; set; }
+        public string LogicalName { get; set; }
     }
 
     public class KVP
     {
         public string Key { get; set; }
         public object Value { get; set; }
+    }
+
+    public class SetItem
+    {
+        public string MapName { get; set; }
+        public int RecordCount { get; set; }
+        public int Position { get; set; }
+        public SetItem(string mapName, int recordCount, int postion)
+        {
+            MapName = mapName;
+            RecordCount = recordCount;
+            Position = postion;
+        }
+
+        public SetItem() { }
+
+        [XmlIgnore]
+        public List<Lookup> AddedValues = new List<Lookup>();
+
+        [XmlIgnore]
+        public string entityName = string.Empty;
+    }
+
+    public class Set
+    {
+        public string SetName { get; set; }
+        public List<SetItem> SetItems { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Set set &&
+                   SetName == set.SetName;
+        }
+
+        public override int GetHashCode()
+        {
+            return 539060726 + EqualityComparer<string>.Default.GetHashCode(SetName);
+        }
+
+        public override string ToString()
+        {
+            return SetName;
+        }
     }
 }

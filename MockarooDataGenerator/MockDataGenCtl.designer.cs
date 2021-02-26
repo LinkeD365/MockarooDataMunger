@@ -40,6 +40,9 @@
             this.txtMockKey = new System.Windows.Forms.ToolStripTextBox();
             this.cboSelectSaved = new System.Windows.Forms.ToolStripComboBox();
             this.btnSave = new System.Windows.Forms.ToolStripButton();
+            this.cboRunDataSet = new System.Windows.Forms.ToolStripComboBox();
+            this.btnPlaySet = new System.Windows.Forms.ToolStripButton();
+            this.btnCreateDataSet = new System.Windows.Forms.ToolStripButton();
             this.gridMap = new System.Windows.Forms.DataGridView();
             this.splitConfig = new System.Windows.Forms.SplitContainer();
             this.grpEntity = new System.Windows.Forms.GroupBox();
@@ -84,7 +87,10 @@
             this.tssSeparator1,
             this.txtMockKey,
             this.cboSelectSaved,
-            this.btnSave});
+            this.btnSave,
+            this.cboRunDataSet,
+            this.btnPlaySet,
+            this.btnCreateDataSet});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
             this.toolStripMenu.Size = new System.Drawing.Size(860, 31);
@@ -126,6 +132,31 @@
             this.btnSave.Size = new System.Drawing.Size(129, 28);
             this.btnSave.Text = "Save Current Map";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // cboRunDataSet
+            // 
+            this.cboRunDataSet.Name = "cboRunDataSet";
+            this.cboRunDataSet.Size = new System.Drawing.Size(121, 31);
+            this.cboRunDataSet.Text = "Run Data Set";
+            // 
+            // btnPlaySet
+            // 
+            this.btnPlaySet.Image = ((System.Drawing.Image)(resources.GetObject("btnPlaySet.Image")));
+            this.btnPlaySet.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnPlaySet.Name = "btnPlaySet";
+            this.btnPlaySet.Size = new System.Drawing.Size(76, 28);
+            this.btnPlaySet.Text = "Play Set";
+            this.btnPlaySet.Click += new System.EventHandler(this.btnPlaySet_Click);
+            // 
+            // btnCreateDataSet
+            // 
+            this.btnCreateDataSet.Image = global::LinkeD365.MockDataGen.Properties.Resources.Data_Settings;
+            this.btnCreateDataSet.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnCreateDataSet.Name = "btnCreateDataSet";
+            this.btnCreateDataSet.Size = new System.Drawing.Size(115, 28);
+            this.btnCreateDataSet.Text = "Create Data Set";
+            this.btnCreateDataSet.ToolTipText = "Create Data Set";
+            this.btnCreateDataSet.Click += new System.EventHandler(this.BtnCreateDataSet_Click);
             // 
             // gridMap
             // 
@@ -397,7 +428,9 @@
             this.Controls.Add(this.tabGrpHidden);
             this.Controls.Add(this.toolStripMenu);
             this.Name = "MockDataGenCtl";
+            this.PluginIcon = ((System.Drawing.Icon)(resources.GetObject("$this.PluginIcon")));
             this.Size = new System.Drawing.Size(860, 493);
+            this.TabIcon = global::LinkeD365.MockDataGen.Properties.Resources.smallIcon_80;
             this.OnCloseTool += new System.EventHandler(this.MockDataGen_OnCloseTool);
             this.Load += new System.EventHandler(this.MockDataGen_Load);
             this.toolStripMenu.ResumeLayout(false);
@@ -449,5 +482,8 @@
         private System.Windows.Forms.ComboBox cboEntities;
         private System.Windows.Forms.Label lblPrimary;
         private System.Windows.Forms.Button btnCreateBatch;
+        private System.Windows.Forms.ToolStripButton btnCreateDataSet;
+        private System.Windows.Forms.ToolStripComboBox cboRunDataSet;
+        private System.Windows.Forms.ToolStripButton btnPlaySet;
     }
 }

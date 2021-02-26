@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SaveMap));
             this.lblName = new System.Windows.Forms.Label();
             this.txtSaveName = new System.Windows.Forms.TextBox();
             this.lblUpdateExisting = new System.Windows.Forms.Label();
@@ -101,6 +102,7 @@
             this.Controls.Add(this.lblUpdateExisting);
             this.Controls.Add(this.txtSaveName);
             this.Controls.Add(this.lblName);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SaveMap";
             this.Text = "SaveMap";
             this.Load += new System.EventHandler(this.SaveMap_Load);

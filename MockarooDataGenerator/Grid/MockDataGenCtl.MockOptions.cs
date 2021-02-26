@@ -2,6 +2,7 @@
 using Microsoft.Xrm.Sdk.Metadata;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using XrmToolBox.Extensibility;
 
 namespace LinkeD365.MockDataGen
@@ -76,13 +77,13 @@ namespace LinkeD365.MockDataGen
                     new MockOption(AttributeTypeCode.DateTime, //DateTime
                         new List<BaseMock>{new DT(), new Date(), new Time(), new FixedDate(), new FixedDateTime(), new FixedTime()                    }.OrderBy(bm=>bm.Name).ToList()),
                     new MockOption(AttributeTypeCode.Decimal, //Decimal
-                        new List<BaseMock>{new NormalDistribution(),  new FixedNumber(), new Number()                    }.OrderBy(bm=>bm.Name).ToList()),
+                        new List<BaseMock>{new NormalDistribution(),  new FixedNumber(), new Number()}.OrderBy(bm=>bm.Name).ToList()),
                      new MockOption(AttributeTypeCode.Double, //Double
-                        new List<BaseMock>{new NormalDistribution(), new FixedNumber(), new Number()                    }.OrderBy(bm=>bm.Name).ToList()),
+                        new List<BaseMock>{new NormalDistribution(), new FixedNumber(), new Number()}.OrderBy(bm=>bm.Name).ToList()),
                       new MockOption(AttributeTypeCode.Integer, //BigInt
-                        new List<BaseMock>{new NormalDistribution(), new FixedNumber(), new Number()                    }.OrderBy(bm=>bm.Name).ToList()),
+                        new List<BaseMock>{new NormalDistribution(), new FixedNumber(), new Number()}.OrderBy(bm=>bm.Name).ToList()),
                        new MockOption(AttributeTypeCode.Lookup, //Lookup
-                        new List<BaseMock>{new RandomLookup(), new FixedLookup()                    }.OrderBy(bm=>bm.Name).ToList()),
+                        new List<BaseMock>{new RandomLookup(), new FixedLookup(), new FromSet()}.OrderBy(bm=>bm.Name).ToList()),
                        new MockOption(AttributeTypeCode.Money, //Money
                         new List<BaseMock>{new NormalDistribution(),
                          new FixedNumber(), new Number()                    }.OrderBy(bm=>bm.Name).ToList()),
@@ -94,8 +95,10 @@ namespace LinkeD365.MockDataGen
                           new List<BaseMock>{new FixedTeam(), new FixedUser(),
                               new RandomTeam(), new RandomUser()}.OrderBy(bm=>bm.Name).ToList()),
                       new MockOption(AttributeTypeCode.Customer,
-                          new List<BaseMock>{new FixedContact(), new FixedAccount(), new RandomAccount(), new RandomContact()})
+                          new List<BaseMock>{new FixedContact(), new FixedAccount(), new RandomAccount(),
+                              new RandomContact(), new FromAccountSet(), new FromContactSet()}.OrderBy(bm=>bm.Name).ToList())
         };
+
     }
 
     public class MockOption

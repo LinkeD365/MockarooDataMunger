@@ -9,8 +9,20 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectUrl>https://github.com/LinkeD365/MockarooDataMunger</projectUrl>
     <iconUrl>https://linked365.blog/wp-content/uploads/2020/03/smallIcon.png</iconUrl>
-    <description>A XrmToolBox tool to create data in your CDS environment using Mockaroo API</description>
+    <description>
+A XrmToolBox tool to create data in your Datavers environment using Mockaroo API
+
+You will need a Mockaroo API key for this tool
+
+Select your table and configure the options for your data, try it out to see what the data will look like then create away!
+
+Now with data sets to allow one click creationg of related entities
+
+    </description>
     <releaseNotes>
+      #20 Fixed date issues (thanks EY) 😜
+      =12 Data sets are now available - Create related data with one click 😁
+      
       #11 Allowed upto the Mockaroo limit on record creation 👊🏿
       #19 Removed second country in the list 🇪🇺
 

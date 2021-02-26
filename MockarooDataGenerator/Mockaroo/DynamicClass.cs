@@ -32,9 +32,7 @@ namespace LinkeD365.MockDataGen.Mock
             var sb = new StringBuilder();
 
             foreach (var property in _dynamicProperties)
-            {
                 sb.AppendLine($"Property '{property.Key}' = '{property.Value}'");
-            }
 
             return sb.ToString();
         }
@@ -96,52 +94,30 @@ namespace LinkeD365.MockDataGen.Mock
             get
             {
                 if (!_field.ContainsKey("Type"))
-                {
                     _field.Add("Type", MockType);
-                }
                 else
-                {
                     _field["Type"] = MockType;
-                }
 
                 if (!_field.ContainsKey("MockName"))
-                {
-                    _field.Add("MockName", MockType);
-                }
+                    _field.Add("MockName", Name);
                 else
-                {
                     _field["MockName"] = Name;
-                }
 
                 if (!_field.ContainsKey("PercentBlank"))
-                {
                     _field.Add("PercentBlank", PercentBlank);
-                }
                 else
-                {
                     _field["PercentBlank"] = PercentBlank;
-                }
 
                 if (!_field.ContainsKey("Formula"))
-                {
                     if (!string.IsNullOrEmpty(Formula))
-                    {
                         _field.Add("Formula", Formula);
-                    }
                     else if (!string.IsNullOrEmpty(Formula))
-                    {
                         _field["Formula"] = Formula;
-                    }
-                }
 
                 if (!_field.ContainsKey("FixedValue"))
-                {
                     _field.Add("FixedValue", FixedValue);
-                }
                 else
-                {
                     _field["FixedValue"] = FixedValue;
-                }
 
                 //if (!string.IsNullOrEmpty(Formula)) _field.Add("Formula", Formula);
                 return _field;
@@ -151,13 +127,9 @@ namespace LinkeD365.MockDataGen.Mock
         protected void AddToBase(string Key, object Value)
         {
             if (baseField.ContainsKey(Key))
-            {
                 baseField[Key] = Value;
-            }
             else
-            {
                 baseField.Add(Key, Value);
-            }
         }
 
         public abstract void PopulateFromKVP(List<KVP> kvps);
@@ -249,13 +221,7 @@ namespace LinkeD365.MockDataGen.Mock
             Max = (int)kvps.First(kvp => kvp.Key == "max").Value;
         }
 
-        public override string Properties
-        {
-            get
-            {
-                return "Min: " + Min.ToString() + "\nMax: " + Max.ToString();
-            }
-        }
+        public override string Properties => "Min: " + Min.ToString() + "\nMax: " + Max.ToString();
     }
 
     public class Avatar : BaseMock
@@ -270,10 +236,7 @@ namespace LinkeD365.MockDataGen.Mock
         [DefaultValue(60)]
         public int Width { get; set; } = 60;
 
-        public override string Properties
-        {
-            get { return "Width: " + Width.ToString() + "\nHeight: " + Height.ToString(); }
-        }
+        public override string Properties => "Width: " + Width.ToString() + "\nHeight: " + Height.ToString();
 
         public override Dictionary<string, object> GetField()
         {
@@ -308,9 +271,7 @@ namespace LinkeD365.MockDataGen.Mock
             get
             {
                 if (All)
-                {
                     return "All Countries";
-                }
 
                 return "Countries: " + string.Join("\n", Countries);
             }
@@ -347,9 +308,7 @@ namespace LinkeD365.MockDataGen.Mock
             get
             {
                 if (Values == null || Values.Count() == 0)
-                {
                     return "Selection Style: " + SelectionStyle;
-                }
 
                 return "Selection Style: " + SelectionStyle + "\nCountries: " + string.Join("\n", Values);
             }
@@ -378,18 +337,12 @@ namespace LinkeD365.MockDataGen.Mock
         public Date() : base(DataTypes.DateTime, DataTypes.Custom.Date)
         { }
 
-        public override string Properties
-        {
-            get
-            {
-                return "Min: " + Min.ToString("d") + "\nMax: " + Max.ToString("d");
-            }
-        }
+        public override string Properties => "Min: " + Min.ToString("d") + "\nMax: " + Max.ToString("d");
 
         public override Dictionary<string, object> GetField()
         {
-            AddToBase("Min", Min.ToString("d"));
-            AddToBase("Max", Max.ToString("d"));
+            AddToBase("Min", Min.ToString("MM/dd/yyyy"));
+            AddToBase("Max", Max.ToString("MM/dd/yyyy"));
             AddToBase("format", "%Y-%m-%d");
             return baseField;
         }
@@ -397,8 +350,14 @@ namespace LinkeD365.MockDataGen.Mock
         public override void PopulateFromKVP(List<KVP> kvps)
         {
             BasePopulateFromKVP(kvps);
-            Min = DateTime.ParseExact(kvps.First(kvp => kvp.Key == "Min").Value.ToString(), "d", null);
-            Max = DateTime.ParseExact(kvps.First(kvp => kvp.Key == "Max").Value.ToString(), "d", null);//(DateTime)kvps.First(kvp => kvp.Key == "Max").Value;
+            DateTime min;
+            if (!DateTime.TryParseExact(kvps.First(kvp => kvp.Key == "Min").Value.ToString(), "MM/dd/yyyy", null, DateTimeStyles.AdjustToUniversal, out min))
+                Min = DateTime.Parse(kvps.First(kvp => kvp.Key == "Min").Value.ToString());
+            else Min = min;
+            DateTime max;
+            if (!DateTime.TryParseExact(kvps.First(kvp => kvp.Key == "Max").Value.ToString(), "MM/dd/yyyy", null, DateTimeStyles.AdjustToUniversal, out max))
+                Max = DateTime.Parse(kvps.First(kvp => kvp.Key == "Max").Value.ToString());
+            else Max = max;
         }
     }
 
@@ -410,13 +369,7 @@ namespace LinkeD365.MockDataGen.Mock
         public Time() : base(DataTypes.Time)
         { }
 
-        public override string Properties
-        {
-            get
-            {
-                return "Min: " + Min.ToString() + "\nMax: " + Max.ToString();
-            }
-        }
+        public override string Properties => "Min: " + Min.ToString() + "\nMax: " + Max.ToString();
 
         public override Dictionary<string, object> GetField()
         {
@@ -444,26 +397,26 @@ namespace LinkeD365.MockDataGen.Mock
         {
         }
 
-        public override string Properties
-        {
-            get
-            {
-                return "Min: " + Min.ToString() + "\nMax: " + Max.ToString();
-            }
-        }
+        public override string Properties => "Min: " + Min.ToString() + "\nMax: " + Max.ToString();
 
         public override Dictionary<string, object> GetField()
         {
-            AddToBase("Min", Min.ToString());
-            AddToBase("Max", Max.ToString());
+            AddToBase("Min", Min.ToString("MM/dd/yyyy hh:mm:ss"));
+            AddToBase("Max", Max.ToString("MM/dd/yyyy hh:mm:ss"));
             return baseField;
         }
 
         public override void PopulateFromKVP(List<KVP> kvps)
         {
             BasePopulateFromKVP(kvps);
-            Min = DateTime.Parse(kvps.First(kvp => kvp.Key == "Min").Value.ToString());
-            Max = DateTime.Parse(kvps.First(kvp => kvp.Key == "Max").Value.ToString());
+            DateTime min;
+            if (!DateTime.TryParseExact(kvps.First(kvp => kvp.Key == "Min").Value.ToString(), "MM/dd/yyyy hh:mm:ss", null, DateTimeStyles.AdjustToUniversal, out min))
+                Min = DateTime.Parse(kvps.First(kvp => kvp.Key == "Min").Value.ToString());
+            else Min = min;
+            DateTime max;
+            if (!DateTime.TryParseExact(kvps.First(kvp => kvp.Key == "Max").Value.ToString(), "MM/dd/yyyy hh:mm:ss", null, DateTimeStyles.AdjustToUniversal, out max))
+                Max = DateTime.Parse(kvps.First(kvp => kvp.Key == "Max").Value.ToString());
+            else Max = max;
         }
     }
 
@@ -519,7 +472,7 @@ namespace LinkeD365.MockDataGen.Mock
             Mockaroo = false;
         }
 
-        public override string Properties { get { return "Value: " + FixedValue; } }
+        public override string Properties => "Value: " + FixedValue;
 
         public override Dictionary<string, object> GetField()
         {
@@ -545,9 +498,7 @@ namespace LinkeD365.MockDataGen.Mock
             get
             {
                 if (FixedValue.ToString() != string.Empty)
-                {
                     return "Value: " + ((DateTime)FixedValue).ToString("d");
-                }
 
                 return "Value:";
             }
@@ -572,7 +523,7 @@ namespace LinkeD365.MockDataGen.Mock
             Mockaroo = false;
         }
 
-        public override string Properties { get { return "Value: " + FixedValue; } }
+        public override string Properties => "Value: " + FixedValue;
 
         public override Dictionary<string, object> GetField()
         {
@@ -593,7 +544,7 @@ namespace LinkeD365.MockDataGen.Mock
             Mockaroo = false;
         }
 
-        public override string Properties { get { return "Value: " + FixedValue; } }
+        public override string Properties => "Value: " + FixedValue;
 
         public override Dictionary<string, object> GetField()
         {
@@ -645,13 +596,9 @@ namespace LinkeD365.MockDataGen.Mock
             get
             {
                 if (FixedValue is Lookup)
-                {
                     return "Value: " + ((Lookup)FixedValue).Name;
-                }
                 else
-                {
                     return "Value: ";
-                }
             }
         }
 
@@ -699,13 +646,7 @@ namespace LinkeD365.MockDataGen.Mock
         public int choiceNo { get; set; }
         public string Name { get; set; }
 
-        public OptionSetValue Option
-        {
-            get
-            {
-                return new OptionSetValue(choiceNo);
-            }
-        }
+        public OptionSetValue Option => new OptionSetValue(choiceNo);
 
         public override string ToString()
         {
@@ -713,6 +654,52 @@ namespace LinkeD365.MockDataGen.Mock
         }
     }
 
+    public class FromSet : BaseMock
+    {
+        public string SelectionStyle { get; set; } = SelectionStyles.Random;
+        public FromSet() : base(DataTypes.CustomList)
+        {
+            Name = DataTypes.Custom.FromSet;
+        }
+
+        public FromSet(string dataType) : base(DataTypes.CustomList)
+        {
+            Name = dataType;
+        }
+        public override string Properties { get; } = string.Empty;
+        public override Dictionary<string, object> GetField()
+        {
+            AddToBase("values", Values.Select(lup => lup.ToString()).ToArray());
+
+            AddToBase("selectionstyle", SelectionStyle);
+            return baseField;
+        }
+
+        public override void PopulateFromKVP(List<KVP> kvps)
+        {
+            SelectionStyle = kvps.First(kvp => kvp.Key == "selectionstyle").Value.ToString();
+
+            BasePopulateFromKVP(kvps);
+        }
+
+        public List<Lookup> Values { get; set; } = new List<Lookup>();
+    }
+
+    public class FromContactSet : FromSet
+    {
+        public FromContactSet() : base(DataTypes.Custom.FromContact)
+        {
+            EntityName = "contact";
+        }
+    }
+
+    public class FromAccountSet : FromSet
+    {
+        public FromAccountSet() : base(DataTypes.Custom.FromAccount)
+        {
+            EntityName = "account";
+        }
+    }
 
 
     public class RandomLookup : BaseMock
@@ -725,7 +712,7 @@ namespace LinkeD365.MockDataGen.Mock
         [DefaultValue("random")]
         public string SelectionStyle { get; set; } = SelectionStyles.Random;
 
-        public bool All { get; set; }
+        public bool All => !Values.Any();
 
         public RandomLookup() : base(DataTypes.CustomList)
         {
@@ -742,9 +729,7 @@ namespace LinkeD365.MockDataGen.Mock
             get
             {
                 if (Values.Count() == 0)
-                {
                     return "Selection Style: " + SelectionStyle + "\n Values: All";
-                }
 
                 return "Selection Style: " + SelectionStyle + "\n Values: \"" + string.Join("\",\"", Values.Select(lu => lu.Name)) + "\"";
             }
@@ -753,13 +738,9 @@ namespace LinkeD365.MockDataGen.Mock
         public override Dictionary<string, object> GetField()
         {
             if (Values.Count == 0)
-            {
                 AddToBase("values", AllValues.Select(lup => lup.ToString()).ToArray());
-            }
             else
-            {
                 AddToBase("values", Values.Select(lup => lup.ToString()).ToArray());
-            }
 
             AddToBase("selectionstyle", SelectionStyle);
             return baseField;
@@ -768,10 +749,12 @@ namespace LinkeD365.MockDataGen.Mock
         public override void PopulateFromKVP(List<KVP> kvps)
         {
             BasePopulateFromKVP(kvps);
-            var valueStrings = ((string)kvps.First(kvp => kvp.Key == "values").Value).Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
+            SelectionStyle = kvps.First(kvp => kvp.Key == "selectionstyle").Value.ToString();
+            string values = (string)kvps.FirstOrDefault(kvp => kvp.Key == "values")?.Value;
+            if (values == null) return;
+            var valueStrings = values.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
             Values = AllValues.Where(val => valueStrings.Contains(val.Name)).ToList();
             // Values = ((string)kvps.First(kvp => kvp.Key == "values").Value).Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries).Select(s => new looku;
-            SelectionStyle = kvps.First(kvp => kvp.Key == "selectionstyle").Value.ToString();
         }
     }
 
@@ -829,13 +812,9 @@ namespace LinkeD365.MockDataGen.Mock
             get
             {
                 if (FixedValue is PickList)
-                {
                     return "Value: " + ((PickList)FixedValue).Name;
-                }
                 else
-                {
                     return "Value: ";
-                }
             }
         }
 
@@ -880,9 +859,7 @@ namespace LinkeD365.MockDataGen.Mock
             get
             {
                 if (Values.Count() == 0)
-                {
                     return "Selection Style: " + SelectionStyle + "\n Values: All";
-                }
 
                 return "Selection Style: " + SelectionStyle + "\n Values: \"" + string.Join("\",\"", Values.Select(lu => lu.Name)) + "\"";
             }
@@ -891,13 +868,9 @@ namespace LinkeD365.MockDataGen.Mock
         public override Dictionary<string, object> GetField()
         {
             if (Values.Count == 0)
-            {
                 AddToBase("values", AllValues.Select(lup => lup.ToString()).ToArray());
-            }
             else
-            {
                 AddToBase("values", Values.Select(lup => lup.ToString()).ToArray());
-            }
 
             AddToBase("selectionstyle", SelectionStyle);
             return baseField;
@@ -923,13 +896,7 @@ namespace LinkeD365.MockDataGen.Mock
         {
         }
 
-        public override string Properties
-        {
-            get
-            {
-                return "Format: " + Format;
-            }
-        }
+        public override string Properties => "Format: " + Format;
 
         public override Dictionary<string, object> GetField()
         {
@@ -952,13 +919,7 @@ namespace LinkeD365.MockDataGen.Mock
 
         public int Decimals { get; set; } = 2;
 
-        public override string Properties
-        {
-            get
-            {
-                return "Mean: " + Mean.ToString() + "\n Standard Deviation: " + StandardDev.ToString() + "\n Decimals: " + Decimals.ToString();
-            }
-        }
+        public override string Properties => "Mean: " + Mean.ToString() + "\n Standard Deviation: " + StandardDev.ToString() + "\n Decimals: " + Decimals.ToString();
 
         public override Dictionary<string, object> GetField()
         {
@@ -992,13 +953,7 @@ namespace LinkeD365.MockDataGen.Mock
             return baseField;
         }
 
-        public override string Properties
-        {
-            get
-            {
-                return "Probability: " + Probability.ToString();
-            }
-        }
+        public override string Properties => "Probability: " + Probability.ToString();
 
         public BinomialDistribution() : base(DataTypes.BinomialDistribution)
         {
@@ -1022,13 +977,7 @@ namespace LinkeD365.MockDataGen.Mock
         {
         }
 
-        public override string Properties
-        {
-            get
-            {
-                return "Min: " + Min.ToString() + "\n Max: " + Max.ToString() + "\n Decimals: " + Decimals.ToString();
-            }
-        }
+        public override string Properties => "Min: " + Min.ToString() + "\n Max: " + Max.ToString() + "\n Decimals: " + Decimals.ToString();
 
         public override Dictionary<string, object> GetField()
         {

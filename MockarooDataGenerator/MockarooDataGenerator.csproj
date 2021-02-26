@@ -207,6 +207,12 @@
       <DependentUpon>MockDataGenCtl.cs</DependentUpon>
     </Compile>
     <Compile Include="MockDataGenCtl.Methods.cs" />
+    <Compile Include="Popup\DataSetConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Popup\DataSetConfig.Designer.cs">
+      <DependentUpon>DataSetConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="Popup\SaveMap.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -232,6 +238,9 @@
     <EmbeddedResource Include="MockDataGenCtl.resx">
       <DependentUpon>MockDataGenCtl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Popup\DataSetConfig.resx">
+      <DependentUpon>DataSetConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Popup\SaveMap.resx">
       <DependentUpon>SaveMap.cs</DependentUpon>
     </EmbeddedResource>
@@ -245,6 +254,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Settings-WF16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Data setting-WF.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Data setting-WF24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Data-Settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\smallIcon 80.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

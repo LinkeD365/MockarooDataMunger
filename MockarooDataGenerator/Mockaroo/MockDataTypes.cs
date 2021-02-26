@@ -35,6 +35,9 @@ namespace LinkeD365.MockDataGen
             public const string RandomContact = "Random Contact";
             public const string FixedAccount = "Fixed Account";
             public const string RandomAccount = "Random Account";
+            internal static string FromSet = "From Set";
+            internal static string FromContact = "From Contact Set";
+            internal static string FromAccount = "From Account Set";
 
         }
 

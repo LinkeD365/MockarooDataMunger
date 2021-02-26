@@ -63,6 +63,36 @@ namespace LinkeD365.MockDataGen.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Data_setting_WF {
+            get {
+                object obj = ResourceManager.GetObject("Data setting-WF", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Data_setting_WF24 {
+            get {
+                object obj = ResourceManager.GetObject("Data setting-WF24", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Data_Settings {
+            get {
+                object obj = ResourceManager.GetObject("Data-Settings", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Settings_WF {
             get {
                 object obj = ResourceManager.GetObject("Settings_WF", resourceCulture);
@@ -76,6 +106,16 @@ namespace LinkeD365.MockDataGen.Properties {
         internal static System.Drawing.Bitmap Settings_WF16 {
             get {
                 object obj = ResourceManager.GetObject("Settings_WF16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap smallIcon_80 {
+            get {
+                object obj = ResourceManager.GetObject("smallIcon 80", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

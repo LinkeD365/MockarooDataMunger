@@ -20,9 +20,7 @@ namespace LinkeD365.MockDataGen
         public static string Truncate(this string value, int maxLength)
         {
             if (string.IsNullOrEmpty(value))
-            {
                 return value;
-            }
 
             return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
@@ -56,14 +54,14 @@ namespace LinkeD365.MockDataGen
         {
             cboSelectSaved.Items.Clear();
             cboSelectSaved.Items.AddRange(mySettings.Settings.Select(set => set.Name).ToArray());
+            cboRunDataSet.Items.Clear();
+            cboRunDataSet.Items.AddRange(mySettings.Sets.Select(set => set.SetName).ToArray());
         }
 
         private void LoadEntities()
         {
             if (Service == null)
-            {
                 return;
-            }
             WorkAsync(new WorkAsyncInfo
             {
                 Message = "Loading Entities",
@@ -71,7 +69,7 @@ namespace LinkeD365.MockDataGen
                 {
                     var eqe = new EntityQueryExpression();
                     eqe.Properties = new MetadataPropertiesExpression("LogicalName", "DisplayName");
-                    var req = new RetrieveMetadataChangesRequest()
+                    var req = new RetrieveMetadataChangesRequest
                     {
                         Query = eqe,
                         ClientVersionStamp = null
@@ -92,34 +90,36 @@ namespace LinkeD365.MockDataGen
         {
             var saveMap = new SaveMap(mySettings);
             if (saveMap.ShowDialog() != DialogResult.OK)
-            {
                 return;
-            }
 
             mySettings.MockKey = txtMockKey.Text;
             var setting = new Setting();
             setting.Name = saveMap.settingName;
             setting.EntityDisplay = cboEntities.SelectedItem as EntityDisplay;
-            setting.MapRows = selectedMaps.Select(mr => new SimpleMapRow()
+            setting.MapRows = selectedMaps.Select(mr => new SimpleMapRow
             {
                 AttributeName = mr.AttributeName,
                 BlackPercentage = mr.BlankPercentage,
+                AttributeTypeCode = mr.AttributeTypeCode,
+                LogicalName = mr.LogicalName,
 
-                SelectedMock = mr.SelectedMock == null ? null : mr.SelectedMock.GetField().Select(dic => new KVP()
-                {
-                    Key = dic.Key,
-                    Value = dic.Value is string[]? string.Join("||", (string[])dic.Value) : dic.Value
-                }).ToList()
+                SelectedMock = mr.SelectedMock == null ? null :
+                 mr.SelectedMock is FromSet ? mr.SelectedMock.GetField().Where(fs => fs.Key != "values").Select(dic => new KVP
+                 {
+                     Key = dic.Key,
+                     Value = dic.Value is string[]? string.Join("||", (string[])dic.Value) : dic.Value
+                 }).ToList()
+                 : mr.SelectedMock.GetField().Select(dic => new KVP
+                 {
+                     Key = dic.Key,
+                     Value = dic.Value is string[]? string.Join("||", (string[])dic.Value) : dic.Value
+                 }).ToList()
             }).ToList();
 
             if (mySettings.Settings.Any(mr => mr.Name == setting.Name))
-            {
                 mySettings.Settings[mySettings.Settings.IndexOf(setting)] = setting;
-            }
             else
-            {
                 mySettings.Settings.Add(setting);
-            }
 
             SettingsManager.Instance.Save(typeof(AllSettings), mySettings);
         }
@@ -127,9 +127,7 @@ namespace LinkeD365.MockDataGen
         private void SetUpNumberDefaults(AttributeMetadata attribute, BaseMock selectedMock)
         {
             if (selectedMock is BinomialDistribution || selectedMock is FixedNumber)
-            {
                 return;
-            }
 
             switch (attribute)
             {
@@ -198,10 +196,24 @@ namespace LinkeD365.MockDataGen
             }
         }
 
-        private void PopulateLookup(AttributeMetadata attribute, BaseMock selectedMock)
+        private void Populate(AttributeMetadata attribute, BaseMock selectedMock, bool fromLoad = false)
+        {
+            PopulateLookup(attribute, selectedMock, fromLoad);
+            PopulatePickList(attribute, selectedMock, fromLoad);
+            PopulateSet(attribute, selectedMock);
+            SetUpNumberDefaults(attribute, selectedMock);
+        }
+
+        private void PopulateSet(AttributeMetadata attribute, BaseMock selectedMock)
+        {
+            if (!(selectedMock is FromSet)) return;
+            if (string.IsNullOrEmpty(selectedMock.EntityName)) selectedMock.EntityName = ((LookupAttributeMetadata)attribute).Targets[0];
+            // ((FromSet)selectedMock).Values = GetLinkedRecords(selectedMock);
+        }
+        private void PopulateLookup(AttributeMetadata attribute, BaseMock selectedMock, bool fromLoad)
         {
             if (!(selectedMock is RandomLookup || selectedMock is FixedLookup)) return;
-            if (string.IsNullOrEmpty( selectedMock.EntityName)) selectedMock.EntityName = ((LookupAttributeMetadata)attribute).Targets[0];
+            if (string.IsNullOrEmpty(selectedMock.EntityName)) selectedMock.EntityName = ((LookupAttributeMetadata)attribute).Targets[0];
 
             //var lookupAttr = attribute as LookupAttributeMetadata;
             WorkAsync(new WorkAsyncInfo
@@ -209,84 +221,52 @@ namespace LinkeD365.MockDataGen
                 Message = "Getting linked records",
                 Work = (w, e) =>
                 {
-                    var entityMeta = Service.GetEntityMetadata(selectedMock.EntityName);
-                    w.ReportProgress(10, "Getting " + entityMeta.DisplayCollectionName.UserLocalizedLabel == null ? entityMeta.LogicalName : entityMeta.DisplayCollectionName.UserLocalizedLabel.Label);
-                    var lookups = new List<Lookup>();
-                    var qe = new QueryExpression(entityMeta.LogicalName);
-                    var count = 100;
-                    var pageNo = 1;
-                    qe.ColumnSet.AddColumn(entityMeta.PrimaryNameAttribute);
-                    qe.Orders.Add(new OrderExpression(entityMeta.PrimaryNameAttribute, OrderType.Ascending));
-                    qe.PageInfo = new PagingInfo { Count = count, PageNumber = pageNo, PagingCookie = null };
+                    w.ReportProgress(10, "Getting " + attribute.EntityLogicalName);
 
-                    while (true)
-                    {
-                        var responses = Service.RetrieveMultiple(qe);
-                        if (responses.Entities != null)
-                        {
-                            lookups.AddRange(from item in responses.Entities
-                                             select new Lookup()
-                                             {
-                                                 guid = item.Id,
-                                                 Name = item.Attributes.Contains(entityMeta.PrimaryNameAttribute) ? (item.Attributes[entityMeta.PrimaryNameAttribute] ?? string.Empty).ToString() : string.Empty
-                                             });
-                        }
-                        if (responses.MoreRecords)
-                        {
-                            qe.PageInfo.PageNumber++;
-                            qe.PageInfo.PagingCookie = responses.PagingCookie;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
+                    List<Lookup> lookups = GetLinkedRecords(selectedMock);
+
                     e.Result = lookups;
                 },
-                ProgressChanged = e =>
-                {
-                    SetWorkingMessage(e.UserState.ToString());
-                },
+                ProgressChanged = e => SetWorkingMessage(e.UserState.ToString()),
                 PostWorkCallBack = e =>
                 {
                     if (selectedMock is RandomLookup lookup)
                     {
+                        if (!fromLoad) lookup.Values.Clear();
                         lookup.AllValues = e.Result as List<Lookup>;
                     }
                     else
-                    {
                         ((FixedLookup)selectedMock).AllValues = e.Result as List<Lookup>;
-                    }
                 }
             });
+
             //  var rndMock = selectedMock as RandomLookup;
         }
 
-        private void PopulatePickList(AttributeMetadata attribute, BaseMock selectedMock)
+
+
+        private void PopulatePickList(AttributeMetadata attribute, BaseMock selectedMock, bool fromLoad)
         {
             if (!(selectedMock is RandomPickList || selectedMock is FixedPickList))
-            {
                 return;
-            }
 
             var pickListOptions = attribute is PicklistAttributeMetadata metadata
                 ? metadata.OptionSet.Options
                 : ((StatusAttributeMetadata)attribute).OptionSet.Options;
             List<PickList> pickLists = new List<PickList>();
             pickLists.AddRange(from pickListOption in pickListOptions
-                               select new PickList()
+                               select new PickList
                                {
                                    choiceNo = pickListOption.Value.GetValueOrDefault(),
                                    Name = pickListOption.Label.UserLocalizedLabel.Label
                                });
             if (selectedMock is RandomPickList)
             {
+                if (!fromLoad) ((RandomPickList)selectedMock).Values.Clear();
                 ((RandomPickList)selectedMock).AllValues = pickLists;
             }
             else
-            {
                 ((FixedPickList)selectedMock).AllValues = pickLists;
-            }
         }
 
         private void CreateInactiveRequest(Entity entity)
@@ -320,13 +300,13 @@ namespace LinkeD365.MockDataGen
         }
 
 
-        private string SendInactiveRequest(UpdateEntity updateEntity, BackgroundWorker wrker)
+        private string SendInactiveRequest(UpdateEntity updateEntity, BackgroundWorker wrker, SetItem setItem, string entityName)
         {
             wrker.ReportProgress(-1, "Creating Inactive Records");
             string errors = string.Empty;
-            var requestWithResults = new ExecuteMultipleRequest()
+            var requestWithResults = new ExecuteMultipleRequest
             {
-                Settings = new ExecuteMultipleSettings()
+                Settings = new ExecuteMultipleSettings
                 {
                     ContinueOnError = false,
                     ReturnResponses = true
@@ -335,32 +315,36 @@ namespace LinkeD365.MockDataGen
             };
 
             foreach (var entity in updateEntity.Entities)
-            {
-                requestWithResults.Requests.Add(new CreateRequest() { Target = entity });
-            }
+                requestWithResults.Requests.Add(new CreateRequest { Target = entity });
 
             var responseWithResults =
                 (ExecuteMultipleResponse)Service.Execute(requestWithResults);
 
             ai.WriteEvent("Data Mocked Count (Inactive)", requestWithResults.Requests.Count);
-            foreach (var responseItem in responseWithResults.Responses)
-            {
 
-                // An error has occurred.
-                if (responseItem.Fault != null)
-                {
-                    errors += "\r\n" + responseItem.RequestIndex + " | " + responseItem.Fault.ToString();
-                }
-                else
-                {
-                    updateEntity.Entities[responseItem.RequestIndex].Id = ((CreateResponse)responseItem.Response).id;
-                }
+            errors = responseWithResults.Responses.Where(responseItem => responseItem.Fault != null)
+                                               .Aggregate(errors, (accumulator, responseItem) => accumulator += "\r\n" +
+                                                   responseItem.RequestIndex + " | " + responseItem.Fault);
+
+            if (setItem != null)
+            {
+                setItem.AddedValues
+                    .AddRange(
+                        from item in responseWithResults.Responses
+                            .Where(ri => ri.Fault == null)
+                            .Select(cr => ((CreateResponse)cr.Response))
+                        select new Lookup { guid = item.id, Name = item.id.ToString() });
+                setItem.entityName = entityName;
             }
+
+            foreach (var responseItem in responseWithResults.Responses.Where(ri => ri.Fault == null))
+                updateEntity.Entities[responseItem.RequestIndex].Id = ((CreateResponse)responseItem.Response).id;
+
             wrker.ReportProgress(-1, "Updating Inactive Records");
 
-            requestWithResults = new ExecuteMultipleRequest()
+            requestWithResults = new ExecuteMultipleRequest
             {
-                Settings = new ExecuteMultipleSettings()
+                Settings = new ExecuteMultipleSettings
                 {
                     ContinueOnError = false,
                     ReturnResponses = true
@@ -386,16 +370,13 @@ namespace LinkeD365.MockDataGen
                     (ExecuteMultipleResponse)Service.Execute(requestWithResults);
                 ai.WriteEvent("Data Mocked Count (Inactive Updates)", requestWithResults.Requests.Count);
                 foreach (var responseItem in responseWithResults.Responses)
-                {
 
                     // An error has occurred.
                     if (responseItem.Fault != null)
-                    {
                         errors += "\r\n" + responseItem.RequestIndex + " | " + responseItem.Fault.ToString();
-                    }
-                    //  else updateEntity.Entities[responseItem.RequestIndex].Id = ((updatere) responseItem.Response).id;
 
-                }
+                //  else updateEntity.Entities[responseItem.RequestIndex].Id = ((updatere) responseItem.Response).id;
+
             }
             else
             {
@@ -411,19 +392,21 @@ namespace LinkeD365.MockDataGen
                     (ExecuteMultipleResponse)Service.Execute(requestWithResults);
                 ai.WriteEvent("Data Mocked Count (Inactive Updates)", requestWithResults.Requests.Count);
                 foreach (var responseItem in responseWithResults.Responses)
-                {
 
                     // An error has occurred.
                     if (responseItem.Fault != null)
-                    {
                         errors += "\r\n" + responseItem.RequestIndex + " | " + responseItem.Fault.ToString();
-                    }
-                    //  else updateEntity.Entities[responseItem.RequestIndex].Id = ((updatere) responseItem.Response).id;
 
-                }
+                //  else updateEntity.Entities[responseItem.RequestIndex].Id = ((updatere) responseItem.Response).id;
+
             }
 
             return errors;
         }
+
+
+
+
+
     }
 }

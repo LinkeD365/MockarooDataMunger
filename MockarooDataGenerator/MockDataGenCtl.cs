@@ -14,33 +14,17 @@ using System.Reflection;
 using System.Windows.Forms;
 using xrmtb.XrmToolBox.Controls;
 using XrmToolBox.Extensibility;
+using XrmToolBox.Extensibility.Args;
 using XrmToolBox.Extensibility.Interfaces;
 
 namespace LinkeD365.MockDataGen
 {
-    public partial class MockDataGenCtl : PluginControlBase, IGitHubPlugin
+    public partial class MockDataGenCtl : PluginControlBase, IGitHubPlugin, IPayPalPlugin
     {
-
-        private void gridMap_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
-        {
-            if (e.ColumnIndex == 6 && e.RowIndex > -1)
-            {
-                e.PaintContent(e.CellBounds);
-
-                e.Graphics
-                    .DrawImage(
-                        Cog,
-                        new Rectangle(
-                            e.CellBounds.Left + (e.CellBounds.Width - Cog.Width) / 2,
-                            e.CellBounds.Top + (e.CellBounds.Height - Cog.Height) / 2,
-                            Cog.Width,
-                            Cog.Height));
-                e.Handled = true;
-            }
-        }
 
         #region Private Fields
         private const string percBlank = "Percentage Blank";
+
         private AllSettings mySettings;
         private List<MapRow> selectedMaps = new List<MapRow>();
         private EntityCollection collection;
@@ -68,9 +52,11 @@ namespace LinkeD365.MockDataGen
 
         private Image Cog => (Image)Resources.ResourceManager.GetObject("Settings_WF16");
 
-        private List<MapRow> maps;
-        private dynamic mockClass;
-        private string entityName;
+        public string DonationDescription => "Mockaroo Munger Fans";
+
+        public string EmailAccount => "carl.cookson@gmail.com";
+
+        // private string entityName;
         #endregion Private Fields
 
         #region Public Constructor stuff
@@ -175,7 +161,7 @@ namespace LinkeD365.MockDataGen
                     "https://www.mockaroo.com");
                 return;
             }
-            maps = selectedMaps.Where(mr => mr.SelectedMock != null && mr.SelectedMock.Mockaroo).ToList();
+            var maps = selectedMaps.Where(mr => mr.SelectedMock != null && mr.SelectedMock.Mockaroo).ToList<SimpleRow>();
             if (maps.Count() == 0)
             {
                 MessageBox.Show(
@@ -186,45 +172,20 @@ namespace LinkeD365.MockDataGen
                 return;
             }
 
-            mockClass = new ExpandoObject();
-            foreach (var map in maps)
-                ((IDictionary<string, object>)mockClass)[map.Attribute.LogicalName] = map.SelectedMock;
-            entityName = ((EntityDisplay)cboEntities.SelectedItem).LogicalName;
+            //mockClass = new ExpandoObject();
+            //foreach (var map in maps)
+            //    ((IDictionary<string, object>)mockClass)[map.Attribute.LogicalName] = map.SelectedMock;
+
+            //entityName = ((EntityDisplay)cboEntities.SelectedItem).LogicalName;
 
             // #11 Added ability to generate more than 1000 records, firstly limit to 100 if more than 1000
             int recordCount = numRecordCount.Value <= 1000 ? (int)numRecordCount.Value : 100;
-            collection = new EntityCollection { EntityName = entityName };
+            collection = new EntityCollection { EntityName = ((EntityDisplay)cboEntities.SelectedItem).LogicalName };
 
-            GetInitMockData(recordCount);
-
-            //if (collection.Entities.Count > 0)
-            //{
-            //    gridSample.DataSource = collection.Entities;
-            //    if (tabSample.Parent != tabGrpMain)
-            //        tabGrpMain.TabPages.Add(tabSample);
-
-            //    tabGrpMain.SelectedTab = tabSample;
-            //    tabSample.Enabled = true;
-            //    updateEntities.Clear();
-
-            //    if (recordCount != numRecordCount.Value)
-            //    {
-            //        btnCreateBatch.Visible = true;
-            //        btnCreateBatch.Text = "Create " + numRecordCount.Value + " records";
-            //        btnCreateData.Text = "Create " + recordCount + " records";
-            //    }
-            //    else
-            //    {
-            //        btnCreateBatch.Visible = false;
-            //        btnCreateData.Text = "Create Records";
-            //    }
-            //}
+            GetInitMockData(recordCount, maps, ((EntityDisplay)cboEntities.SelectedItem).LogicalName);
 
             return;
 
-            // Service.Create
-
-            // List<MapRow> selectedRows = gridMap.Rows.Cast<DataGridViewRow>().Where(row => (MapRow) row.DataBoundItem  Select(dgvr => ((MapRow)dgvr.DataBoundItem);
         }
 
         /// <summary>
@@ -292,7 +253,7 @@ namespace LinkeD365.MockDataGen
                             }
 
                             foreach (var updateEntity in updateEntities)
-                                errors += SendInactiveRequest(updateEntity, w);
+                                errors += SendInactiveRequest(updateEntity, w, null, string.Empty);
                             e.Result = errors;
                         },
                     ProgressChanged = e => SetWorkingMessage(e.UserState.ToString()),
@@ -308,8 +269,9 @@ namespace LinkeD365.MockDataGen
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Information);
                                 gridSample.DataSource = null;
-                                if (tabSample.Parent != tabGrpHidden)
-                                    tabGrpHidden.TabPages.Add(tabSample);
+
+                                HideResults();
+
 
                                 tabGrpMain.SelectedTab = tabConfig;
                             }
@@ -325,6 +287,12 @@ namespace LinkeD365.MockDataGen
                             }
                         }
                 });
+        }
+
+        private void HideResults()
+        {
+            if (tabSample.Parent != tabGrpHidden)
+                tabGrpHidden.TabPages.Add(tabSample);
         }
 
         private void cboSelectSaved_SelectedIndexChanged(object sender, EventArgs e)
@@ -363,11 +331,91 @@ namespace LinkeD365.MockDataGen
             cboSelectSaved.SelectedItem = null;
         }
 
-        private void BtnCreateBatch_Click(object sender, EventArgs e)
+        private void BtnCreateBatch_Click(object sender, EventArgs args)
         {
-            CreateAllData((int)numRecordCount.Value);
+            WorkAsync(
+                new WorkAsyncInfo
+                {
+                    Message = "Getting Mockaroo Data...",
+                    Work =
+                        (w, e) => e.Result = CreateAllData(
+                                (int)numRecordCount.Value,
+                                selectedMaps.Where(mr => mr.SelectedMock != null && mr.SelectedMock.Mockaroo)
+                                            .ToList<SimpleRow>(),
+                                ((EntityDisplay)cboEntities.SelectedItem).LogicalName,
+                                w),
+                    ProgressChanged = e => SetWorkingMessage(e.UserState.ToString()),
+                    PostWorkCallBack =
+                        e =>
+                        {
+                            if (e.Error != null)
+                            {
+                                LogError(e.Error.ToString());
+                                MessageBox.Show(
+                                    e.Error.Message.ToString() +
+                                        Environment.NewLine +
+                                        "Some Data may have been created, please confirm before re-running",
+                                    "Error generating data",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                                SendMessageToStatusBar(this, new StatusBarMessageEventArgs(string.Empty));
+
+                                return;
+                            }
+                            string errs = e.Result as string;
+                            if (errs == string.Empty)
+                            {
+                                MessageBox.Show(
+                                    "All data was created successfully. Check your environment to ensure data quality",
+                                    "No Errors",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                                gridSample.DataSource = null;
+                                if (tabSample.Parent != tabGrpHidden)
+                                    tabGrpHidden.TabPages.Add(tabSample);
+
+                                tabGrpMain.SelectedTab = tabConfig;
+                            }
+                            else
+                            {
+                                MessageBox.Show(
+                                    "The following shows the rows that caused errors" + errs,
+                                    "Rows created with errors",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                                gridSample.DataSource = null;
+                                gridSample.DataSource = collection.Entities;
+                            }
+
+                            SendMessageToStatusBar(this, new StatusBarMessageEventArgs(string.Empty));
+                        }
+                });
         }
         #endregion FormEvents
+
+        private void BtnCreateDataSet_Click(object sender, EventArgs e)
+        {
+            if (mySettings.Settings.Count == 0)
+                MessageBox.Show(
+                    "Please create Mockaroo Maps prior to creating a dataset",
+                    "Create Maps first",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            DataSetConfig dsConfig = new DataSetConfig(mySettings);
+            if (dsConfig.ShowDialog() != DialogResult.OK)
+                return;
+
+            mySettings = dsConfig.Settings;
+
+            SettingsManager.Instance.Save(typeof(AllSettings), mySettings);
+            AddSavedMaps();
+        }
+
+        private void btnPlaySet_Click(object sender, EventArgs e)
+        {
+            PlaySet();
+        }
+
 
     }
 }
