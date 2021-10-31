@@ -81,7 +81,9 @@ namespace LinkeD365.MockDataGen
                     cboEntities.Items.Clear();
                     var metaresponse = ((RetrieveMetadataChangesResponse)e.Result).EntityMetadata;
 
-                    cboEntities.Items.AddRange(metaresponse.Select(ent => new EntityDisplay { LogicalName = ent.LogicalName, DisplayName = ent.DisplayName.UserLocalizedLabel == null ? ent.LogicalName : ent.DisplayName.UserLocalizedLabel.Label }).OrderBy(ent => ent.DisplayName).ToArray());
+                    cboEntities.Items.AddRange(metaresponse.Where(ent =>  mySettings.ExcludeConfig.DeprecatedTables ? (!ent.DisplayName.LocalizedLabels.Any() 
+                                                                                                                        || !ent.DisplayName.LocalizedLabels.Any(lbl => lbl.Label.ToLower().Contains("deprecated") ))                                                                                                                    : true)
+                                                                .Select(ent => new EntityDisplay { LogicalName = ent.LogicalName, DisplayName = ent.DisplayName.UserLocalizedLabel == null ? ent.LogicalName : ent.DisplayName.UserLocalizedLabel.Label }).OrderBy(ent => ent.DisplayName).ToArray());
                 }
             });
         }

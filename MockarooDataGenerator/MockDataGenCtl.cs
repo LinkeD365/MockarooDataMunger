@@ -1,6 +1,7 @@
 ﻿using LinkeD365.MockDataGen.Mock;
 using LinkeD365.MockDataGen.Properties;
 using McTools.Xrm.Connection;
+using Microsoft.Win32;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
@@ -9,13 +10,17 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 using xrmtb.XrmToolBox.Controls;
 using XrmToolBox.Extensibility;
 using XrmToolBox.Extensibility.Args;
 using XrmToolBox.Extensibility.Interfaces;
+using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
+using SaveFileDialog = System.Windows.Forms.SaveFileDialog;
 
 namespace LinkeD365.MockDataGen
 {
@@ -84,6 +89,10 @@ namespace LinkeD365.MockDataGen
                 txtMockKey.Text = mySettings.MockKey;
                 AddSavedMaps();
             }
+            btnDepTables.Checked = mySettings.ExcludeConfig.DeprecatedTables;
+            btnDepImpSeqNo.Checked = mySettings.ExcludeConfig.ImportSeqNo;
+            btnDepCol.Checked = mySettings.ExcludeConfig.DeprecatedColumns;
+
         }
 
         /// <summary>
@@ -416,6 +425,134 @@ namespace LinkeD365.MockDataGen
             PlaySet();
         }
 
+        private void btnDepTables_CheckStateChanged(object sender, EventArgs e)
+        {
+            mySettings.ExcludeConfig.DeprecatedTables = btnDepTables.Checked;
 
+        }
+
+        private void btnDepCol_CheckStateChanged(object sender, EventArgs e)
+        {
+            mySettings.ExcludeConfig.DeprecatedColumns = btnDepCol.Checked;
+
+        }
+
+        private void btnDepImpSeqNo_CheckStateChanged(object sender, EventArgs e)
+        {
+            mySettings.ExcludeConfig.ImportSeqNo = btnDepImpSeqNo.Checked;
+
+        }
+
+        private void btnExportMaps_Click(object sender, EventArgs e)
+        {
+            Export export = new Export();
+            export.grpSelector.Text = "Select Map";
+            export.Text = "Select Map";
+            export.chkListSelect.Items.AddRange(mySettings.Settings.Select(st => st.Name).ToArray());
+
+            if (export.ShowDialog() != DialogResult.OK) return;
+
+
+            SaveFileDialog fileDialog = new SaveFileDialog();
+            fileDialog.Filter = "XML Files | *.xml";
+            fileDialog.FileName = export.chkListSelect.CheckedItems.Count == 1 ? export.chkListSelect.CheckedItems[0].ToString() + ".xml" : "My Maps.xml";
+            if (fileDialog.ShowDialog() != DialogResult.OK) return;
+
+            ExportMaps exportMaps = new ExportMaps(mySettings.Settings.Where(st => export.chkListSelect.CheckedItems.OfType<string>().Contains(st.Name)).ToList());
+            XmlSerializer writer = new XmlSerializer(typeof(ExportMaps));
+
+            FileStream file = File.Create(fileDialog.FileName);
+
+            writer.Serialize(file, exportMaps);
+            file.Close();
+
+            MessageBox.Show("Maps Exported", "Exported", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnExportSets_Click(object sender, EventArgs e)
+        {
+            Export export = new Export();
+            export.grpSelector.Text = "Select Sets";
+            export.Text = "Select Sets";
+            export.chkListSelect.Items.AddRange(mySettings.Sets.Select(st => st.SetName).ToArray());
+
+            if (export.ShowDialog() != DialogResult.OK) return;
+            SaveFileDialog fileDialog = new SaveFileDialog();
+            fileDialog.Filter = "XML Files | *.xml";
+
+            fileDialog.FileName = export.chkListSelect.CheckedItems.Count == 1 ? export.chkListSelect.CheckedItems[0].ToString() + ".xml" : "My Sets.xml";
+            if (fileDialog.ShowDialog() != DialogResult.OK) return;
+
+            ExportMaps exportMaps = new ExportMaps();
+            exportMaps.Sets = mySettings.Sets.Where(set => export.chkListSelect.CheckedItems.OfType<string>().Contains(set.SetName)).ToList();
+            exportMaps.Maps = mySettings.Settings.Where(mp => exportMaps.Sets.SelectMany(st => st.SetItems.Select(set => set.MapName)).Contains(mp.Name)).ToList();
+            // exportMaps.Maps = mySettings.Settings.Where(st => mySettings.Sets.Select(set => set.SetItems.Select(si=>si.MapName)).Contains(st.Name)).ToList();
+            XmlSerializer writer = new XmlSerializer(typeof(ExportMaps));
+
+            FileStream file = File.Create(fileDialog.FileName);
+
+            writer.Serialize(file, exportMaps);
+            file.Close();
+
+            MessageBox.Show("Sets Exported", "Exported", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "XML Files | *.xml";
+            fileDialog.Title = "Select exported settings file";
+
+            if (fileDialog.ShowDialog() != DialogResult.OK) return;
+
+            XmlSerializer reader =
+                new XmlSerializer(typeof(ExportMaps));
+            try
+            {
+                StreamReader file = new StreamReader(fileDialog.FileName);
+
+                var importMap = (ExportMaps)reader.Deserialize(file);
+                bool changedMaps = false;
+                bool changedSets = false;
+                foreach (Setting map in importMap.Maps)
+                {
+                    if (mySettings.Settings.Contains(map))
+                    {
+
+                        foreach (var si in importMap.Sets.SelectMany(set => set.SetItems.Where(setItem => setItem.MapName == map.Name)))
+                        {
+                            si.MapName = map.Name + "_Import";
+
+                        }
+                        map.Name = map.Name + "_Import";
+                        changedMaps = true;
+                    }
+                    mySettings.Settings.Add(map);
+                }
+
+                foreach (Set set in importMap.Sets)
+                {
+                    if (mySettings.Sets.Contains(set))
+                    {
+                        set.SetName = set.SetName + "_Import";
+                        changedSets = true;
+                    }
+                    mySettings.Sets.Add(set);
+                }
+
+                SettingsManager.Instance.Save(typeof(AllSettings), mySettings);
+                AddSavedMaps();
+                MessageBox.Show($@"Your configuration has been updated with the sets/maps in the import file
+{(changedSets || changedMaps ? "One or more maps or sets have been updated with an _import prefix." : "")}
+Please confirm your configuration before using", "Import Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("There was an error in importing your configuration, please confirm file is correct and try again", "Error on Import", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
     }
 }

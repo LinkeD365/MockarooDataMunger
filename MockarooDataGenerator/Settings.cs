@@ -23,6 +23,8 @@ namespace LinkeD365.MockDataGen
         public string MockKey { get; set; }
 
         public List<Set> Sets { get; set; }
+
+        public ExcludeConfig ExcludeConfig {get;set;} = new ExcludeConfig();
     }
 
     public class Setting
@@ -110,5 +112,27 @@ namespace LinkeD365.MockDataGen
         {
             return SetName;
         }
+    }
+
+    public class ExcludeConfig
+    {
+        public bool DeprecatedTables { get; set; } = true;
+        public bool DeprecatedColumns { get;set; } = true;
+        public bool ImportSeqNo { get; set; } = true;
+    }
+
+    public class ExportMaps
+    {
+        public ExportMaps() {
+            Maps = new List<Setting>();
+            Sets = new List<Set>();
+        }
+        public ExportMaps(List<Setting> maps)
+        {
+            Maps = maps;
+        }
+        public List<Setting> Maps { get; set; } //= new List<Setting>();
+
+        public List<Set> Sets { get; set; }
     }
 }

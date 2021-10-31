@@ -176,7 +176,7 @@ namespace LinkeD365.MockDataGen
                 tabGrpHidden.TabPages.Add(tabSample);
 
             List<string> mapsNotFound = new List<string>();
-            string primaryFieldLabel = "Primary Name Field: ";
+            string primaryFieldLabel = "Primary Name Column: ";
             var saveMap = cboSelectSaved.SelectedItem == null ? null : mySettings.Settings.First(stng => stng.Name == cboSelectSaved.SelectedItem.ToString());
             WorkAsync(new WorkAsyncInfo
             {
@@ -191,7 +191,10 @@ namespace LinkeD365.MockDataGen
 
                     SortableBindingList<MapRow> attributes = new SortableBindingList<MapRow>();
                     w.ReportProgress(50, "Got Attributes");
-                    foreach (var field in entityMeta.Attributes.Where(fld => !notPermitted.Any(np => np == fld.AttributeType)).Where(fld => fld.IsValidForCreate == true))
+                    foreach (var field in entityMeta.Attributes.Where(fld => !notPermitted.Any(np => np == fld.AttributeType)).Where(fld => fld.IsValidForCreate == true
+                                                                                                                                && (!mySettings.ExcludeConfig.ImportSeqNo || fld.LogicalName != "importsequencenumber")
+                                                                                                                                && (mySettings.ExcludeConfig.DeprecatedColumns ? (!fld.DisplayName.LocalizedLabels.Any() || fld.DisplayName.LocalizedLabels.Any(lbl => !lbl.Label.ToLower().Contains("deprecated"))) : true)
+                                                                                                                                ))
                     {
                         var mapRow = new MapRow(field);
                         mapRow.PropertyChanged += MapRow_PropertyChanged;
