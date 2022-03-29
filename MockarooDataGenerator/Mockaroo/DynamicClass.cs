@@ -992,7 +992,7 @@ namespace LinkeD365.MockDataGen.Mock
             BasePopulateFromKVP(kvps);
 
             Min = (decimal)kvps.First(kvp => kvp.Key == "min").Value;
-            Max = (decimal)kvps.First(kvp => kvp.Key == "min").Value;
+            Max = (decimal)kvps.First(kvp => kvp.Key == "max").Value;
             Decimals = (int)kvps.First(kvp => kvp.Key == "decimals").Value;
         }
     }

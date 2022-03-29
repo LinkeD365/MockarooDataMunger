@@ -280,7 +280,15 @@ namespace LinkeD365.MockDataGen
                                                     )));
 
                             break;
-
+                        case CustomList custList:
+                            newRecord[map.LogicalName] = propertyValues[map.LogicalName].ToString();
+                            break;
+                        case Number number:
+                            newRecord[map.LogicalName] = int.TryParse(propertyValues[map.LogicalName].ToString(), out int intRes)
+                                ? intRes : Int32.TryParse(propertyValues[map.LogicalName].ToString(), out Int32 int32Res)
+                                ? int32Res : Int64.TryParse(propertyValues[map.LogicalName].ToString(), out Int64 int64Res)
+                                ? int64Res : propertyValues[map.LogicalName];
+                            break;
                         default:
 
                             switch (map.SelectedMock.Name)
