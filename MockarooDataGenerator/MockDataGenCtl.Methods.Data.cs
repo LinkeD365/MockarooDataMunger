@@ -284,10 +284,25 @@ namespace LinkeD365.MockDataGen
                             newRecord[map.LogicalName] = propertyValues[map.LogicalName].ToString();
                             break;
                         case Number number:
-                            newRecord[map.LogicalName] = int.TryParse(propertyValues[map.LogicalName].ToString(), out int intRes)
+                            switch(map.AttributeTypeCode)
+                            {
+                                case AttributeTypeCode.Integer:
+                                    newRecord[map.LogicalName] = int.TryParse(propertyValues[map.LogicalName].ToString(), out int intRes)
                                 ? intRes : Int32.TryParse(propertyValues[map.LogicalName].ToString(), out Int32 int32Res)
                                 ? int32Res : Int64.TryParse(propertyValues[map.LogicalName].ToString(), out Int64 int64Res)
                                 ? int64Res : propertyValues[map.LogicalName];
+                                    break;
+                                case AttributeTypeCode.Decimal:
+                                    newRecord[map.LogicalName] = decimal.TryParse(propertyValues[map.LogicalName].ToString(), out decimal decRes) ? decRes : propertyValues[map.LogicalName];
+                                    break;
+                                case AttributeTypeCode.Double:
+                                    newRecord[map.LogicalName] = double.TryParse(propertyValues[map.LogicalName].ToString(), out double dblRes) ? dblRes : propertyValues[map.LogicalName];
+                                    break;
+                                default:
+                                    newRecord[map.LogicalName] = propertyValues[map.LogicalName];
+                                    break;
+                            }
+                            
                             break;
                         default:
 
