@@ -55,7 +55,7 @@ namespace LinkeD365.MockDataGen
             cboSelectSaved.Items.Clear();
             cboSelectSaved.Items.AddRange(mySettings.Settings.Select(set => set.Name).ToArray());
             cboRunDataSet.Items.Clear();
-            cboRunDataSet.Items.AddRange(mySettings.Sets.Select(set => set.SetName).ToArray());
+            cboRunDataSet.Items.AddRange(mySettings.Sets?.Select(set => set.SetName).ToArray());
         }
 
         private void LoadEntities()
@@ -81,8 +81,8 @@ namespace LinkeD365.MockDataGen
                     cboEntities.Items.Clear();
                     var metaresponse = ((RetrieveMetadataChangesResponse)e.Result).EntityMetadata;
 
-                    cboEntities.Items.AddRange(metaresponse.Where(ent =>  mySettings.ExcludeConfig.DeprecatedTables ? (!ent.DisplayName.LocalizedLabels.Any() 
-                                                                                                                        || !ent.DisplayName.LocalizedLabels.Any(lbl => lbl.Label.ToLower().Contains("deprecated") ))                                                                                                                    : true)
+                    cboEntities.Items.AddRange(metaresponse.Where(ent => mySettings.ExcludeConfig.DeprecatedTables ? (!ent.DisplayName.LocalizedLabels.Any()
+                                                                                                                        || !ent.DisplayName.LocalizedLabels.Any(lbl => lbl.Label.ToLower().Contains("deprecated"))) : true)
                                                                 .Select(ent => new EntityDisplay { LogicalName = ent.LogicalName, DisplayName = ent.DisplayName.UserLocalizedLabel == null ? ent.LogicalName : ent.DisplayName.UserLocalizedLabel.Label }).OrderBy(ent => ent.DisplayName).ToArray());
                 }
             });

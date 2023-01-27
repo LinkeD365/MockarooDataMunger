@@ -22,7 +22,7 @@ namespace LinkeD365.MockDataGen
 
         public string MockKey { get; set; }
 
-        public List<Set> Sets { get; set; }
+        public List<Set> Sets { get; set; } = new List<Set>();
 
         public ExcludeConfig ExcludeConfig {get;set;} = new ExcludeConfig();
     }

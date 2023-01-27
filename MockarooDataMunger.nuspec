@@ -20,6 +20,8 @@ Now with data sets to allow one click creationg of related entities
 
     </description>
     <releaseNotes>
+		#26 When saving map with no previous list, it breaks, thanks @mah87
+		
 		#22 Actually fixed the bug with numbers/decimals/doubles, hopefully @Power-Maverick
 		Updated XrmToolBox version
 		
