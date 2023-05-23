@@ -70,6 +70,8 @@
             this.btnCreateData = new System.Windows.Forms.Button();
             this.gridSample = new xrmtb.XrmToolBox.Controls.CRMGridView();
             this.tabGrpHidden = new System.Windows.Forms.TabControl();
+            this.batchSize = new System.Windows.Forms.NumericUpDown();
+            this.batchSizeLabel = new System.Windows.Forms.Label();
             this.toolStripMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridMap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitConfig)).BeginInit();
@@ -87,6 +89,7 @@
             this.splitResults.Panel2.SuspendLayout();
             this.splitResults.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridSample)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.batchSize)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStripMenu
@@ -444,6 +447,8 @@
             // 
             // splitResults.Panel1
             // 
+            this.splitResults.Panel1.Controls.Add(this.batchSizeLabel);
+            this.splitResults.Panel1.Controls.Add(this.batchSize);
             this.splitResults.Panel1.Controls.Add(this.btnCreateBatch);
             this.splitResults.Panel1.Controls.Add(this.btnCreateData);
             // 
@@ -457,7 +462,7 @@
             // btnCreateBatch
             // 
             this.btnCreateBatch.AutoSize = true;
-            this.btnCreateBatch.Location = new System.Drawing.Point(144, 12);
+            this.btnCreateBatch.Location = new System.Drawing.Point(220, 22);
             this.btnCreateBatch.Name = "btnCreateBatch";
             this.btnCreateBatch.Size = new System.Drawing.Size(145, 23);
             this.btnCreateBatch.TabIndex = 1;
@@ -468,7 +473,7 @@
             // btnCreateData
             // 
             this.btnCreateData.AutoSize = true;
-            this.btnCreateData.Location = new System.Drawing.Point(30, 12);
+            this.btnCreateData.Location = new System.Drawing.Point(75, 22);
             this.btnCreateData.Name = "btnCreateData";
             this.btnCreateData.Size = new System.Drawing.Size(75, 23);
             this.btnCreateData.TabIndex = 0;
@@ -517,6 +522,27 @@
             this.tabGrpHidden.Size = new System.Drawing.Size(200, 100);
             this.tabGrpHidden.TabIndex = 7;
             // 
+            // batchSize
+            // 
+            this.batchSize.Location = new System.Drawing.Point(6, 25);
+            this.batchSize.Name = "batchSize";
+            this.batchSize.Size = new System.Drawing.Size(63, 20);
+            this.batchSize.TabIndex = 2;
+            this.batchSize.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // batchSizeLabel
+            // 
+            this.batchSizeLabel.AutoSize = true;
+            this.batchSizeLabel.Location = new System.Drawing.Point(3, 9);
+            this.batchSizeLabel.Name = "batchSizeLabel";
+            this.batchSizeLabel.Size = new System.Drawing.Size(58, 13);
+            this.batchSizeLabel.TabIndex = 3;
+            this.batchSizeLabel.Text = "Batch Size";
+            // 
             // MockDataGenCtl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -550,6 +576,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitResults)).EndInit();
             this.splitResults.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridSample)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.batchSize)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -592,5 +619,7 @@
         private System.Windows.Forms.ToolStripMenuItem btnExportMaps;
         private System.Windows.Forms.ToolStripMenuItem btnExportSets;
         private System.Windows.Forms.ToolStripButton btnImport;
+        private System.Windows.Forms.Label batchSizeLabel;
+        private System.Windows.Forms.NumericUpDown batchSize;
     }
 }
