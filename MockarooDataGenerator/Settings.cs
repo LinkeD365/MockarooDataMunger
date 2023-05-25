@@ -119,6 +119,8 @@ namespace LinkeD365.MockDataGen
         public bool DeprecatedTables { get; set; } = true;
         public bool DeprecatedColumns { get;set; } = true;
         public bool ImportSeqNo { get; set; } = true;
+        public bool BypassPluginExecution { get; set; } = false;
+
     }
 
     public class ExportMaps
