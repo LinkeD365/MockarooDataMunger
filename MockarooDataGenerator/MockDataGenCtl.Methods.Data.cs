@@ -21,85 +21,6 @@ namespace LinkeD365.MockDataGen
     {
         public event EventHandler<StatusBarMessageEventArgs> SendMessageToStatusBar;
 
-        public void GetInitMockData(int recordCount, List<SimpleRow> maps, string entityName)
-        {
-            var mockClass = new ExpandoObject();
-            foreach (var map in maps)
-            {
-                ((IDictionary<string, object>)mockClass)[map.LogicalName] = map.SelectedMock;
-                if (map.SelectedMock is FromSet)
-                    //var parentSI = selectedSet.SetItems
-                    //    .FirstOrDefault(si => si.entityName == simpleRow.SelectedMock.EntityName);
-
-                    //if (parentSI == null) ((FromSet)simpleRow.SelectedMock).Values = GetLinkedRecords(
-                    //                          simpleRow.SelectedMock);
-                    //else 
-                    ((FromSet)map.SelectedMock).Values = GetLinkedRecords(map.SelectedMock);
-            }
-            var intialCollection = new EntityCollection { EntityName = entityName };
-            WorkAsync(
-                new WorkAsyncInfo
-                {
-                    Message = "Getting Mockaroo Data...",
-                    Work =
-                        (w, e) =>
-                        {
-                            var client = new MockClient(txtMockKey.Text);
-                            var returnData = client.GetData(mockClass, recordCount);
-
-                            w.ReportProgress(50, "Got Data, Generating Sample");
-
-                            intialCollection = CreateEntityCollection(returnData, entityName, maps);
-                            w.ReportProgress(50, "Populating grid");
-
-                            e.Result = intialCollection.Entities;
-                        },
-                    ProgressChanged = e => SetWorkingMessage(e.UserState.ToString()),
-                    PostWorkCallBack =
-                        e =>
-                        {
-                            if (e.Error != null)
-                            {
-                                LogError(e.Error.ToString());
-                                MessageBox.Show(
-                                    e.Error.Message.ToString(),
-                                    "Error generating data",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
-                                //ShowErrorNotification(
-                                //    e.Error.ToString(),
-                                //    new Uri("https://www.linked365.blog/"));
-                                intialCollection.Entities.Clear();
-                            }
-                            else
-                            {
-                                gridSample.DataSource = e.Result;
-                                collection.Entities.Clear();
-                                collection.Entities.AddRange(e.Result as DataCollection<Entity>);
-
-                                ShowResults();
-
-
-
-
-                                updateEntities.Clear();
-
-                                if (recordCount != numRecordCount.Value)
-                                {
-                                    btnCreateBatch.Visible = true;
-                                    btnCreateBatch.Text = "Create " + numRecordCount.Value + " records";
-                                    btnCreateData.Text = "Create " + recordCount + " records";
-                                }
-                                else
-                                {
-                                    btnCreateBatch.Visible = false;
-                                    btnCreateData.Text = "Create Records";
-                                }
-                            }
-                        }
-                });
-        }
-
         private void ShowResults()
         {
             if (tabSample.Parent != tabGrpMain)
@@ -168,9 +89,6 @@ namespace LinkeD365.MockDataGen
                             newRecord[map.LogicalName] = fixedTime.FixedValue;
                             break;
                         case RandomStatus randomStatus:
-
-                            //  newRecord[map.LogicalName] = !propertyValues.ContainsKey(map.LogicalName) ? null : new OptionSetValue(randomPickList.AllValues.First(pl => pl.Name == propertyValues[map.LogicalName].ToString()).choiceNo);
-
                             var choiceStatusNo = !propertyValues.ContainsKey(
                                     map.LogicalName)
                                 ? null
@@ -251,15 +169,9 @@ namespace LinkeD365.MockDataGen
                                     attMeta.DatabaseLength.GetValueOrDefault());
 
                             }
-                            //newRecord[map.LogicalName] = !propertyValues.ContainsKey(
-                            //        map.LogicalName)
-                            //    ? null
-                            //    : ((string)propertyValues[map.LogicalName]).Truncate(
-                            //        map.AttributeLength.GetValueOrDefault());
                             break;
 
                         case Date dateMock:
-
                             newRecord[map.LogicalName] = !propertyValues.ContainsKey(
                                     map.LogicalName)
                                 ? (DateTime?)null
@@ -305,7 +217,6 @@ namespace LinkeD365.MockDataGen
                             
                             break;
                         default:
-
                             switch (map.SelectedMock.Name)
                             {
                                 case (DataTypes.Boolean):
@@ -334,9 +245,246 @@ namespace LinkeD365.MockDataGen
             return entityCollection;
         }
 
+        private List<Entity> CreateEntityList(dynamic returnData, string entityName, List<SimpleRow> selectedMaps)
+        {
+            var entity = Service.GetEntityMetadata(entityName);
+            var resp = new List<Entity>();
+            foreach (var data in returnData)
+            {
+                Entity newRecord = new Entity(entityName);
+                IDictionary<string, object> propertyValues = data;
+
+                foreach (var map in selectedMaps)
+                    switch (map.SelectedMock)
+                    {
+                        case FakeEmailMock fakeEmail:
+                            newRecord[map.LogicalName] = !propertyValues.ContainsKey(
+                                    map.LogicalName)
+                                ? null
+                                : propertyValues[map.LogicalName].ToString() +
+                                    ".FAKE";
+
+                            break;
+                        case FixedDateTime fixedDateTime:
+                            newRecord[map.LogicalName] = fixedDateTime.FixedValue;
+                            break;
+
+                        case FixedDate fixedDate:
+                            newRecord[map.LogicalName] = fixedDate.FixedValue;
+                            break;
+
+                        case FixedLookup fixedLookup:
+                            newRecord[map.LogicalName] = new EntityReference(
+                                map.ParentTable,
+                                ((Lookup)fixedLookup.FixedValue).guid);
+                            break;
+
+                        case FixedNumber fixedNumber:
+                            newRecord[map.LogicalName] = fixedNumber.FixedValue;
+                            break;
+                        case FixedStatus fixedStatus:
+                            var choiceNo = ((PickList)fixedStatus.FixedValue).choiceNo;
+                            newRecord[map.LogicalName] = new OptionSetValue(
+                                choiceNo);
+                            var statusReasonMeta = Service.GetAttribute(
+                                entityName,
+                                map.LogicalName) as StatusAttributeMetadata;
+                            var stateValue =
+                        new OptionSetValue(
+                                ((StatusOptionMetadata)statusReasonMeta.OptionSet.Options
+                                    .First(o => o.Value == choiceNo)).State.Value);
+                            newRecord["statecode"] = stateValue;
+                            break;
+                        case FixedPickList fixedPickList:
+                            newRecord[map.LogicalName] = new OptionSetValue(
+                                ((PickList)fixedPickList.FixedValue).choiceNo);
+
+                            break;
+
+                        case FixedTime fixedTime:
+                            newRecord[map.LogicalName] = fixedTime.FixedValue;
+                            break;
+                        case RandomStatus randomStatus:
+                            var choiceStatusNo = !propertyValues.ContainsKey(
+                                    map.LogicalName)
+                                ? null
+                                : new OptionSetValue(
+                                    randomStatus.AllValues
+                                        .First(
+                                            pl => pl.Name ==
+                                                        propertyValues[
+                                                            map.LogicalName].ToString(
+                                                            ))
+                                        .choiceNo);
+                            newRecord[map.LogicalName] = choiceStatusNo;
+                            if (choiceStatusNo != null)
+                            {
+                                var statusReasonRdmMeta =
+                            Service.GetAttribute(entityName, map.LogicalName) as StatusAttributeMetadata;
+                                var stateRdmValue =
+                            new OptionSetValue(
+                                    ((StatusOptionMetadata)statusReasonRdmMeta.OptionSet.Options
+                                        .First(o => o.Value == choiceStatusNo.Value)).State.Value);
+                                newRecord["statecode"] = stateRdmValue;
+                            }
+
+                            break;
+                        case RandomPickList randomPickList:
+                            newRecord[map.LogicalName] = !propertyValues.ContainsKey(
+                                    map.LogicalName)
+                                ? null
+                                : new OptionSetValue(
+                                    randomPickList.AllValues
+                                        .First(
+                                            pl => pl.Name ==
+                                                        propertyValues[
+                                                            map.LogicalName].ToString(
+                                                            ))
+                                        .choiceNo);
+                            break;
+
+                        case RandomLookup randomLookup:
+                            newRecord[map.LogicalName] = !propertyValues.ContainsKey(
+                                    map.LogicalName)
+                                ? null
+                                : new EntityReference(
+                                    map.ParentTable,
+                                    randomLookup.AllValues
+                                        .First(
+                                            lup => lup.Name ==
+                                                        propertyValues[
+                                                            map.LogicalName].ToString(
+                                                            ))
+                                        .guid);
+                            break;
+
+                        case FromSet fromSet: //todo
+                            newRecord[map.LogicalName] = !propertyValues.ContainsKey(
+                                    map.LogicalName)
+                                ? null
+                                : new EntityReference(
+                                    map.ParentTable,
+                                    fromSet.Values
+                                        .First(
+                                            lup => lup.Name ==
+                                                        propertyValues[
+                                                            map.LogicalName].ToString(
+                                                            ))
+                                        .guid);
+                            break;
+
+                        case StringMock stringMock:
+                            if (!propertyValues.ContainsKey(map.LogicalName)) newRecord[map.LogicalName] = null;
+                            else if (map.Length != null)
+                                newRecord[map.LogicalName] = ((string)propertyValues[map.LogicalName]).Truncate(map.Length.GetValueOrDefault());
+                            else
+                            {
+                                StringAttributeMetadata attMeta = (StringAttributeMetadata)entity.Attributes
+                                    .FirstOrDefault(at => at.LogicalName == map.LogicalName);
+                                newRecord[map.LogicalName] = ((string)propertyValues[map.LogicalName]).Truncate(
+                                    attMeta.DatabaseLength.GetValueOrDefault());
+
+                            }
+                            break;
+
+                        case Date dateMock:
+                            newRecord[map.LogicalName] = !propertyValues.ContainsKey(
+                                    map.LogicalName)
+                                ? (DateTime?)null
+                                : DateTime.ParseExact(
+                                    propertyValues[map.LogicalName].ToString(),
+                                    "yyyy-MM-dd",
+                                    null);
+                            break;
+
+                        case Time timeMock:
+                            newRecord[map.LogicalName] = !propertyValues.ContainsKey(
+                                    map.LogicalName)
+                                ? (DateTime?)null
+                                : DateTime.Today
+                                    .Add(
+                                        TimeSpan.Parse(
+                                                propertyValues[map.LogicalName].ToString(
+                                                    )));
+
+                            break;
+                        case CustomList custList:
+                            newRecord[map.LogicalName] = propertyValues[map.LogicalName].ToString();
+                            break;
+                        case Number number:
+                            switch (map.AttributeTypeCode)
+                            {
+                                case AttributeTypeCode.Integer:
+                                    newRecord[map.LogicalName] = int.TryParse(propertyValues[map.LogicalName].ToString(), out int intRes)
+                                ? intRes : Int32.TryParse(propertyValues[map.LogicalName].ToString(), out Int32 int32Res)
+                                ? int32Res : Int64.TryParse(propertyValues[map.LogicalName].ToString(), out Int64 int64Res)
+                                ? int64Res : propertyValues[map.LogicalName];
+                                    break;
+                                case AttributeTypeCode.Decimal:
+                                    newRecord[map.LogicalName] = decimal.TryParse(propertyValues[map.LogicalName].ToString(), out decimal decRes) ? decRes : propertyValues[map.LogicalName];
+                                    break;
+                                case AttributeTypeCode.Double:
+                                    newRecord[map.LogicalName] = double.TryParse(propertyValues[map.LogicalName].ToString(), out double dblRes) ? dblRes : propertyValues[map.LogicalName];
+                                    break;
+                                default:
+                                    newRecord[map.LogicalName] = propertyValues[map.LogicalName];
+                                    break;
+                            }
+
+                            break;
+                        default:
+                            switch (map.SelectedMock.Name)
+                            {
+                                case (DataTypes.Boolean):
+                                case (DataTypes.BinomialDistribution):
+                                    newRecord[map.LogicalName] = !propertyValues.ContainsKey(
+                                            map.LogicalName)
+                                        ? false
+                                        : (bool)propertyValues[map.LogicalName];
+                                    break;
+
+                                default:
+                                    if (map.SelectedMock.Fixed)
+                                        newRecord[map.LogicalName] = map.SelectedMock.FixedValue;
+                                    else
+                                        newRecord[map.LogicalName] = !propertyValues.ContainsKey(
+                                                map.LogicalName)
+                                            ? null
+                                            : propertyValues[map.LogicalName];
+                                    break;
+                            }
+                            break;
+                    }
+
+                resp.Add(newRecord);
+            }
+            return resp;
+        }
+
         public string CreateAllData(int totalRecordCount, List<SimpleRow> maps, string entityName, BackgroundWorker wrker)
         {
             return CreateAllData(totalRecordCount, maps, entityName, wrker, null);
+        }
+
+        public List<ExpandoObject> LoadMockData(int recordCount, List<SimpleRow> maps, BackgroundWorker worker)
+        {
+            worker.ReportProgress(0, "Getting Mockaroo Data");
+            var response = new List<ExpandoObject>();
+
+            var pageSize = recordCount > 1000 ? 1000 : recordCount;
+            var pageRequests = (int)Math.Ceiling(recordCount / (double)pageSize);
+            var client = new MockClient(txtMockKey.Text);
+            var mockClass = new ExpandoObject();
+            foreach (var map in maps)
+                ((IDictionary<string, object>)mockClass)[map.LogicalName] = map.SelectedMock;
+
+            for (var i = 0; i < pageRequests; i++)
+            {
+                worker.ReportProgress((int)(i / pageRequests * 100), $"Getting Mockaroo Data - Batch {i + 1}");
+                response.AddRange(client.GetData(mockClass, pageSize));
+            }
+
+            return response.Take(recordCount).ToList();
         }
 
         public string CreateAllData(int totalRecordCount, List<SimpleRow> maps, string entityName, BackgroundWorker wrker, SetItem setItem)
