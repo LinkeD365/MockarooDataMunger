@@ -3,6 +3,7 @@ using LinkeD365.MockDataGen.Properties;
 using McTools.Xrm.Connection;
 using Microsoft.Win32;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Deployment;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using System;
@@ -92,6 +93,7 @@ namespace LinkeD365.MockDataGen
             btnDepTables.Checked = mySettings.ExcludeConfig.DeprecatedTables;
             btnDepImpSeqNo.Checked = mySettings.ExcludeConfig.ImportSeqNo;
             btnDepCol.Checked = mySettings.ExcludeConfig.DeprecatedColumns;
+            btnBypassPluginExec.Checked = mySettings.ExcludeConfig.BypassPluginExecution;
 
         }
 
@@ -181,20 +183,54 @@ namespace LinkeD365.MockDataGen
                 return;
             }
 
-            //mockClass = new ExpandoObject();
-            //foreach (var map in maps)
-            //    ((IDictionary<string, object>)mockClass)[map.Attribute.LogicalName] = map.SelectedMock;
+            var entityName = ((EntityDisplay)cboEntities.SelectedItem).LogicalName;
 
-            //entityName = ((EntityDisplay)cboEntities.SelectedItem).LogicalName;
+            WorkAsync(
+            new WorkAsyncInfo
+            {
+                Message = "Creating Data...",
+                Work = (w, e) =>
+                {
+                    var response = LoadMockData((int)numRecordCount.Value, maps, w);
+                    var entityCollection = new EntityCollection()
+                    {
+                        EntityName = entityName
+                    };
 
-            // #11 Added ability to generate more than 1000 records, firstly limit to 100 if more than 1000
-            int recordCount = numRecordCount.Value <= 1000 ? (int)numRecordCount.Value : 100;
-            collection = new EntityCollection { EntityName = ((EntityDisplay)cboEntities.SelectedItem).LogicalName };
+                    foreach (List<ExpandoObject> subList in SplitList(response))
+                        entityCollection.Entities.AddRange(CreateEntityList(subList, entityCollection.EntityName, maps));
 
-            GetInitMockData(recordCount, maps, ((EntityDisplay)cboEntities.SelectedItem).LogicalName);
+                    e.Result = entityCollection;
+                },
+                ProgressChanged = e => SetWorkingMessage(e.UserState.ToString()),
+                PostWorkCallBack = e =>
+                {
+                    if (e.Error != null)
+                    {
+                        LogError(e.Error.ToString());
+                        MessageBox.Show(e.Error.Message.ToString(), "Error generating data", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        collection.Entities.Clear();
+                    }
+                    else
+                    {
+                        collection = e.Result as EntityCollection;
+                        gridSample.DataSource = collection.Entities.Take(100);
+                        ShowResults();
 
-            return;
+                        if (collection.Entities.Count > 100)
+                        {
+                            btnCreateAllData.Visible = true;
+                            btnCreate100Data.Visible = true;
 
+                            btnCreateAllData.Text = "Create " + numRecordCount.Value + " records";
+                        }
+                        else
+                        {
+                            btnCreate100Data.Visible = false;
+                        }
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -209,93 +245,133 @@ namespace LinkeD365.MockDataGen
             AddSavedMaps();
         }
 
-        private void btnCreateData_Click(object sender, EventArgs args)
+        private void CreateData(int? countLimit = null)
         {
+            var recordCount = countLimit ?? collection.Entities.Count;
+            var batchCount = (int)Math.Ceiling(recordCount / batchSize.Value);
+            var dataToImport = collection.Entities.Take(recordCount).ToList();
+            if (countLimit.HasValue && countLimit < collection.Entities.Count)
+            {
+                // Take out the ones we have done, keep the rest for later
+                var remainingEntities = collection.Entities.Skip(countLimit.Value).ToList();
+                collection.Entities.Clear();
+                collection.Entities.AddRange(remainingEntities);
+            }
+            
             WorkAsync(
-                new WorkAsyncInfo
+            new WorkAsyncInfo
+            {
+                Message = "Creating Data...",
+                Work = (w, e) =>
                 {
-                    Message = "Creating Data...",
-                    Work =
-                        (w, e) =>
+                    for (var i = 0; i < batchCount; i++)
+                    {
+                        var batchedCollection = new EntityCollection
                         {
-                            var requestWithResults = new ExecuteMultipleRequest
-                            {
-                                Settings =
-                                    new ExecuteMultipleSettings
-                                    {
-                                        ContinueOnError = false,
-                                        ReturnResponses = true
-                                    },
-                                Requests = new OrganizationRequestCollection()
-                            };
-                            foreach (var entity in collection.Entities)
+                            EntityName = collection.EntityName,
+                            TotalRecordCount = collection.TotalRecordCount
+                        };
+                        batchedCollection.Entities.AddRange(dataToImport.Skip(i * (int)batchSize.Value).Take((int)batchSize.Value).ToList());
+                        w.ReportProgress(-1, $"Running batch {i + 1} of {batchCount}");
 
-                                if (entity.Attributes.Contains("statecode") &&
-                                    ((OptionSetValue)entity["statecode"]).Value >= 1) // inactive
-                                    CreateInactiveRequest(entity);
-                                else
+                        var requestWithResults = new ExecuteMultipleRequest
+                        {
+                            Settings =
+                                new ExecuteMultipleSettings
                                 {
-                                    var createRequest = new CreateRequest { Target = entity };
-                                    requestWithResults.Requests.Add(createRequest);
-                                }
-                            string errors = string.Empty;
-                            if (requestWithResults.Requests.Count > 0)
+                                    ContinueOnError = false,
+                                    ReturnResponses = true,
+                                },
+                            Requests = new OrganizationRequestCollection()
+                        };
+
+                        foreach (var entity in batchedCollection.Entities)
+                        {
+                            if (entity.Attributes.Contains("statecode") &&
+                                ((OptionSetValue)entity["statecode"]).Value >= 1) // inactive
+                                CreateInactiveRequest(entity);
+                            else
                             {
-                                var responseWithResults =
+                                var createRequest = new CreateRequest { Target = entity };
+                                if (btnBypassPluginExec.Checked)
+                                    createRequest.Parameters.Add("BypassCustomPluginExecution", true);
+
+                                requestWithResults.Requests.Add(createRequest);
+                            }
+                        }
+
+                        var errors = string.Empty;
+                        if (requestWithResults.Requests.Count > 0)
+                        {
+                            var responseWithResults =
                             (ExecuteMultipleResponse)Service.Execute(requestWithResults);
 
-                                ai.WriteEvent("Data Mocked Count", requestWithResults.Requests.Count);
-                                foreach (var responseItem in responseWithResults.Responses)
+                            ai.WriteEvent("Data Mocked Count", requestWithResults.Requests.Count);
+                            foreach (var responseItem in responseWithResults.Responses)
 
-                                    // DisplayResponse(requestWithResults.Requests[responseItem.RequestIndex], responseItem.Response);
+                                // An error has occurred.
+                                if (responseItem.Fault != null)
+                                    errors += "\r\n" +
+                                        responseItem.RequestIndex +
+                                        " | " +
+                                        responseItem.Fault;
+                        }
 
-                                    // An error has occurred.
-                                    if (responseItem.Fault != null)
-                                        errors += "\r\n" +
-                                            responseItem.RequestIndex +
-                                            " | " +
-                                            responseItem.Fault;
+                        foreach (var updateEntity in updateEntities)
+                            errors += SendInactiveRequest(updateEntity, w, null, string.Empty);
 
-                                // else collection.Entities[responseItem.RequestIndex].Id = ((CreateResponse) responseItem.Response).id;
-                                //DisplayFault(requestWithResults.Requests[responseItem.RequestIndex],
-                                //    responseItem.RequestIndex, responseItem.Fault);
-                            }
-
-                            foreach (var updateEntity in updateEntities)
-                                errors += SendInactiveRequest(updateEntity, w, null, string.Empty);
-                            e.Result = errors;
-                        },
-                    ProgressChanged = e => SetWorkingMessage(e.UserState.ToString()),
-                    PostWorkCallBack =
-                        e =>
+                        e.Result = errors;
+                    }
+                },
+                ProgressChanged = e => SetWorkingMessage(e.UserState.ToString()),
+                PostWorkCallBack = e =>
+                {
+                    if (e.Error != null)
+                    {
+                        LogError(e.Error.ToString());
+                        MessageBox.Show(e.Error.Message.ToString(), "Error generating data", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        var errs = e.Result as string;
+                        if (errs == String.Empty)
                         {
-                            string errs = e.Result as string;
-                            if (errs == string.Empty)
+                            MessageBox.Show("All data was created successfully. Check your environment to ensure data quality", "No Errors", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            if (countLimit.HasValue && countLimit < collection.Entities.Count)
                             {
-                                MessageBox.Show(
-                                    "All data was created successfully. Check your environment to ensure data quality",
-                                    "No Errors",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
-                                gridSample.DataSource = null;
-
-                                HideResults();
-
-
-                                tabGrpMain.SelectedTab = tabConfig;
+                                gridSample.DataSource = collection.Entities;
+                                btnCreateAllData.Text = "Create remaining " + collection.Entities.Count + " records";
                             }
                             else
                             {
-                                MessageBox.Show(
-                                    "The following shows the rows that caused errors" + errs,
-                                    "Rows created with errors",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
                                 gridSample.DataSource = null;
-                                gridSample.DataSource = collection.Entities;
+                                HideResults();
+                                tabGrpMain.SelectedTab = tabConfig;
                             }
                         }
-                });
+                        else
+                        {
+                            MessageBox.Show(
+                                "The following shows the rows that caused errors" + errs,
+                                "Rows created with errors",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                            gridSample.DataSource = null;
+                            gridSample.DataSource = collection.Entities;
+                        }
+                    }
+                }
+            });
+        }
+
+        private void btnCreate100Data_Click(object sender, EventArgs args)
+        {
+            CreateData(100);
+        }
+
+        private void btnCreateAllData_Click(object sender, EventArgs args)
+        {
+            CreateData(null);
         }
 
         private void HideResults()
@@ -339,67 +415,6 @@ namespace LinkeD365.MockDataGen
             BuildGrid(((EntityDisplay)cboEntities.SelectedItem).LogicalName);
             cboSelectSaved.SelectedItem = null;
         }
-
-        private void BtnCreateBatch_Click(object sender, EventArgs args)
-        {
-            WorkAsync(
-                new WorkAsyncInfo
-                {
-                    Message = "Getting Mockaroo Data...",
-                    Work =
-                        (w, e) => e.Result = CreateAllData(
-                                (int)numRecordCount.Value,
-                                selectedMaps.Where(mr => mr.SelectedMock != null && mr.SelectedMock.Mockaroo)
-                                            .ToList<SimpleRow>(),
-                                ((EntityDisplay)cboEntities.SelectedItem).LogicalName,
-                                w),
-                    ProgressChanged = e => SetWorkingMessage(e.UserState.ToString()),
-                    PostWorkCallBack =
-                        e =>
-                        {
-                            if (e.Error != null)
-                            {
-                                LogError(e.Error.ToString());
-                                MessageBox.Show(
-                                    e.Error.Message.ToString() +
-                                        Environment.NewLine +
-                                        "Some Data may have been created, please confirm before re-running",
-                                    "Error generating data",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
-                                SendMessageToStatusBar(this, new StatusBarMessageEventArgs(string.Empty));
-
-                                return;
-                            }
-                            string errs = e.Result as string;
-                            if (errs == string.Empty)
-                            {
-                                MessageBox.Show(
-                                    "All data was created successfully. Check your environment to ensure data quality",
-                                    "No Errors",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information);
-                                gridSample.DataSource = null;
-                                if (tabSample.Parent != tabGrpHidden)
-                                    tabGrpHidden.TabPages.Add(tabSample);
-
-                                tabGrpMain.SelectedTab = tabConfig;
-                            }
-                            else
-                            {
-                                MessageBox.Show(
-                                    "The following shows the rows that caused errors" + errs,
-                                    "Rows created with errors",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
-                                gridSample.DataSource = null;
-                                gridSample.DataSource = collection.Entities;
-                            }
-
-                            SendMessageToStatusBar(this, new StatusBarMessageEventArgs(string.Empty));
-                        }
-                });
-        }
         #endregion FormEvents
 
         private void BtnCreateDataSet_Click(object sender, EventArgs e)
@@ -434,13 +449,16 @@ namespace LinkeD365.MockDataGen
         private void btnDepCol_CheckStateChanged(object sender, EventArgs e)
         {
             mySettings.ExcludeConfig.DeprecatedColumns = btnDepCol.Checked;
-
         }
 
         private void btnDepImpSeqNo_CheckStateChanged(object sender, EventArgs e)
         {
             mySettings.ExcludeConfig.ImportSeqNo = btnDepImpSeqNo.Checked;
+        }
 
+        private void btnBypassPluginExec_CheckStateChanged(object sender, EventArgs e)
+        {
+            mySettings.ExcludeConfig.BypassPluginExecution = btnBypassPluginExec.Checked;
         }
 
         private void btnExportMaps_Click(object sender, EventArgs e)

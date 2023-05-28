@@ -73,16 +73,10 @@ namespace LinkeD365.MockDataGen
                         response.Content.ReadAsStringAsync().Result);
                     throw new Exception(errObj.GetValue("error").ToString());
                 }
-
-
-                // data = count == 1
-                //   ? new[] { JsonConvert.DeserializeObject<T>(responseContent) }.AsEnumerable()
-                // : JsonConvert.DeserializeObject<IEnumerable<T>>(responseContent);
             }
 
             var expConverter = new ExpandoObjectConverter();
             return JsonConvert.DeserializeObject<List<ExpandoObject>>(responseContent, expConverter);
-            //  return JsonConvert.DeserializeObject(responseContent);
         }
 
         private static object GetValueOrArray(CustomAttributeTypedArgument argument)
