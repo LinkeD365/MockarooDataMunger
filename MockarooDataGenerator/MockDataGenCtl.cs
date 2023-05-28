@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -91,7 +92,6 @@ namespace LinkeD365.MockDataGen
             btnDepImpSeqNo.Checked = mySettings.ExcludeConfig.ImportSeqNo;
             btnDepCol.Checked = mySettings.ExcludeConfig.DeprecatedColumns;
             btnBypassPluginExec.Checked = mySettings.ExcludeConfig.BypassPluginExecution;
-
         }
 
         /// <summary>
@@ -142,7 +142,9 @@ namespace LinkeD365.MockDataGen
         #endregion Public Constructor stuff
 
         #region FormEvents
-        private void tsbClose_Click(object sender, EventArgs e) { CloseTool(); }
+
+        private void tsbClose_Click(object sender, EventArgs e)
+        { CloseTool(); }
 
         private void gridMap_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
         {
@@ -251,12 +253,13 @@ namespace LinkeD365.MockDataGen
             var dataToImport = collection.Entities.Take(recordCount).ToList();
             if (countLimit.HasValue && countLimit < collection.Entities.Count)
             {
-                // Take out the ones we have done, keep the rest for later
+                // Take out the ones we have done, keep the
+                // rest for later
                 var remainingEntities = collection.Entities.Skip(countLimit.Value).ToList();
                 collection.Entities.Clear();
                 collection.Entities.AddRange(remainingEntities);
             }
-            
+
             WorkAsync(
             new WorkAsyncInfo
             {
@@ -416,6 +419,7 @@ namespace LinkeD365.MockDataGen
             BuildGrid(((EntityDisplay)cboEntities.SelectedItem).LogicalName);
             cboSelectSaved.SelectedItem = null;
         }
+
         #endregion FormEvents
 
         private void BtnCreateDataSet_Click(object sender, EventArgs e)
