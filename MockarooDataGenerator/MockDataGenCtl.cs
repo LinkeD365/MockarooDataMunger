@@ -187,7 +187,22 @@ namespace LinkeD365.MockDataGen
 
             //entityName = ((EntityDisplay)cboEntities.SelectedItem).LogicalName;
 
-            // #11 Added ability to generate more than 1000 records, firstly limit to 100 if more than 1000
+            // #11
+            // Added
+            // ability
+            // to
+            // generate
+            // more
+            // than
+            // 1000
+            // records,
+            // firstly
+            // limit
+            // to
+            // 100
+            // if
+            // more
+            // than 1000
             int recordCount = numRecordCount.Value <= 1000 ? (int)numRecordCount.Value : 100;
             collection = new EntityCollection { EntityName = ((EntityDisplay)cboEntities.SelectedItem).LogicalName };
 
