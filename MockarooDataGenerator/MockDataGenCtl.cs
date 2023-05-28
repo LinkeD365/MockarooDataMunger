@@ -187,21 +187,8 @@ namespace LinkeD365.MockDataGen
 
             //entityName = ((EntityDisplay)cboEntities.SelectedItem).LogicalName;
 
-            // #11
-            // Added
-            // ability
-            // to
-            // generate
-            // more
-            // than
-            // 1000
-            // records,
-            // firstly
-            // limit
-            // to
-            // 100
-            // if
-            // more
+            // #11 // Added ability to generate more than
+            // 1000 records, firstly limit to 100 if more
             // than 1000
             int recordCount = numRecordCount.Value <= 1000 ? (int)numRecordCount.Value : 100;
             collection = new EntityCollection { EntityName = ((EntityDisplay)cboEntities.SelectedItem).LogicalName };
@@ -209,7 +196,6 @@ namespace LinkeD365.MockDataGen
             GetInitMockData(recordCount, maps, ((EntityDisplay)cboEntities.SelectedItem).LogicalName);
 
             return;
-
         }
 
         /// <summary>
@@ -295,7 +281,6 @@ namespace LinkeD365.MockDataGen
                                 gridSample.DataSource = null;
 
                                 HideResults();
-
 
                                 tabGrpMain.SelectedTab = tabConfig;
                             }
@@ -415,6 +400,7 @@ namespace LinkeD365.MockDataGen
                         }
                 });
         }
+
         #endregion FormEvents
 
         private void BtnCreateDataSet_Click(object sender, EventArgs e)
@@ -443,19 +429,16 @@ namespace LinkeD365.MockDataGen
         private void btnDepTables_CheckStateChanged(object sender, EventArgs e)
         {
             mySettings.ExcludeConfig.DeprecatedTables = btnDepTables.Checked;
-
         }
 
         private void btnDepCol_CheckStateChanged(object sender, EventArgs e)
         {
             mySettings.ExcludeConfig.DeprecatedColumns = btnDepCol.Checked;
-
         }
 
         private void btnDepImpSeqNo_CheckStateChanged(object sender, EventArgs e)
         {
             mySettings.ExcludeConfig.ImportSeqNo = btnDepImpSeqNo.Checked;
-
         }
 
         private void btnExportMaps_Click(object sender, EventArgs e)
@@ -466,7 +449,6 @@ namespace LinkeD365.MockDataGen
             export.chkListSelect.Items.AddRange(mySettings.Settings.Select(st => st.Name).ToArray());
 
             if (export.ShowDialog() != DialogResult.OK) return;
-
 
             SaveFileDialog fileDialog = new SaveFileDialog();
             fileDialog.Filter = "XML Files | *.xml";
@@ -501,7 +483,6 @@ namespace LinkeD365.MockDataGen
             ExportMaps exportMaps = new ExportMaps();
             exportMaps.Sets = mySettings.Sets.Where(set => export.chkListSelect.CheckedItems.OfType<string>().Contains(set.SetName)).ToList();
             exportMaps.Maps = mySettings.Settings.Where(mp => exportMaps.Sets.SelectMany(st => st.SetItems.Select(set => set.MapName)).Contains(mp.Name)).ToList();
-            // exportMaps.Maps = mySettings.Settings.Where(st => mySettings.Sets.Select(set => set.SetItems.Select(si=>si.MapName)).Contains(st.Name)).ToList();
             XmlSerializer writer = new XmlSerializer(typeof(ExportMaps));
 
             FileStream file = File.Create(fileDialog.FileName);
@@ -533,11 +514,9 @@ namespace LinkeD365.MockDataGen
                 {
                     if (mySettings.Settings.Contains(map))
                     {
-
                         foreach (var si in importMap.Sets.SelectMany(set => set.SetItems.Where(setItem => setItem.MapName == map.Name)))
                         {
                             si.MapName = map.Name + "_Import";
-
                         }
                         map.Name = map.Name + "_Import";
                         changedMaps = true;
@@ -560,14 +539,11 @@ namespace LinkeD365.MockDataGen
                 MessageBox.Show($@"Your configuration has been updated with the sets/maps in the import file
 {(changedSets || changedMaps ? "One or more maps or sets have been updated with an _import prefix." : "")}
 Please confirm your configuration before using", "Import Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-
             }
             catch (Exception)
             {
                 MessageBox.Show("There was an error in importing your configuration, please confirm file is correct and try again", "Error on Import", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
         }
     }
 }
