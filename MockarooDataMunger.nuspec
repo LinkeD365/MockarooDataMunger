@@ -20,11 +20,13 @@ Now with data sets to allow one click creationg of related entities
 
     </description>
     <releaseNotes>
+		#28 Fixed issue with creating large data sets, thanks @mattybeard
+
 		#26 When saving map with no previous list, it breaks, thanks @mah87
-		
+
 		#22 Actually fixed the bug with numbers/decimals/doubles, hopefully @Power-Maverick
 		Updated XrmToolBox version
-		
+
 		#6 Added Import Export of maps and sets (sorry for the time this took @bthompson-365)
 		#22 Added options to remove (only by display name) deprecated tables and columns (thanks @Power-Maverick)
 
