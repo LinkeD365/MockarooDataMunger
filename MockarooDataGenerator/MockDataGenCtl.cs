@@ -1,7 +1,5 @@
-﻿using LinkeD365.MockDataGen.Mock;
-using LinkeD365.MockDataGen.Properties;
+﻿using LinkeD365.MockDataGen.Properties;
 using McTools.Xrm.Connection;
-using Microsoft.Win32;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
@@ -9,13 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
-using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using xrmtb.XrmToolBox.Controls;
 using XrmToolBox.Extensibility;
 using XrmToolBox.Extensibility.Args;
 using XrmToolBox.Extensibility.Interfaces;
@@ -26,8 +22,8 @@ namespace LinkeD365.MockDataGen
 {
     public partial class MockDataGenCtl : PluginControlBase, IGitHubPlugin, IPayPalPlugin
     {
-
         #region Private Fields
+
         private const string percBlank = "Percentage Blank";
 
         private AllSettings mySettings;
@@ -50,7 +46,6 @@ namespace LinkeD365.MockDataGen
 
         private const string aiKey = "cc383234-dfdb-429a-a970-d17847361df3";
 
-
         public string RepositoryName => "MockarooDataMunger";
 
         public string UserName => "LinkeD365";
@@ -62,9 +57,11 @@ namespace LinkeD365.MockDataGen
         public string EmailAccount => "carl.cookson@gmail.com";
 
         // private string entityName;
+
         #endregion Private Fields
 
         #region Public Constructor stuff
+
         public MockDataGenCtl()
         {
             InitializeComponent();
@@ -75,8 +72,8 @@ namespace LinkeD365.MockDataGen
 
         private void MockDataGen_Load(object sender, EventArgs e)
         {
-            // LoadEntities();
-            // Loads or creates the settings for the plugin
+            // LoadEntities(); Loads or creates the settings
+            // for the plugin
             if (!SettingsManager.Instance.TryLoad(GetType(), out mySettings))
             {
                 mySettings = new AllSettings();
@@ -92,7 +89,6 @@ namespace LinkeD365.MockDataGen
             btnDepTables.Checked = mySettings.ExcludeConfig.DeprecatedTables;
             btnDepImpSeqNo.Checked = mySettings.ExcludeConfig.ImportSeqNo;
             btnDepCol.Checked = mySettings.ExcludeConfig.DeprecatedColumns;
-
         }
 
         /// <summary>
@@ -120,7 +116,8 @@ namespace LinkeD365.MockDataGen
         }
 
         /// <summary>
-        /// This event occurs when the connection has been updated in XrmToolBox
+        /// This event occurs when the connection has been
+        /// updated in XrmToolBox
         /// </summary>
         public override void UpdateConnection(
             IOrganizationService newService,
@@ -138,10 +135,10 @@ namespace LinkeD365.MockDataGen
             LoadEntities();
             cboEntities.SelectedItem = null;
         }
+
         #endregion Public Constructor stuff
 
         #region FormEvents
-        private void tsbClose_Click(object sender, EventArgs e) { CloseTool(); }
 
         private void gridMap_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
         {
@@ -314,7 +311,9 @@ namespace LinkeD365.MockDataGen
             if (selectedMap is null)
                 return;
 
-            // var entDisplay = new EntityDisplay { LogicalName = selectedMap.EntityName };
+            // var entDisplay
+            // = new EntityDisplay { LogicalName =
+            // selectedMap.EntityName };
             if (cboEntities.Items.Contains(selectedMap.EntityDisplay))
             {
                 cboEntities.SelectedItem = null;
@@ -483,6 +482,10 @@ namespace LinkeD365.MockDataGen
             ExportMaps exportMaps = new ExportMaps();
             exportMaps.Sets = mySettings.Sets.Where(set => export.chkListSelect.CheckedItems.OfType<string>().Contains(set.SetName)).ToList();
             exportMaps.Maps = mySettings.Settings.Where(mp => exportMaps.Sets.SelectMany(st => st.SetItems.Select(set => set.MapName)).Contains(mp.Name)).ToList();
+            // exportMaps.Maps
+            // = mySettings.Settings.Where(st
+            // => mySettings.Sets.Select(set
+            // => set.SetItems.Select(si=>si.MapName)).Contains(st.Name)).ToList();
             XmlSerializer writer = new XmlSerializer(typeof(ExportMaps));
 
             FileStream file = File.Create(fileDialog.FileName);

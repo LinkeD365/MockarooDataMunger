@@ -118,7 +118,6 @@
             this.tsbClose.Name = "tsbClose";
             this.tsbClose.Size = new System.Drawing.Size(110, 28);
             this.tsbClose.Text = "Close this tool";
-            this.tsbClose.Click += new System.EventHandler(this.tsbClose_Click);
             // 
             // tssSeparator1
             // 
