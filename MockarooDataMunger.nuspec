@@ -20,6 +20,9 @@ Now with data sets to allow one click creationg of related entities
 
     </description>
     <releaseNotes>
+		#29 Fixed issue with change in Mockaroo API, thanks @PRusakPL
+		Added batch count limits
+		
 		#28 Fixed issue with creating large data sets, thanks @mattybeard
 
 		#26 When saving map with no previous list, it breaks, thanks @mah87

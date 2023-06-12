@@ -228,7 +228,11 @@ namespace LinkeD365.MockDataGen
                         else
                         {
                             btnCreate100Data.Visible = false;
+                            btnCreateAllData.Text = "Create " + numRecordCount.Value + " records";
                         }
+
+                        batchSize.Maximum = collection.Entities.Count > 1000 ? 1000 : collection.Entities.Count;
+                        batchSize.Value = collection.Entities.Count > 250 ? 250 : collection.Entities.Count;
                     }
                 }
             });

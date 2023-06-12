@@ -17,7 +17,7 @@ namespace LinkeD365.MockDataGen
 {
     internal class MockClient
     {
-        private const string MockarooApiUrl = @"https://www.mockaroo.com/api/generate.json?key={0}&count={1}";
+        private const string MockarooApiUrl = @"https://api.mockaroo.com/api/generate.json?key={0}&count={1}";
         private string _apiKey;
 
         public MockClient(string apiKey)

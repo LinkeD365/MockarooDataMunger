@@ -49,6 +49,7 @@ namespace LinkeD365.MockDataGen
                                     ".FAKE";
 
                             break;
+
                         case FixedDateTime fixedDateTime:
                             newRecord[map.LogicalName] = fixedDateTime.FixedValue;
                             break;
@@ -66,6 +67,7 @@ namespace LinkeD365.MockDataGen
                         case FixedNumber fixedNumber:
                             newRecord[map.LogicalName] = fixedNumber.FixedValue;
                             break;
+
                         case FixedStatus fixedStatus:
                             var choiceNo = ((PickList)fixedStatus.FixedValue).choiceNo;
                             newRecord[map.LogicalName] = new OptionSetValue(
@@ -79,6 +81,7 @@ namespace LinkeD365.MockDataGen
                                     .First(o => o.Value == choiceNo)).State.Value);
                             newRecord["statecode"] = stateValue;
                             break;
+
                         case FixedPickList fixedPickList:
                             newRecord[map.LogicalName] = new OptionSetValue(
                                 ((PickList)fixedPickList.FixedValue).choiceNo);
@@ -88,6 +91,7 @@ namespace LinkeD365.MockDataGen
                         case FixedTime fixedTime:
                             newRecord[map.LogicalName] = fixedTime.FixedValue;
                             break;
+
                         case RandomStatus randomStatus:
                             var choiceStatusNo = !propertyValues.ContainsKey(
                                     map.LogicalName)
@@ -113,6 +117,7 @@ namespace LinkeD365.MockDataGen
                             }
 
                             break;
+
                         case RandomPickList randomPickList:
                             newRecord[map.LogicalName] = !propertyValues.ContainsKey(
                                     map.LogicalName)
@@ -167,7 +172,6 @@ namespace LinkeD365.MockDataGen
                                     .FirstOrDefault(at => at.LogicalName == map.LogicalName);
                                 newRecord[map.LogicalName] = ((string)propertyValues[map.LogicalName]).Truncate(
                                     attMeta.DatabaseLength.GetValueOrDefault());
-
                             }
                             break;
 
@@ -192,11 +196,13 @@ namespace LinkeD365.MockDataGen
                                                     )));
 
                             break;
+
                         case CustomList custList:
                             newRecord[map.LogicalName] = propertyValues[map.LogicalName].ToString();
                             break;
+
                         case Number number:
-                            switch(map.AttributeTypeCode)
+                            switch (map.AttributeTypeCode)
                             {
                                 case AttributeTypeCode.Integer:
                                     newRecord[map.LogicalName] = int.TryParse(propertyValues[map.LogicalName].ToString(), out int intRes)
@@ -204,18 +210,22 @@ namespace LinkeD365.MockDataGen
                                 ? int32Res : Int64.TryParse(propertyValues[map.LogicalName].ToString(), out Int64 int64Res)
                                 ? int64Res : propertyValues[map.LogicalName];
                                     break;
+
                                 case AttributeTypeCode.Decimal:
                                     newRecord[map.LogicalName] = decimal.TryParse(propertyValues[map.LogicalName].ToString(), out decimal decRes) ? decRes : propertyValues[map.LogicalName];
                                     break;
+
                                 case AttributeTypeCode.Double:
                                     newRecord[map.LogicalName] = double.TryParse(propertyValues[map.LogicalName].ToString(), out double dblRes) ? dblRes : propertyValues[map.LogicalName];
                                     break;
+
                                 default:
                                     newRecord[map.LogicalName] = propertyValues[map.LogicalName];
                                     break;
                             }
-                            
+
                             break;
+
                         default:
                             switch (map.SelectedMock.Name)
                             {
@@ -265,6 +275,7 @@ namespace LinkeD365.MockDataGen
                                     ".FAKE";
 
                             break;
+
                         case FixedDateTime fixedDateTime:
                             newRecord[map.LogicalName] = fixedDateTime.FixedValue;
                             break;
@@ -282,6 +293,7 @@ namespace LinkeD365.MockDataGen
                         case FixedNumber fixedNumber:
                             newRecord[map.LogicalName] = fixedNumber.FixedValue;
                             break;
+
                         case FixedStatus fixedStatus:
                             var choiceNo = ((PickList)fixedStatus.FixedValue).choiceNo;
                             newRecord[map.LogicalName] = new OptionSetValue(
@@ -295,6 +307,7 @@ namespace LinkeD365.MockDataGen
                                     .First(o => o.Value == choiceNo)).State.Value);
                             newRecord["statecode"] = stateValue;
                             break;
+
                         case FixedPickList fixedPickList:
                             newRecord[map.LogicalName] = new OptionSetValue(
                                 ((PickList)fixedPickList.FixedValue).choiceNo);
@@ -304,6 +317,7 @@ namespace LinkeD365.MockDataGen
                         case FixedTime fixedTime:
                             newRecord[map.LogicalName] = fixedTime.FixedValue;
                             break;
+
                         case RandomStatus randomStatus:
                             var choiceStatusNo = !propertyValues.ContainsKey(
                                     map.LogicalName)
@@ -329,6 +343,7 @@ namespace LinkeD365.MockDataGen
                             }
 
                             break;
+
                         case RandomPickList randomPickList:
                             newRecord[map.LogicalName] = !propertyValues.ContainsKey(
                                     map.LogicalName)
@@ -383,7 +398,6 @@ namespace LinkeD365.MockDataGen
                                     .FirstOrDefault(at => at.LogicalName == map.LogicalName);
                                 newRecord[map.LogicalName] = ((string)propertyValues[map.LogicalName]).Truncate(
                                     attMeta.DatabaseLength.GetValueOrDefault());
-
                             }
                             break;
 
@@ -408,9 +422,11 @@ namespace LinkeD365.MockDataGen
                                                     )));
 
                             break;
+
                         case CustomList custList:
                             newRecord[map.LogicalName] = propertyValues[map.LogicalName].ToString();
                             break;
+
                         case Number number:
                             switch (map.AttributeTypeCode)
                             {
@@ -420,18 +436,22 @@ namespace LinkeD365.MockDataGen
                                 ? int32Res : Int64.TryParse(propertyValues[map.LogicalName].ToString(), out Int64 int64Res)
                                 ? int64Res : propertyValues[map.LogicalName];
                                     break;
+
                                 case AttributeTypeCode.Decimal:
                                     newRecord[map.LogicalName] = decimal.TryParse(propertyValues[map.LogicalName].ToString(), out decimal decRes) ? decRes : propertyValues[map.LogicalName];
                                     break;
+
                                 case AttributeTypeCode.Double:
                                     newRecord[map.LogicalName] = double.TryParse(propertyValues[map.LogicalName].ToString(), out double dblRes) ? dblRes : propertyValues[map.LogicalName];
                                     break;
+
                                 default:
                                     newRecord[map.LogicalName] = propertyValues[map.LogicalName];
                                     break;
                             }
 
                             break;
+
                         default:
                             switch (map.SelectedMock.Name)
                             {
@@ -530,13 +550,9 @@ namespace LinkeD365.MockDataGen
                         $"{totalRecordCount} {entityName} Records remaining"));
                     wrker.ReportProgress(percDone, "Created Data");
                 }
-
-
-
             }
 
             return errors;
-
         }
 
         private List<List<ExpandoObject>> SplitList(List<ExpandoObject> returnData)
@@ -596,8 +612,9 @@ namespace LinkeD365.MockDataGen
                 errors += SendInactiveRequest(updateEntity, worker, setItem, entityName);
 
             return errors;
-            //  e.Result = errors;
+            // e.Result = errors;
         }
+
         private List<Lookup> GetLinkedRecords(BaseMock selectedMock)//, BackgroundWorker d)
         {
             var entityMeta = Service.GetEntityMetadata(selectedMock.EntityName);
@@ -629,6 +646,7 @@ namespace LinkeD365.MockDataGen
             }
             return lookups;
         }
+
         private void PlaySet()
         {
             if (collection?.Entities != null) collection.Entities.Clear();
@@ -721,7 +739,6 @@ namespace LinkeD365.MockDataGen
                                    }
                                errors += CreateAllData(setItem.RecordCount, mapRows, map.EntityName, w, setItem);
 
-
                                e.Result = errors;
                            }
                        },
@@ -767,11 +784,10 @@ namespace LinkeD365.MockDataGen
                                     MessageBoxButtons.OK,
                                     MessageBoxIcon.Error);
                                 gridSample.DataSource = null;
-                                //    gridSample.DataSource = collection.Entities;
+                                // gridSample.DataSource = collection.Entities;
                             }
 
                             SendMessageToStatusBar(this, new StatusBarMessageEventArgs(string.Empty));
-
                         }
                });
         }
