@@ -66,6 +66,10 @@ namespace LinkeD365.MockDataGen
             {
                 var response = client.SendAsync(request).Result;
                 responseContent = response.Content.ReadAsStringAsync().Result;
+                if (!responseContent.StartsWith("[") && !responseContent.EndsWith("]"))
+                {
+                    responseContent = "[" + responseContent + "]";
+                }
 
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
