@@ -13,12 +13,14 @@ namespace LinkeD365.MockDataGen
     public partial class MockDataGenCtl : PluginControlBase
     {
         #region events
+
         private void gridMap_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
             bool validClick = (e.RowIndex != -1 && e.ColumnIndex != -1); //Make sure the clicked row/column is valid.
             var datagridview = sender as DataGridView;
 
-            // Check to make sure the cell clicked is the cell containing the combobox
+            // Check to make sure the cell clicked is the
+            // cell containing the combobox
             if (!datagridview.Rows[e.RowIndex].Cells[e.ColumnIndex].ReadOnly && datagridview.Columns[e.ColumnIndex] is DataGridViewComboBoxColumn && validClick)
             {
                 datagridview.BeginEdit(true);
@@ -100,6 +102,7 @@ namespace LinkeD365.MockDataGen
                 }
             }
         }
+
         private void gridMap_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.ColumnIndex == 6 && e.RowIndex > -1)
@@ -158,7 +161,6 @@ namespace LinkeD365.MockDataGen
 
                     Populate(mapRow.Attribute, mapRow.SelectedMock);
 
-
                     break;
 
                 default:
@@ -167,7 +169,9 @@ namespace LinkeD365.MockDataGen
             gridMap.AutoResizeColumns();
             gridMap.AutoResizeRows();
         }
-        #endregion
+
+        #endregion events
+
         private void BuildGrid(string logicalName)
         {
             gridMap.DataSource = null;
@@ -191,10 +195,14 @@ namespace LinkeD365.MockDataGen
 
                     SortableBindingList<MapRow> attributes = new SortableBindingList<MapRow>();
                     w.ReportProgress(50, "Got Attributes");
-                    foreach (var field in entityMeta.Attributes.Where(fld => !notPermitted.Any(np => np == fld.AttributeType)).Where(fld => fld.IsValidForCreate == true
-                                                                                                                                && (!mySettings.ExcludeConfig.ImportSeqNo || fld.LogicalName != "importsequencenumber")
-                                                                                                                                && (mySettings.ExcludeConfig.DeprecatedColumns ? (!fld.DisplayName.LocalizedLabels.Any() || fld.DisplayName.LocalizedLabels.Any(lbl => !lbl.Label.ToLower().Contains("deprecated"))) : true)
-                                                                                                                                ))
+                    foreach (var field in entityMeta.Attributes.Where(fld => !notPermitted.
+                            Any(np => np == fld.AttributeType)).Where(fld => fld.IsValidForCreate == true
+                                && (!mySettings.ExcludeConfig.ImportSeqNo || fld.LogicalName != "importsequencenumber")
+                                && (mySettings.ExcludeConfig.DeprecatedColumns
+                                        ? (!fld.DisplayName.LocalizedLabels.Any()
+                                            || fld.DisplayName.LocalizedLabels.Any(lbl => !lbl.Label.ToLower().Contains("deprecated")))
+                                    : true)
+                    ))
                     {
                         var mapRow = new MapRow(field);
                         mapRow.PropertyChanged += MapRow_PropertyChanged;
@@ -215,13 +223,12 @@ namespace LinkeD365.MockDataGen
                     LogInfo(DateTime.UtcNow + " |  Start with SavedMaps");
                     if (saveMap != null)
                     {
-
-
                         var attributes = gridMap.DataSource as SortableBindingList<MapRow>;
                         foreach (var map in saveMap.MapRows)
                             if (attributes.Any(mr => mr.AttributeName == map.AttributeName))
                             {
-                                // #5 If no mocks in the save, don't bother doing anything
+                                // #5 If no mocks in the
+                                // save, don't bother doing anything
                                 if (map.SelectedMock.Count > 0)
                                 {
                                     var mapRow = attributes.First(mr => mr.AttributeName == map.AttributeName);
@@ -326,9 +333,5 @@ namespace LinkeD365.MockDataGen
             cboBox.DataSource = mapRow.MockOptions.Mocks.Select(m => m.Name).ToList();
             cboBox.ReadOnly = false;
         }
-
-
     }
-
-
 }

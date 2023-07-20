@@ -20,6 +20,12 @@ Now with data sets to allow one click creationg of related entities
 
     </description>
     <releaseNotes>
+		#34 - Fixed issue with max field length
+		#33 - removed private tables from list
+		
+		PRs to improve things from @rwilson504
+		
+		
 		#29 Fixed issue with change in Mockaroo API, thanks @PRusakPL
 		Added batch count limits
 		

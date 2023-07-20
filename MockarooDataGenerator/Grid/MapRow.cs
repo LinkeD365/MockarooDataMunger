@@ -10,8 +10,10 @@ namespace LinkeD365.MockDataGen
     {
         [Browsable(false)]
         public string LogicalName;
+
         protected BaseMock selectedMock;
         public AttributeTypeCode? AttributeTypeCode;
+
         public string ParentTable
         {
             get
@@ -42,12 +44,15 @@ namespace LinkeD365.MockDataGen
                 if (value != selectedMock) { selectedMock = value; NotifyPropertyChanged(); }
             }
         }
+
         protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
     }
+
     public class MapRow : SimpleRow, INotifyPropertyChanged
     {
         private bool selected;
@@ -59,7 +64,8 @@ namespace LinkeD365.MockDataGen
             Attribute = attributeMetadata;
         }
 
-        AttributeMetadata attribute;
+        private AttributeMetadata attribute;
+
         [Browsable(false)]
         public AttributeMetadata Attribute
         {
@@ -70,7 +76,7 @@ namespace LinkeD365.MockDataGen
                 LogicalName = value.LogicalName;
                 AttributeTypeCode = value.AttributeType;
                 if (value is StringAttributeMetadata)
-                    Length = ((StringAttributeMetadata)value).DatabaseLength.GetValueOrDefault();
+                    Length = ((StringAttributeMetadata)value).MaxLength.GetValueOrDefault();
             }
         }
 
@@ -98,13 +104,11 @@ namespace LinkeD365.MockDataGen
                 if (Attribute is StringAttributeMetadata)
                 {
                     var stringAtt = Attribute as StringAttributeMetadata;
-                    return stringAtt.DatabaseLength.GetValueOrDefault();
+                    return stringAtt.MaxLength.GetValueOrDefault();
                 }
                 return null;
             }
         }
-
-
 
         public string MockType
         {
@@ -125,8 +129,6 @@ namespace LinkeD365.MockDataGen
                 if (value != mockOptions) { mockOptions = value; NotifyPropertyChanged(); }
             }
         }
-
-
 
         public string AdditionalProperties
         {

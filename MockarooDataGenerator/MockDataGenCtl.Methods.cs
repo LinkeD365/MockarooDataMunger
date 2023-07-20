@@ -67,8 +67,15 @@ namespace LinkeD365.MockDataGen
                 Message = "Loading Entities",
                 Work = (w, e) =>
                 {
+                    MetadataFilterExpression EntityFilter = new MetadataFilterExpression(LogicalOperator.And);
+
+                    EntityFilter.Conditions.Add(new MetadataConditionExpression("IsPrivate", MetadataConditionOperator.NotEquals, true));
                     var eqe = new EntityQueryExpression();
                     eqe.Properties = new MetadataPropertiesExpression("LogicalName", "DisplayName");
+                    eqe.Criteria = EntityFilter;
+                    // query.Criteria.AddCondition("donotemail",
+                    // ConditionOperator.Equal, query_donotemail);
+
                     var req = new RetrieveMetadataChangesRequest
                     {
                         Query = eqe,
@@ -212,6 +219,7 @@ namespace LinkeD365.MockDataGen
             if (string.IsNullOrEmpty(selectedMock.EntityName)) selectedMock.EntityName = ((LookupAttributeMetadata)attribute).Targets[0];
             // ((FromSet)selectedMock).Values = GetLinkedRecords(selectedMock);
         }
+
         private void PopulateLookup(AttributeMetadata attribute, BaseMock selectedMock, bool fromLoad)
         {
             if (!(selectedMock is RandomLookup || selectedMock is FixedLookup)) return;
@@ -242,10 +250,8 @@ namespace LinkeD365.MockDataGen
                 }
             });
 
-            //  var rndMock = selectedMock as RandomLookup;
+            // var rndMock = selectedMock as RandomLookup;
         }
-
-
 
         private void PopulatePickList(AttributeMetadata attribute, BaseMock selectedMock, bool fromLoad)
         {
@@ -287,9 +293,8 @@ namespace LinkeD365.MockDataGen
             entity.Attributes.Remove("statecode");
             entity.Attributes.Remove("statuscode");
             updateEntity.Entities.Add(entity);
-
-
         }
+
         protected List<UpdateEntity> updateEntities = new List<UpdateEntity>();
 
         public class UpdateEntity
@@ -300,7 +305,6 @@ namespace LinkeD365.MockDataGen
 
             public OptionSetValue State { get; set; }
         }
-
 
         private string SendInactiveRequest(UpdateEntity updateEntity, BackgroundWorker wrker, SetItem setItem, string entityName)
         {
@@ -377,8 +381,8 @@ namespace LinkeD365.MockDataGen
                     if (responseItem.Fault != null)
                         errors += "\r\n" + responseItem.RequestIndex + " | " + responseItem.Fault.ToString();
 
-                //  else updateEntity.Entities[responseItem.RequestIndex].Id = ((updatere) responseItem.Response).id;
-
+                // else updateEntity.Entities[responseItem.RequestIndex].Id
+                // = ((updatere) responseItem.Response).id;
             }
             else
             {
@@ -399,16 +403,11 @@ namespace LinkeD365.MockDataGen
                     if (responseItem.Fault != null)
                         errors += "\r\n" + responseItem.RequestIndex + " | " + responseItem.Fault.ToString();
 
-                //  else updateEntity.Entities[responseItem.RequestIndex].Id = ((updatere) responseItem.Response).id;
-
+                // else updateEntity.Entities[responseItem.RequestIndex].Id
+                // = ((updatere) responseItem.Response).id;
             }
 
             return errors;
         }
-
-
-
-
-
     }
 }
