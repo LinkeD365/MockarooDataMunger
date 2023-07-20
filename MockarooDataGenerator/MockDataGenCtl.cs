@@ -199,7 +199,7 @@ namespace LinkeD365.MockDataGen
                     };
 
                     foreach (List<ExpandoObject> subList in SplitList(response))
-                        entityCollection.Entities.AddRange(CreateEntityList(subList, entityCollection.EntityName, maps));
+                        entityCollection.Entities.AddRange(CreateEntityList(subList, entityCollection.EntityName, selectedMaps.ToList<SimpleRow>()));
 
                     e.Result = entityCollection;
                 },
