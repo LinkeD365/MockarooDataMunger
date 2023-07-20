@@ -140,7 +140,7 @@ namespace LinkeD365.MockDataGen
                                     map.ParentTable,
                                     randomLookup.AllValues
                                         .First(
-                                            lup => lup.Name ==
+                                            lup => lup.Name.Trim() ==
                                                         propertyValues[
                                                             map.LogicalName].ToString(
                                                             ))
@@ -366,7 +366,7 @@ namespace LinkeD365.MockDataGen
                                     map.ParentTable,
                                     randomLookup.AllValues
                                         .First(
-                                            lup => lup.Name ==
+                                            lup => lup.Name.Trim() ==
                                                         propertyValues[
                                                             map.LogicalName].ToString(
                                                             ))
