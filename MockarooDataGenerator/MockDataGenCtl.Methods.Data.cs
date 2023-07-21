@@ -428,28 +428,38 @@ namespace LinkeD365.MockDataGen
                             break;
 
                         case Number number:
-                            switch (map.AttributeTypeCode)
+                            if (!propertyValues.ContainsKey(map.LogicalName)) newRecord[map.LogicalName] = null;
+                            else
                             {
-                                case AttributeTypeCode.Integer:
-                                    newRecord[map.LogicalName] = int.TryParse(propertyValues[map.LogicalName].ToString(), out int intRes)
-                                ? intRes : Int32.TryParse(propertyValues[map.LogicalName].ToString(), out Int32 int32Res)
-                                ? int32Res : Int64.TryParse(propertyValues[map.LogicalName].ToString(), out Int64 int64Res)
-                                ? int64Res : propertyValues[map.LogicalName];
-                                    break;
+                                switch (map.AttributeTypeCode)
+                                {
+                                    case AttributeTypeCode.Integer:
+                                        newRecord[map.LogicalName] = int.TryParse(propertyValues[map.LogicalName].ToString(), out int intRes)
+                                    ? intRes : Int32.TryParse(propertyValues[map.LogicalName].ToString(), out Int32 int32Res)
+                                    ? int32Res : Int64.TryParse(propertyValues[map.LogicalName].ToString(), out Int64 int64Res)
+                                    ? int64Res : propertyValues[map.LogicalName];
+                                        break;
 
-                                case AttributeTypeCode.Decimal:
-                                    newRecord[map.LogicalName] = decimal.TryParse(propertyValues[map.LogicalName].ToString(), out decimal decRes) ? decRes : propertyValues[map.LogicalName];
-                                    break;
-
-                                case AttributeTypeCode.Double:
-                                    newRecord[map.LogicalName] = double.TryParse(propertyValues[map.LogicalName].ToString(), out double dblRes) ? dblRes : propertyValues[map.LogicalName];
-                                    break;
-
-                                default:
-                                    newRecord[map.LogicalName] = propertyValues[map.LogicalName];
-                                    break;
+                                    case AttributeTypeCode.Decimal:
+                                        newRecord[map.LogicalName] = decimal.TryParse(propertyValues[map.LogicalName].ToString(), out decimal decRes) ? decRes : propertyValues[map.LogicalName];
+                                        break;
+                                    
+                                    case AttributeTypeCode.Money:
+                                        decimal decResMoney; 
+                                        if (decimal.TryParse(propertyValues[map.LogicalName].ToString(), out decResMoney)) 
+                                        { newRecord[map.LogicalName] = new Money(decResMoney); } 
+                                        else { newRecord[map.LogicalName] = null; }                                        
+                                        break;
+                                    
+                                    case AttributeTypeCode.Double:
+                                        newRecord[map.LogicalName] = double.TryParse(propertyValues[map.LogicalName].ToString(), out double dblRes) ? dblRes : propertyValues[map.LogicalName];
+                                        break;
+                                    
+                                    default:
+                                        newRecord[map.LogicalName] = propertyValues[map.LogicalName];
+                                        break;
+                                }
                             }
-
                             break;
 
                         default:
