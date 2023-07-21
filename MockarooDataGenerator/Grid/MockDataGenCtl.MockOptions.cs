@@ -69,8 +69,7 @@ namespace LinkeD365.MockDataGen
                         new StringMock(DataTypes.Words), new Paragraph()
                     }.OrderBy(bm=>bm.Name).ToList()),
                     new MockOption(AttributeTypeCode.Boolean, //Boolean
-                        new List<BaseMock>{new True(), new False(),// new BinomialDistribution(),
-                            new StringMock(DataTypes.Boolean)                    }.OrderBy(bm=>bm.Name).ToList()),
+                        new List<BaseMock>{new True(), new False(),new Boolean()}.OrderBy(bm=>bm.Name).ToList()),
                     new MockOption(AttributeTypeCode.BigInt, //BigInt
                         new List<BaseMock>{new NormalDistribution(),  new FixedNumber()}),
 

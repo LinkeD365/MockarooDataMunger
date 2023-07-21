@@ -459,7 +459,7 @@ namespace LinkeD365.MockDataGen
                                 case (DataTypes.BinomialDistribution):
                                     newRecord[map.LogicalName] = !propertyValues.ContainsKey(
                                             map.LogicalName)
-                                        ? false
+                                        ? (bool?)null
                                         : (bool)propertyValues[map.LogicalName];
                                     break;
 
