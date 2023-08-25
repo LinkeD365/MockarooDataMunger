@@ -833,6 +833,39 @@ namespace LinkeD365.MockDataGen.Mock
         }
     }
 
+    public class Boolean : BaseMock
+    { 
+        public Boolean() : base(DataTypes.Boolean)
+        {
+            Name = DataTypes.Boolean;
+        }
+        public List<PickList> AllValues { get; set; } = new List<PickList>() 
+        { new PickList { Name = "True", choiceNo = 1 }, new PickList { Name = "False", choiceNo = 0 } };
+
+        [DefaultValue("random")]
+        public string SelectionStyle { get; set; } = SelectionStyles.Random;
+
+        public override string Properties
+        {
+            get
+            {
+                return "Selection Style: " + SelectionStyle + "\n Values: All";
+            }
+        }
+
+        public override Dictionary<string, object> GetField()
+        {
+            AddToBase("values", AllValues.Select(lup => lup.ToString()).ToArray());
+            AddToBase("selectionstyle", SelectionStyle);
+            return baseField;
+        }
+
+        public override void PopulateFromKVP(List<KVP> kvps)
+        {
+            BasePopulateFromKVP(kvps);
+        }
+    }
+
     public class RandomStatus : RandomPickList
     {
         public RandomStatus()
