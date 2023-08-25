@@ -20,6 +20,12 @@ Now with data sets to allow one click creationg of related entities
 
     </description>
     <releaseNotes>
+		PRs thanks to @rwilson504
+		#35 Cannont generate random boolean
+		#37 Resolved issue with Money data type
+		#38 Resolved issue with perc blank on money failing
+		
+		
 		#34 - Fixed issue with max field length
 		#33 - removed private tables from list
 		
