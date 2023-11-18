@@ -20,6 +20,8 @@ Now with data sets to allow one click creationg of related entities
 
     </description>
     <releaseNotes>
+		Rebuilt with latest XrmToolBox version
+		
 		PRs thanks to @rwilson504
 		#35 Cannont generate random boolean
 		#37 Resolved issue with Money data type
