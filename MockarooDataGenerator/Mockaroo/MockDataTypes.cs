@@ -154,5 +154,9 @@ namespace LinkeD365.MockDataGen
         public const string Encrypt = "Encrypt";
         public const string Username = "Username";
         public const string Words = "Words";
+        public const string CarMake = "Car Make";
+        public const string CarModel = "Car Model";
+        public const string CarModelYear = "Car Model Year";
+        public const string CarVIN = "Car VIN";
     }
 }

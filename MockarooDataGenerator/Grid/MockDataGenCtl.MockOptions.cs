@@ -37,7 +37,7 @@ namespace LinkeD365.MockDataGen
                         new StringMock(DataTypes.StreetAddress),new StringMock(DataTypes.StreetName),new StringMock(DataTypes.StreetNumber),new StringMock(DataTypes.StreetSuffix),
                         new StringMock(DataTypes.Suffix),new StringMock(DataTypes.Template),new StringMock(DataTypes.Title),new StringMock(DataTypes.TopLevelDomain),
                         new StringMock(DataTypes.University),new StringMock(DataTypes.Url),new StringMock(DataTypes.UserAgent),new StringMock(DataTypes.Username),
-                        new StringMock(DataTypes.Words), new FakeEmailMock()
+                        new StringMock(DataTypes.Words), new FakeEmailMock(), new StringMock(DataTypes.CarMake), new StringMock(DataTypes.CarModel), new CarModelYearMock(), new StringMock(DataTypes.CarVIN)
                     }.OrderBy(bm=>bm.Name).ToList()),
                     new MockOption(AttributeTypeCode.Memo, //MEMO
                     new List<BaseMock>{ new StringMock(DataTypes.AppBundleID),
@@ -66,7 +66,7 @@ namespace LinkeD365.MockDataGen
                         new StringMock(DataTypes.StreetAddress),new StringMock(DataTypes.StreetName),new StringMock(DataTypes.StreetNumber),new StringMock(DataTypes.StreetSuffix),
                         new StringMock(DataTypes.Suffix),new StringMock(DataTypes.Template),new StringMock(DataTypes.Title),new StringMock(DataTypes.TopLevelDomain),
                         new StringMock(DataTypes.University),new StringMock(DataTypes.Url),new StringMock(DataTypes.UserAgent),new StringMock(DataTypes.Username),
-                        new StringMock(DataTypes.Words), new Paragraph()
+                        new StringMock(DataTypes.Words), new Paragraph(), new StringMock(DataTypes.CarMake), new StringMock(DataTypes.CarModel), new CarModelYearMock(), new StringMock(DataTypes.CarVIN)
                     }.OrderBy(bm=>bm.Name).ToList()),
                     new MockOption(AttributeTypeCode.Boolean, //Boolean
                         new List<BaseMock>{new True(), new False(),new Boolean()}.OrderBy(bm=>bm.Name).ToList()),

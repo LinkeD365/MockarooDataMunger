@@ -276,6 +276,10 @@ namespace LinkeD365.MockDataGen
 
                             break;
 
+                        case CarModelYearMock carYearMock:
+                            newRecord[map.LogicalName] = ((Int64)propertyValues[map.LogicalName]).ToString();
+                            break;
+
                         case FixedDateTime fixedDateTime:
                             newRecord[map.LogicalName] = fixedDateTime.FixedValue;
                             break;

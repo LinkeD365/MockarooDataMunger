@@ -196,6 +196,12 @@ namespace LinkeD365.MockDataGen.Mock
         }
     }
 
+    public class CarModelYearMock : StringMock
+    {
+        public CarModelYearMock() : base(DataTypes.CarModelYear)
+        { }
+    }
+
     public class Paragraph : BaseMock
     {
         public Paragraph() : base(DataTypes.Paragraphs)
