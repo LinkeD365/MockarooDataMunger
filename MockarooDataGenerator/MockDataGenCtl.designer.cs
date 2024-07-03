@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MockDataGenCtl));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.toolStripMenu = new System.Windows.Forms.ToolStrip();
             this.tsbClose = new System.Windows.Forms.ToolStripButton();
             this.tssSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -112,7 +112,8 @@
             this.btnImport});
             this.toolStripMenu.Location = new System.Drawing.Point(0, 0);
             this.toolStripMenu.Name = "toolStripMenu";
-            this.toolStripMenu.Size = new System.Drawing.Size(1024, 31);
+            this.toolStripMenu.Padding = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.toolStripMenu.Size = new System.Drawing.Size(1536, 34);
             this.toolStripMenu.TabIndex = 4;
             this.toolStripMenu.Text = "toolStrip1";
             // 
@@ -120,20 +121,20 @@
             // 
             this.tsbClose.Image = ((System.Drawing.Image)(resources.GetObject("tsbClose.Image")));
             this.tsbClose.Name = "tsbClose";
-            this.tsbClose.Size = new System.Drawing.Size(110, 28);
+            this.tsbClose.Size = new System.Drawing.Size(153, 29);
             this.tsbClose.Text = "Close this tool";
             // 
             // tssSeparator1
             // 
             this.tssSeparator1.Name = "tssSeparator1";
-            this.tssSeparator1.Size = new System.Drawing.Size(6, 31);
+            this.tssSeparator1.Size = new System.Drawing.Size(6, 34);
             // 
             // txtMockKey
             // 
             this.txtMockKey.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtMockKey.Name = "txtMockKey";
-            this.txtMockKey.Size = new System.Drawing.Size(120, 31);
-            this.txtMockKey.Text = "Mockaroo API Key";
+            this.txtMockKey.Size = new System.Drawing.Size(178, 34);
+            this.txtMockKey.ToolTipText = "Mockaroo API Key";
             // 
             // ddConfig
             // 
@@ -146,14 +147,14 @@
             this.ddConfig.Image = global::LinkeD365.MockDataGen.Properties.Resources.Settings_WF;
             this.ddConfig.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ddConfig.Name = "ddConfig";
-            this.ddConfig.Size = new System.Drawing.Size(37, 28);
+            this.ddConfig.Size = new System.Drawing.Size(42, 29);
             this.ddConfig.Text = "toolStripDropDownButton1";
             // 
             // btnDepTables
             // 
             this.btnDepTables.CheckOnClick = true;
             this.btnDepTables.Name = "btnDepTables";
-            this.btnDepTables.Size = new System.Drawing.Size(298, 22);
+            this.btnDepTables.Size = new System.Drawing.Size(448, 34);
             this.btnDepTables.Text = "Exclude \" (Deprecated)\" Tables";
             this.btnDepTables.CheckStateChanged += new System.EventHandler(this.btnDepTables_CheckStateChanged);
             // 
@@ -161,7 +162,7 @@
             // 
             this.btnDepCol.CheckOnClick = true;
             this.btnDepCol.Name = "btnDepCol";
-            this.btnDepCol.Size = new System.Drawing.Size(298, 22);
+            this.btnDepCol.Size = new System.Drawing.Size(448, 34);
             this.btnDepCol.Text = "Exclude \" (Deprecated)\" Columns";
             this.btnDepCol.CheckStateChanged += new System.EventHandler(this.btnDepCol_CheckStateChanged);
             // 
@@ -169,7 +170,7 @@
             // 
             this.btnDepImpSeqNo.CheckOnClick = true;
             this.btnDepImpSeqNo.Name = "btnDepImpSeqNo";
-            this.btnDepImpSeqNo.Size = new System.Drawing.Size(298, 22);
+            this.btnDepImpSeqNo.Size = new System.Drawing.Size(448, 34);
             this.btnDepImpSeqNo.Text = "Exclude Import Sequent Number Columns";
             this.btnDepImpSeqNo.CheckStateChanged += new System.EventHandler(this.btnDepImpSeqNo_CheckStateChanged);
             // 
@@ -177,14 +178,14 @@
             // 
             this.btnBypassPluginExec.CheckOnClick = true;
             this.btnBypassPluginExec.Name = "btnBypassPluginExec";
-            this.btnBypassPluginExec.Size = new System.Drawing.Size(298, 22);
+            this.btnBypassPluginExec.Size = new System.Drawing.Size(448, 34);
             this.btnBypassPluginExec.Text = "Bypass Plugin Execution on Create";
             this.btnBypassPluginExec.CheckStateChanged += new System.EventHandler(this.btnBypassPluginExec_CheckStateChanged);
             // 
             // cboSelectSaved
             // 
             this.cboSelectSaved.Name = "cboSelectSaved";
-            this.cboSelectSaved.Size = new System.Drawing.Size(121, 31);
+            this.cboSelectSaved.Size = new System.Drawing.Size(180, 34);
             this.cboSelectSaved.Text = "Select Saved Map";
             this.cboSelectSaved.SelectedIndexChanged += new System.EventHandler(this.cboSelectSaved_SelectedIndexChanged);
             // 
@@ -193,19 +194,19 @@
             this.btnSave.Image = ((System.Drawing.Image)(resources.GetObject("btnSave.Image")));
             this.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(129, 28);
+            this.btnSave.Size = new System.Drawing.Size(181, 29);
             this.btnSave.Text = "Save Current Map";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 34);
             // 
             // cboRunDataSet
             // 
             this.cboRunDataSet.Name = "cboRunDataSet";
-            this.cboRunDataSet.Size = new System.Drawing.Size(121, 31);
+            this.cboRunDataSet.Size = new System.Drawing.Size(180, 34);
             this.cboRunDataSet.Text = "Run Data Set";
             // 
             // btnPlaySet
@@ -213,7 +214,7 @@
             this.btnPlaySet.Image = ((System.Drawing.Image)(resources.GetObject("btnPlaySet.Image")));
             this.btnPlaySet.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnPlaySet.Name = "btnPlaySet";
-            this.btnPlaySet.Size = new System.Drawing.Size(76, 28);
+            this.btnPlaySet.Size = new System.Drawing.Size(102, 29);
             this.btnPlaySet.Text = "Play Set";
             this.btnPlaySet.Click += new System.EventHandler(this.btnPlaySet_Click);
             // 
@@ -222,7 +223,7 @@
             this.btnCreateDataSet.Image = global::LinkeD365.MockDataGen.Properties.Resources.Data_Settings;
             this.btnCreateDataSet.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnCreateDataSet.Name = "btnCreateDataSet";
-            this.btnCreateDataSet.Size = new System.Drawing.Size(115, 28);
+            this.btnCreateDataSet.Size = new System.Drawing.Size(162, 29);
             this.btnCreateDataSet.Text = "Create Data Set";
             this.btnCreateDataSet.ToolTipText = "Create Data Set";
             this.btnCreateDataSet.Click += new System.EventHandler(this.BtnCreateDataSet_Click);
@@ -230,7 +231,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 31);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 34);
             // 
             // ddExport
             // 
@@ -240,20 +241,20 @@
             this.ddExport.Image = global::LinkeD365.MockDataGen.Properties.Resources.baseline_save_alt_black_18dp;
             this.ddExport.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.ddExport.Name = "ddExport";
-            this.ddExport.Size = new System.Drawing.Size(78, 28);
+            this.ddExport.Size = new System.Drawing.Size(105, 29);
             this.ddExport.Text = "Export";
             // 
             // btnExportMaps
             // 
             this.btnExportMaps.Name = "btnExportMaps";
-            this.btnExportMaps.Size = new System.Drawing.Size(111, 22);
+            this.btnExportMaps.Size = new System.Drawing.Size(168, 34);
             this.btnExportMaps.Text = "Map(s)";
             this.btnExportMaps.Click += new System.EventHandler(this.btnExportMaps_Click);
             // 
             // btnExportSets
             // 
             this.btnExportSets.Name = "btnExportSets";
-            this.btnExportSets.Size = new System.Drawing.Size(111, 22);
+            this.btnExportSets.Size = new System.Drawing.Size(168, 34);
             this.btnExportSets.Text = "Set(s)";
             this.btnExportSets.Click += new System.EventHandler(this.btnExportSets_Click);
             // 
@@ -262,7 +263,7 @@
             this.btnImport.Image = global::LinkeD365.MockDataGen.Properties.Resources.baseline_publish_black_18dp;
             this.btnImport.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnImport.Name = "btnImport";
-            this.btnImport.Size = new System.Drawing.Size(71, 28);
+            this.btnImport.Size = new System.Drawing.Size(95, 29);
             this.btnImport.Text = "Import";
             this.btnImport.ToolTipText = "Import Maps or Sets file";
             this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
@@ -272,35 +273,37 @@
             this.gridMap.AllowUserToAddRows = false;
             this.gridMap.AllowUserToDeleteRows = false;
             this.gridMap.AllowUserToOrderColumns = true;
-            dataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.gridMap.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.gridMap.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.gridMap.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.gridMap.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.gridMap.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.gridMap.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.gridMap.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.gridMap.DefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.gridMap.DefaultCellStyle = dataGridViewCellStyle3;
             this.gridMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gridMap.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-            this.gridMap.Location = new System.Drawing.Point(3, 16);
+            this.gridMap.Location = new System.Drawing.Point(4, 24);
+            this.gridMap.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.gridMap.MultiSelect = false;
             this.gridMap.Name = "gridMap";
+            this.gridMap.RowHeadersWidth = 62;
             this.gridMap.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridMap.ShowEditingIcon = false;
-            this.gridMap.Size = new System.Drawing.Size(1004, 334);
+            this.gridMap.Size = new System.Drawing.Size(1512, 573);
             this.gridMap.TabIndex = 5;
             this.gridMap.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridMap_CellClick);
             this.gridMap.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridMap_CellEnter);
@@ -315,7 +318,8 @@
             // 
             this.splitConfig.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitConfig.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitConfig.Location = new System.Drawing.Point(3, 3);
+            this.splitConfig.Location = new System.Drawing.Point(4, 5);
+            this.splitConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.splitConfig.Name = "splitConfig";
             this.splitConfig.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -326,8 +330,9 @@
             // splitConfig.Panel2
             // 
             this.splitConfig.Panel2.Controls.Add(this.grpAttributes);
-            this.splitConfig.Size = new System.Drawing.Size(1010, 430);
+            this.splitConfig.Size = new System.Drawing.Size(1520, 681);
             this.splitConfig.SplitterDistance = 73;
+            this.splitConfig.SplitterWidth = 6;
             this.splitConfig.TabIndex = 6;
             // 
             // grpEntity
@@ -339,8 +344,10 @@
             this.grpEntity.Controls.Add(this.btnMock);
             this.grpEntity.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpEntity.Location = new System.Drawing.Point(0, 0);
+            this.grpEntity.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.grpEntity.Name = "grpEntity";
-            this.grpEntity.Size = new System.Drawing.Size(1010, 73);
+            this.grpEntity.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.grpEntity.Size = new System.Drawing.Size(1520, 73);
             this.grpEntity.TabIndex = 6;
             this.grpEntity.TabStop = false;
             this.grpEntity.Text = "Select Table";
@@ -348,18 +355,20 @@
             // lblPrimary
             // 
             this.lblPrimary.AutoSize = true;
-            this.lblPrimary.Location = new System.Drawing.Point(6, 47);
+            this.lblPrimary.Location = new System.Drawing.Point(9, 72);
+            this.lblPrimary.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblPrimary.Name = "lblPrimary";
-            this.lblPrimary.Size = new System.Drawing.Size(113, 13);
+            this.lblPrimary.Size = new System.Drawing.Size(169, 20);
             this.lblPrimary.TabIndex = 10;
             this.lblPrimary.Text = "Primary Name Column:";
             // 
             // cboEntities
             // 
             this.cboEntities.FormattingEnabled = true;
-            this.cboEntities.Location = new System.Drawing.Point(6, 19);
+            this.cboEntities.Location = new System.Drawing.Point(9, 29);
+            this.cboEntities.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.cboEntities.Name = "cboEntities";
-            this.cboEntities.Size = new System.Drawing.Size(339, 21);
+            this.cboEntities.Size = new System.Drawing.Size(506, 28);
             this.cboEntities.TabIndex = 9;
             this.cboEntities.SelectedValueChanged += new System.EventHandler(this.cboEntities_SelectedValueChanged);
             // 
@@ -367,23 +376,25 @@
             // 
             this.lblRecordCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblRecordCount.AutoSize = true;
-            this.lblRecordCount.Location = new System.Drawing.Point(637, 22);
+            this.lblRecordCount.Location = new System.Drawing.Point(961, 34);
+            this.lblRecordCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblRecordCount.Name = "lblRecordCount";
-            this.lblRecordCount.Size = new System.Drawing.Size(102, 13);
+            this.lblRecordCount.Size = new System.Drawing.Size(151, 20);
             this.lblRecordCount.TabIndex = 8;
             this.lblRecordCount.Text = "Number of Records:";
             // 
             // numRecordCount
             // 
             this.numRecordCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numRecordCount.Location = new System.Drawing.Point(745, 20);
+            this.numRecordCount.Location = new System.Drawing.Point(1123, 31);
+            this.numRecordCount.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numRecordCount.Maximum = new decimal(new int[] {
             200000,
             0,
             0,
             0});
             this.numRecordCount.Name = "numRecordCount";
-            this.numRecordCount.Size = new System.Drawing.Size(120, 20);
+            this.numRecordCount.Size = new System.Drawing.Size(180, 26);
             this.numRecordCount.TabIndex = 7;
             this.numRecordCount.Value = new decimal(new int[] {
             100,
@@ -394,9 +405,10 @@
             // btnMock
             // 
             this.btnMock.Dock = System.Windows.Forms.DockStyle.Right;
-            this.btnMock.Location = new System.Drawing.Point(871, 16);
+            this.btnMock.Location = new System.Drawing.Point(1312, 24);
+            this.btnMock.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnMock.Name = "btnMock";
-            this.btnMock.Size = new System.Drawing.Size(136, 54);
+            this.btnMock.Size = new System.Drawing.Size(204, 44);
             this.btnMock.TabIndex = 6;
             this.btnMock.Text = "Get Mockaroo Data";
             this.btnMock.UseVisualStyleBackColor = true;
@@ -407,8 +419,10 @@
             this.grpAttributes.Controls.Add(this.gridMap);
             this.grpAttributes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpAttributes.Location = new System.Drawing.Point(0, 0);
+            this.grpAttributes.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.grpAttributes.Name = "grpAttributes";
-            this.grpAttributes.Size = new System.Drawing.Size(1010, 353);
+            this.grpAttributes.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.grpAttributes.Size = new System.Drawing.Size(1520, 602);
             this.grpAttributes.TabIndex = 6;
             this.grpAttributes.TabStop = false;
             this.grpAttributes.Text = "Configure Map";
@@ -418,19 +432,21 @@
             this.tabGrpMain.Controls.Add(this.tabConfig);
             this.tabGrpMain.Controls.Add(this.tabSample);
             this.tabGrpMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabGrpMain.Location = new System.Drawing.Point(0, 31);
+            this.tabGrpMain.Location = new System.Drawing.Point(0, 34);
+            this.tabGrpMain.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabGrpMain.Name = "tabGrpMain";
             this.tabGrpMain.SelectedIndex = 0;
-            this.tabGrpMain.Size = new System.Drawing.Size(1024, 462);
+            this.tabGrpMain.Size = new System.Drawing.Size(1536, 724);
             this.tabGrpMain.TabIndex = 7;
             // 
             // tabConfig
             // 
             this.tabConfig.Controls.Add(this.splitConfig);
-            this.tabConfig.Location = new System.Drawing.Point(4, 22);
+            this.tabConfig.Location = new System.Drawing.Point(4, 29);
+            this.tabConfig.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabConfig.Name = "tabConfig";
-            this.tabConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConfig.Size = new System.Drawing.Size(1016, 436);
+            this.tabConfig.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tabConfig.Size = new System.Drawing.Size(1528, 691);
             this.tabConfig.TabIndex = 0;
             this.tabConfig.Text = "Config";
             this.tabConfig.UseVisualStyleBackColor = true;
@@ -438,10 +454,11 @@
             // tabSample
             // 
             this.tabSample.Controls.Add(this.splitResults);
-            this.tabSample.Location = new System.Drawing.Point(4, 22);
+            this.tabSample.Location = new System.Drawing.Point(4, 29);
+            this.tabSample.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabSample.Name = "tabSample";
-            this.tabSample.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSample.Size = new System.Drawing.Size(1016, 436);
+            this.tabSample.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.tabSample.Size = new System.Drawing.Size(1528, 687);
             this.tabSample.TabIndex = 1;
             this.tabSample.Text = "Results";
             this.tabSample.UseVisualStyleBackColor = true;
@@ -450,7 +467,8 @@
             // 
             this.splitResults.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitResults.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitResults.Location = new System.Drawing.Point(3, 3);
+            this.splitResults.Location = new System.Drawing.Point(4, 5);
+            this.splitResults.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.splitResults.Name = "splitResults";
             this.splitResults.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -464,29 +482,32 @@
             // splitResults.Panel2
             // 
             this.splitResults.Panel2.Controls.Add(this.gridSample);
-            this.splitResults.Size = new System.Drawing.Size(1010, 430);
+            this.splitResults.Size = new System.Drawing.Size(1520, 677);
             this.splitResults.SplitterDistance = 61;
+            this.splitResults.SplitterWidth = 6;
             this.splitResults.TabIndex = 5;
             // 
             // batchSizeLabel
             // 
             this.batchSizeLabel.AutoSize = true;
-            this.batchSizeLabel.Location = new System.Drawing.Point(3, 11);
+            this.batchSizeLabel.Location = new System.Drawing.Point(4, 17);
+            this.batchSizeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.batchSizeLabel.Name = "batchSizeLabel";
-            this.batchSizeLabel.Size = new System.Drawing.Size(58, 13);
+            this.batchSizeLabel.Size = new System.Drawing.Size(86, 20);
             this.batchSizeLabel.TabIndex = 3;
             this.batchSizeLabel.Text = "Batch Size";
             // 
             // batchSize
             // 
-            this.batchSize.Location = new System.Drawing.Point(6, 26);
+            this.batchSize.Location = new System.Drawing.Point(9, 40);
+            this.batchSize.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.batchSize.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
             this.batchSize.Name = "batchSize";
-            this.batchSize.Size = new System.Drawing.Size(63, 20);
+            this.batchSize.Size = new System.Drawing.Size(94, 26);
             this.batchSize.TabIndex = 2;
             this.batchSize.Value = new decimal(new int[] {
             250,
@@ -497,9 +518,10 @@
             // btnCreateAllData
             // 
             this.btnCreateAllData.AutoSize = true;
-            this.btnCreateAllData.Location = new System.Drawing.Point(90, 31);
+            this.btnCreateAllData.Location = new System.Drawing.Point(135, 48);
+            this.btnCreateAllData.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnCreateAllData.Name = "btnCreateAllData";
-            this.btnCreateAllData.Size = new System.Drawing.Size(121, 23);
+            this.btnCreateAllData.Size = new System.Drawing.Size(189, 46);
             this.btnCreateAllData.TabIndex = 1;
             this.btnCreateAllData.Text = "Create X Rows";
             this.btnCreateAllData.UseVisualStyleBackColor = true;
@@ -508,9 +530,10 @@
             // btnCreate100Data
             // 
             this.btnCreate100Data.AutoSize = true;
-            this.btnCreate100Data.Location = new System.Drawing.Point(89, 5);
+            this.btnCreate100Data.Location = new System.Drawing.Point(134, 8);
+            this.btnCreate100Data.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnCreate100Data.Name = "btnCreate100Data";
-            this.btnCreate100Data.Size = new System.Drawing.Size(122, 23);
+            this.btnCreate100Data.Size = new System.Drawing.Size(213, 46);
             this.btnCreate100Data.TabIndex = 0;
             this.btnCreate100Data.Text = "Create 100 Rows";
             this.btnCreate100Data.UseVisualStyleBackColor = true;
@@ -521,52 +544,56 @@
             this.gridSample.AllowUserToOrderColumns = true;
             this.gridSample.AllowUserToResizeRows = false;
             this.gridSample.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.gridSample.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.gridSample.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.gridSample.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gridSample.ColumnOrder = "";
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle15.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle15.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle15.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.gridSample.DefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.gridSample.DefaultCellStyle = dataGridViewCellStyle5;
             this.gridSample.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gridSample.FilterColumns = "";
             this.gridSample.Location = new System.Drawing.Point(0, 0);
+            this.gridSample.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.gridSample.Name = "gridSample";
             this.gridSample.OrganizationService = null;
+            this.gridSample.RowHeadersWidth = 62;
             this.gridSample.ShowFriendlyNames = true;
             this.gridSample.ShowIdColumn = false;
-            this.gridSample.Size = new System.Drawing.Size(1010, 365);
+            this.gridSample.Size = new System.Drawing.Size(1520, 610);
             this.gridSample.TabIndex = 4;
             // 
             // tabGrpHidden
             // 
-            this.tabGrpHidden.Location = new System.Drawing.Point(96, 55);
+            this.tabGrpHidden.Location = new System.Drawing.Point(144, 85);
+            this.tabGrpHidden.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tabGrpHidden.Name = "tabGrpHidden";
             this.tabGrpHidden.SelectedIndex = 0;
-            this.tabGrpHidden.Size = new System.Drawing.Size(200, 100);
+            this.tabGrpHidden.Size = new System.Drawing.Size(300, 154);
             this.tabGrpHidden.TabIndex = 7;
             // 
             // MockDataGenCtl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tabGrpMain);
             this.Controls.Add(this.tabGrpHidden);
             this.Controls.Add(this.toolStripMenu);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "MockDataGenCtl";
             this.PluginIcon = ((System.Drawing.Icon)(resources.GetObject("$this.PluginIcon")));
-            this.Size = new System.Drawing.Size(1024, 493);
+            this.Size = new System.Drawing.Size(1536, 758);
             this.TabIcon = global::LinkeD365.MockDataGen.Properties.Resources.smallIcon_80;
             this.OnCloseTool += new System.EventHandler(this.MockDataGen_OnCloseTool);
             this.Load += new System.EventHandler(this.MockDataGen_Load);
