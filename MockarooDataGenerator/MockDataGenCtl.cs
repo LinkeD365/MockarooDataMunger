@@ -12,6 +12,7 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using XrmToolBox.Extensibility;
@@ -24,6 +25,15 @@ namespace LinkeD365.MockDataGen
 {
     public partial class MockDataGenCtl : PluginControlBase, IGitHubPlugin, IPayPalPlugin
     {
+        #region Interop for Placeholder Text
+
+        private const int EM_SETCUEBANNER = 0x1501;
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern Int32 SendMessage(IntPtr hWnd, int msg,
+            int wParam, string lParam);
+
+        #endregion
+
         #region Private Fields
 
         private const string percBlank = "Percentage Blank";
@@ -58,6 +68,16 @@ namespace LinkeD365.MockDataGen
 
         public string EmailAccount => "carl.cookson@gmail.com";
 
+        string placeholderText = "Mockaroo API Key";
+        public string PlaceholderText { 
+            get => placeholderText; 
+            set 
+            { 
+                placeholderText = value; 
+                UpdatePlaceholderText(); 
+            } 
+        }
+
         // private string entityName;
 
         #endregion Private Fields
@@ -69,7 +89,15 @@ namespace LinkeD365.MockDataGen
             InitializeComponent();
 
             ai = new AppInsights(aiEndpoint, aiKey, Assembly.GetExecutingAssembly());
+            txtMockKey.Control.HandleCreated += Control_HandleCreated;
+
             ai.WriteEvent("Control Loaded");
+        }
+
+        private void Control_HandleCreated(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(placeholderText))
+                UpdatePlaceholderText();
         }
 
         private void MockDataGen_Load(object sender, EventArgs e)
@@ -576,6 +604,11 @@ Please confirm your configuration before using", "Import Success", MessageBoxBut
             {
                 MessageBox.Show("There was an error in importing your configuration, please confirm file is correct and try again", "Error on Import", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void UpdatePlaceholderText()
+        {
+            SendMessage(txtMockKey.Control.Handle, EM_SETCUEBANNER, 0, placeholderText);
         }
     }
 }

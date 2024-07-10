@@ -107,6 +107,21 @@ namespace LinkeD365.MockDataGen
                     selectionPick.MinimumSize = new Size(100, 300);
                     break;
 
+                case DataTypes.CharSequence:
+                    this.Text = "Enter format";
+                    table.Controls.Add(new Label { Text = "Format" }, 0, 0);
+                    var format = new TextBox();
+                    var charSeqMock = (CharSequence)mapRow.SelectedMock;
+                    format.Text = charSeqMock.Format;
+                    format.TextChanged += CharSeqFormat_TextChanged;
+                    table.Controls.Add(format, 1, 0);
+                    table.RowCount++;
+                    var instructions = new Label { AutoSize = true, Dock = DockStyle.Fill, Text = "\r\nA string of characters, digits, and symbols\r\n\r\nUse \"#\" for a random digit.\r\nUse \"@\" for a random lower case letter.\r\nUse \"^\" for a random upper case letter.\r\nUse \"*\" for a random digit or letter.\r\nUse \"$\" for a random digit or lower case letter.\r\nUse \"%\" for a random digit or upper case letter.\r\nAny other character will be included verbatim.\r\n\r\n", };
+                    table.Controls.Add(instructions, 0, 2);
+                    table.SetColumnSpan(instructions, 2);
+                    table.RowCount++;
+                    break;
+
                 case DataTypes.Number:
                     SetUpNumber();
 
@@ -519,6 +534,13 @@ namespace LinkeD365.MockDataGen
             listviewitems.AddRange(from lookup in lookups select new ListViewItem(lookup.Name) { Tag = lookup.guid });
 
             return listviewitems.ToArray();
+        }
+
+        private void CharSeqFormat_TextChanged(object sender, EventArgs e)
+        {
+            TextBox textbox = sender as TextBox;
+            CharSequence charSequence = (CharSequence)mapRow.SelectedMock;
+            charSequence.Format = textbox.Text;
         }
 
         private void DateTime_ValueChanged(object sender, EventArgs e)
